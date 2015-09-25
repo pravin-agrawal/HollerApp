@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+ 
+ <bean id="queryDao" class="com.holler.holler_dao.QueryDao">
+ 	<property name="map">
+ 		<map>
+ 			<entry key="FIND_ALL_EMPLOYEE" value="SELECT id, first_name, last_name, age FROM Employees">
+ 			</entry>
+ 			
+ 			<entry key="AUTHENTICATE_USER" value="SELECT * FROM user where name = ? and password = ?">
+ 			</entry>
+ 			
+ 			<entry key="GET_USER_JOBS" >
+ 				<value>
+ 					SELECT jobs.* FROM jobs jobs
+						JOIN user_job_map map ON  map.jobid = jobs.id
+						JOIN USER usr ON (usr.id = map.userid AND usr.id = :requestUserId );
+ 				</value>
+ 			</entry>
+ 		</map>
+ 	</property>
+ </bean>
+  
+</beans>
