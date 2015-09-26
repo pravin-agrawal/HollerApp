@@ -1,8 +1,10 @@
 package com.holler.bean;
 
+import com.holler.holler_dao.entity.User;
+
 public class UserDTO {
 	private String name;
-	private String email_id;
+	private String emailId;
 	private String phoneNumber;
 	private String status;
 	private String pic;
@@ -19,11 +21,11 @@ public class UserDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getEmail_id() {
-		return email_id;
+	public String getEmailId() {
+		return emailId;
 	}
-	public void setEmail_id(String email_id) {
-		this.email_id = email_id;
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -86,5 +88,14 @@ public class UserDTO {
 		this.avgRating = avgRating;
 	}
 
-
+	public static UserDTO getDtoForUserProfile(User user){
+		UserDTO userDTO = new UserDTO();
+		userDTO.setName(user.getName());
+		userDTO.setEmailId(user.getEmail());
+		userDTO.setPhoneNumber(user.getPhoneNumber());
+		userDTO.setAbout(user.getAbout());
+		userDTO.setPic(user.getPic());
+		return userDTO;
+	}
+	
 }

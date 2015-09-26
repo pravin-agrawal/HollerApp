@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.holler.bean.TestDTO;
 import com.holler.bean.UserJobDTO;
 import com.holler.holler_dao.entity.User;
-import com.holler.holler_service.HibernateTestService;
 import com.holler.holler_service.UserService;
 
 
@@ -61,7 +60,7 @@ public class HelloController {
 		if(session == null){
 			mv = setDefaultLoginAction();
 		}else{
-			boolean isValidUser = userService.authenticateUser(user.getName(), user.getPassword());
+			boolean isValidUser = userService.authenticateUser(user.getEmail(), user.getPassword());
 			if(isValidUser){
 				session = request.getSession();
 				session.setAttribute("user", user);
@@ -90,19 +89,28 @@ public class HelloController {
 	@RequestMapping(value="/getUserJobs", method=RequestMethod.POST)
 	public @ResponseBody UserJobDTO getUserJobs(@RequestParam("userId")int userId, HttpServletRequest request){
 		HttpSession session = request.getSession(false);
-		//if(session == null){
-		if(false){
+		if(session == null){
 			return null;
 		}else{
-			//User user = (User)session.getAttribute("user");
-			UserJobDTO userJobDTO = userService.getUserJobs(null, userId);
+			User user = (User)session.getAttribute("user");
+			UserJobDTO userJobDTO = userService.getUserJobs(user, userId);
 			return userJobDTO;
 		}
 	}
 	
 	@RequestMapping(value="/getJsonInRequest", method=RequestMethod.POST)
 	public @ResponseBody UserJobDTO getJsonInRequest(@RequestBody TestDTO testDTO, HttpServletRequest request){
-		UserJobDTO userJobDTO = userService.getUserJobs(null, 1);
+		
+		User user = null;
+		HttpSession session = request.getSession(false);
+		if(session != null){
+			session = request.getSession();
+			user = (User)session.getAttribute("user");
+		}else{
+			return null;
+		}
+		
+		UserJobDTO userJobDTO = userService.getUserJobs(user, 1);
 		return userJobDTO;
 	}
 	

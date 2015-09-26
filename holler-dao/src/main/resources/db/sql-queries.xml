@@ -7,10 +7,8 @@
  <bean id="queryDao" class="com.holler.holler_dao.QueryDao">
  	<property name="map">
  		<map>
- 			<entry key="FIND_ALL_EMPLOYEE" value="SELECT id, first_name, last_name, age FROM Employees">
- 			</entry>
- 			
- 			<entry key="AUTHENTICATE_USER" value="SELECT * FROM user where name = ? and password = ?">
+
+ 			<entry key="AUTHENTICATE_USER" value="SELECT * FROM user where email = ? and password = ?">
  			</entry>
  			
  			<entry key="GET_USER_JOBS" >

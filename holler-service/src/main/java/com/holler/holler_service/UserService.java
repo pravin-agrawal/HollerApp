@@ -1,34 +1,25 @@
 package com.holler.holler_service;
 
-import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import javax.servlet.http.HttpServletRequest;
 
+import com.holler.bean.SignUpDTO;
+import com.holler.bean.UserDTO;
 import com.holler.bean.UserJobDTO;
-import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.entity.User;
 
-@Service
-public class UserService {
+public interface UserService {
+	
+	public boolean authenticateUser(String email, String password);
+	
+	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId);
+	
+	public Map<String, String> signInUser(String email, String password, HttpServletRequest request);
+	
+	public Map<String, String> signOutUser(HttpServletRequest request);
+	
+	public Map<String, String> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request);
 
-	@Autowired
-	UserDao userDao;
-	
-	public boolean authenticateUser(String userName, String password){
-		return userDao.authenticateUser(userName, password);
-	}
-	
-	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId){
-		UserJobDTO userJobDTO = null;
-		//if(loggedInUser != null && loggedInUser.getId() == requestUserId){
-		if(true){
-			List<Object[]> userJobs = userDao.getUserJobs(requestUserId); 
-			List<UserJobDTO> userJobDTOs = UserJobDTO.constructUserJobDTO(userJobs);
-			userJobDTO = userJobDTOs.get(0);
-		}else{
-			userJobDTO = null;
-		}
-		return userJobDTO;
-	}
+	public UserDTO getUserProfile(int userId, HttpServletRequest request);
 }
