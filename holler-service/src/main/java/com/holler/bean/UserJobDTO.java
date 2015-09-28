@@ -14,7 +14,7 @@ public class UserJobDTO {
 	private String title;
     private String jobDescription;
     private String status;
-    private Integer tags;
+    private String tags;
     private Integer compensation;
     private Date jobTimeStamp;
     private String specialrequirement;
@@ -80,10 +80,10 @@ public class UserJobDTO {
 		this.tags = tags;
 	}*/
 	
-	public Integer getTags() {
+	public String getTags() {
 		return tags;
 	}
-	public void setTags(Integer tags) {
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
 	public static List<UserJobDTO> constructUserJobDTO(List<Object[]> userJobs){

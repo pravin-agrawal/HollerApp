@@ -1,6 +1,8 @@
 package com.holler.holler_service;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,12 @@ public class JobServiceImpl implements JobService{
 	public UserJobDTO postJob(UserJobDTO userJobDTO) {
 		Jobs job = UserJobDTO.constructJobToPost(userJobDTO);
 		job.setUser(userDao.findById(userJobDTO.getUserId()));
-		Set<Tags> tags = new HashSet<Tags>(tagDao.findbyIdsString(userJobDTO.getTags()));
+		String[] strArray = userJobDTO.getTags().split(",");
+		Set<Integer> tagSet = new HashSet<Integer>(strArray.length);
+		for(int i = 0; i < strArray.length; i++) {
+			tagSet.add(Integer.parseInt(strArray[i]));
+		}
+		Set<Tags> tags = new HashSet<Tags>(tagDao.findbyIds(tagSet));
 		job.setTags(tags);
 		jobDao.save(job);
 		userJobDTO.setJobId(job.getId());
