@@ -3,15 +3,34 @@ package com.holler.bean;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import com.holler.holler_dao.entity.Jobs;
 
 
 public class UserJobDTO {
+	private int userId;
+	private int jobId;
 	private String title;
     private String jobDescription;
     private String status;
-    private String tags;
-    private String compensation;
+    private Integer tags;
+    private Integer compensation;
     private Date jobTimeStamp;
+    private String specialrequirement;
+    private int genderRequirement;
+    public int getUserId() {
+		return userId;
+	}
+    public void setUserId(int userId) {
+		this.userId = userId;
+	}
+    public int getJobId() {
+		return jobId;
+	}
+    public void setJobId(int jobId) {
+		this.jobId = jobId;
+	}
 	public String getTitle() {
 		return title;
 	}
@@ -30,16 +49,10 @@ public class UserJobDTO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getTags() {
-		return tags;
-	}
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
-	public String getCompensation() {
+	public Integer getCompensation() {
 		return compensation;
 	}
-	public void setCompensation(String compensation) {
+	public void setCompensation(Integer compensation) {
 		this.compensation = compensation;
 	}
 	public Date getJobTimeStamp() {
@@ -48,7 +61,31 @@ public class UserJobDTO {
 	public void setJobTimeStamp(Date jobTimeStamp) {
 		this.jobTimeStamp = jobTimeStamp;
 	}
+	public String getSpecialrequirement() {
+		return specialrequirement;
+	}
+	public void setSpecialrequirement(String specialrequirement) {
+		this.specialrequirement = specialrequirement;
+	}
+	public int getGenderRequirement() {
+		return genderRequirement;
+	}
+	public void setGenderRequirement(int genderRequirement) {
+		this.genderRequirement = genderRequirement;
+	}
+	/*public Set<Integer> getTags() {
+		return tags;
+	}
+	public void setTags(Set<Integer> tags) {
+		this.tags = tags;
+	}*/
 	
+	public Integer getTags() {
+		return tags;
+	}
+	public void setTags(Integer tags) {
+		this.tags = tags;
+	}
 	public static List<UserJobDTO> constructUserJobDTO(List<Object[]> userJobs){
 		List<UserJobDTO> userJobDTOs = new ArrayList<UserJobDTO>();
 		if(userJobs != null && !userJobs.isEmpty()){
@@ -62,5 +99,17 @@ public class UserJobDTO {
 			}
 		}
 		return userJobDTOs;
+	}
+	
+	public static Jobs constructJobToPost(UserJobDTO userJobDTO) {
+		Jobs job = new Jobs();
+		job.setTitle(userJobDTO.getTitle());
+		job.setDescription(userJobDTO.getJobDescription());
+		job.setCompensation(userJobDTO.getCompensation());
+		job.setGenderPreference(userJobDTO.getGenderRequirement());
+		job.setSpecialRequirement(userJobDTO.getSpecialrequirement());
+		job.setStatus(userJobDTO.getStatus());
+		//job.setCreated(new Date());
+		return job;
 	}
 }
