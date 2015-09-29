@@ -1,11 +1,13 @@
 package com.holler.bean;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import com.holler.holler_dao.entity.Jobs;
+import com.holler.holler_dao.util.CommonUtil;
 
 
 public class UserJobDTO {
@@ -14,7 +16,7 @@ public class UserJobDTO {
 	private String title;
     private String jobDescription;
     private String status;
-    private String tags;
+    private Set<Integer> tags;
     private Integer compensation;
     private Date jobTimeStamp;
     private String specialrequirement;
@@ -73,19 +75,13 @@ public class UserJobDTO {
 	public void setGenderRequirement(int genderRequirement) {
 		this.genderRequirement = genderRequirement;
 	}
-	/*public Set<Integer> getTags() {
+	public Set<Integer> getTags() {
 		return tags;
 	}
 	public void setTags(Set<Integer> tags) {
 		this.tags = tags;
-	}*/
+	}
 	
-	public String getTags() {
-		return tags;
-	}
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
 	public static List<UserJobDTO> constructUserJobDTO(List<Object[]> userJobs){
 		List<UserJobDTO> userJobDTOs = new ArrayList<UserJobDTO>();
 		if(userJobs != null && !userJobs.isEmpty()){
@@ -111,5 +107,22 @@ public class UserJobDTO {
 		job.setStatus(userJobDTO.getStatus());
 		//job.setCreated(new Date());
 		return job;
+	}
+	
+	public static List<UserJobDTO> getJobDtosFronJobs(List<Jobs> jobs){
+		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
+		for (Jobs job : CommonUtil.safe(jobs)) {
+			UserJobDTO userJobDTO = new UserJobDTO();
+			userJobDTO.setUserId(job.getUser().getId());
+			userJobDTO.setJobId(job.getId());
+			userJobDTO.setTitle(job.getTitle());
+			userJobDTO.setJobDescription(job.getDescription());
+			userJobDTO.setStatus(job.getStatus());
+			userJobDTO.setCompensation(job.getCompensation());
+			userJobDTO.setSpecialrequirement(job.getSpecialRequirement());
+			userJobDTO.setGenderRequirement(job.getGenderPreference());
+			jobDTOs.add(userJobDTO);
+		}
+		return jobDTOs;
 	}
 }

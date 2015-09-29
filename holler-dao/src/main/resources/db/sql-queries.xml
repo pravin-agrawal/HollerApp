@@ -18,6 +18,14 @@
 						JOIN USER usr ON (usr.id = map.userid AND usr.id = :requestUserId );
  				</value>
  			</entry>
+ 			<entry key="GET_JOBS_BY_TAG" >
+ 				<value>
+ 					SELECT j.* FROM 
+						jobs AS j JOIN job_tag AS jt ON j.id = jt.job_id
+						JOIN tags AS t ON (jt.tag_id = t.id AND t.tag_name LIKE (:searchedTag))
+						GROUP BY j.id
+ 				</value>
+ 			</entry>
  		</map>
  	</property>
  </bean>

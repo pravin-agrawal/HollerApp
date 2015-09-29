@@ -35,11 +35,4 @@ public class TagDaoImpl extends BaseDaoImpl<Tags> implements TagDao {
 				.setParameter("tagIds", tagIds).getResultList();
 	}
 	
-	@Transactional(readOnly = true)
-	public List<Tags> findbyIdsString(Integer tagIds) {
-		return  entityManager.createQuery("from " + Tags.class.getName() + " tags where tags.id in (:tagIds)", Tags.class)
-				.setParameter("tagIds", tagIds).getResultList();
-	}
-	
-
 }

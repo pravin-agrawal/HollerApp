@@ -54,9 +54,12 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		List<Object[]> resultList = queryObject.getResultList();
 		return resultList;
 	}
-	
-	public Jobs postJob(Jobs job) {
-		// TODO Auto-generated method stub
-		return null;
+
+	@SuppressWarnings("unchecked")
+	public List<Jobs> searchJobsByTag(String tag) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG);
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class).setParameter("searchedTag", tag + "%");
+		List<Jobs> resultList = queryObject.getResultList();
+		return resultList;
 	}
 }
