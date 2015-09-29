@@ -1,10 +1,16 @@
 package com.holler.holler_dao.entity;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -38,6 +44,12 @@ public class User extends BaseEntity{
 	
 	@Column(name = "pic")
 	private String pic;
+	
+	@ManyToMany(cascade = {CascadeType.REFRESH})
+	@JoinTable(name = "user_tag",
+		joinColumns = @JoinColumn(name = "user_id"),
+		inverseJoinColumns = @JoinColumn(name="tag_id"))
+	private Set<Tags> tags;
 
 	public int getId() {
 		return id;
@@ -93,6 +105,12 @@ public class User extends BaseEntity{
 
 	public void setPic(String pic) {
 		this.pic = pic;
+	}
+	public Set<Tags> getTags() {
+		return tags;
+	}
+	public void setTags(Set<Tags> tags) {
+		this.tags = tags;
 	}
 
 	public static User constructUserForSignUp(String name, String email,

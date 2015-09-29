@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,12 @@ public class UserController {
 	@RequestMapping(value="/getUserProfile", method=RequestMethod.POST)
 	public @ResponseBody UserDTO login(@RequestParam("userId")int userId, HttpServletRequest request){
 		UserDTO userDTO = userService.getUserProfile(userId, request);
+		return userDTO;
+	}
+	
+	@RequestMapping(value="/updateUserProfile", method=RequestMethod.POST)
+	public @ResponseBody UserDTO updateuserProfile(@RequestBody UserDTO userDTO, HttpServletRequest request){
+		userDTO = userService.updateUserProfile(userDTO, request);
 		return userDTO;
 	}
 }

@@ -25,7 +25,7 @@ public class JobsController {
 	JobService jobService;
 	
 	@RequestMapping(value="/postJob", method=RequestMethod.POST)
-	public @ResponseBody UserJobDTO login(@RequestBody UserJobDTO userJobDTO){
+	public @ResponseBody UserJobDTO postJob(@RequestBody UserJobDTO userJobDTO){
 		userJobDTO = jobService.postJob(userJobDTO);
 		return userJobDTO;
 	}

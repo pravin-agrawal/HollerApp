@@ -22,4 +22,6 @@ public interface UserService {
 	public Map<String, String> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request);
 
 	public UserDTO getUserProfile(int userId, HttpServletRequest request);
+	
+	public UserDTO updateUserProfile(UserDTO userDTO, HttpServletRequest request);
 }

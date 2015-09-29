@@ -26,6 +26,9 @@ public class Tags extends BaseEntity{
 	@ManyToMany(mappedBy = "tags")
 	private Set<Jobs> jobs;
 	
+	@ManyToMany(mappedBy = "tags")
+	private Set<User> user;
+	
 	public int getId() {
 		return id;
 	}
@@ -50,8 +53,12 @@ public class Tags extends BaseEntity{
 		this.jobs = jobs;
 	}
 	
-
-	
+	public Set<User> getUser() {
+		return user;
+	}
+	public void setUser(Set<User> user) {
+		this.user = user;
+	}
 	
 
 	

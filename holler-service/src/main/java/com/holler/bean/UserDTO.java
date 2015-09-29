@@ -1,8 +1,14 @@
 package com.holler.bean;
 
+import java.util.Date;
+import java.util.Set;
+
+import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.util.CommonUtil;
 
 public class UserDTO {
+	private int userId;
 	private String name;
 	private String emailId;
 	private String phoneNumber;
@@ -13,8 +19,14 @@ public class UserDTO {
 	private String gender;
 	private boolean allowSms = false;
 	private String about;
-	private String tags;
+	private Set<Integer> tags;
 	private Float avgRating;
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 	public String getName() {
 		return name;
 	}
@@ -75,10 +87,10 @@ public class UserDTO {
 	public void setAbout(String about) {
 		this.about = about;
 	}
-	public String getTags() {
+	public Set<Integer> getTags() {
 		return tags;
 	}
-	public void setTags(String tags) {
+	public void setTags(Set<Integer> tags) {
 		this.tags = tags;
 	}
 	public Float getAvgRating() {
@@ -96,6 +108,20 @@ public class UserDTO {
 		userDTO.setAbout(user.getAbout());
 		userDTO.setPic(user.getPic());
 		return userDTO;
+	}
+	
+	public static User constructUserDTO(UserDTO userDTO) {
+		User user = new User();
+		if(CommonUtil.isNotNull(userDTO.getUserId())){
+			user.setId(userDTO.getUserId());
+		}
+		user.setName(userDTO.getName());
+		user.setEmail(userDTO.getEmailId());
+		user.setPhoneNumber(userDTO.getPhoneNumber());
+		user.setAbout(userDTO.getAbout());
+		user.setPic(userDTO.getPic());
+		user.setLastModified(new Date());
+		return user;
 	}
 	
 }
