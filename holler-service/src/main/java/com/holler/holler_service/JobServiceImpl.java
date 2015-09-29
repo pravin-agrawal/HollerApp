@@ -17,6 +17,7 @@ import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Tags;
+import com.holler.holler_dao.util.CommonUtil;
 
 @Service
 public class JobServiceImpl implements JobService{
@@ -37,8 +38,12 @@ public class JobServiceImpl implements JobService{
 		job.setUser(userDao.findById(userJobDTO.getUserId()));
 		Set<Tags> tags = new HashSet<Tags>(tagDao.findbyIds(userJobDTO.getTags()));
 		job.setTags(tags);
-		jobDao.save(job);
-		userJobDTO.setJobId(job.getId());
+		if(CommonUtil.isNotNull(userJobDTO.getJobId())){
+			jobDao.update(job);
+		}else{
+			jobDao.save(job);
+			userJobDTO.setJobId(job.getId());	
+		}
 		return userJobDTO;
 	}
 

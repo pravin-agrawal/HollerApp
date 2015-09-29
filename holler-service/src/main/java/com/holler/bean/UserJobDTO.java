@@ -99,6 +99,9 @@ public class UserJobDTO {
 	
 	public static Jobs constructJobToPost(UserJobDTO userJobDTO) {
 		Jobs job = new Jobs();
+		if(CommonUtil.isNotNull(userJobDTO.getJobId())){
+			job.setId(userJobDTO.getJobId());
+		}
 		job.setTitle(userJobDTO.getTitle());
 		job.setDescription(userJobDTO.getJobDescription());
 		job.setCompensation(userJobDTO.getCompensation());
