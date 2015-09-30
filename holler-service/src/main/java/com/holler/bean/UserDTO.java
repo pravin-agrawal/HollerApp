@@ -3,7 +3,6 @@ package com.holler.bean;
 import java.util.Date;
 import java.util.Set;
 
-import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.util.CommonUtil;
 
