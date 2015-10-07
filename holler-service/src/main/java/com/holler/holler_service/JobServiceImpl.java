@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.holler.bean.UserDTO;
+import com.holler.holler_dao.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +26,14 @@ public class JobServiceImpl implements JobService{
 
 	@Autowired
 	JobDao jobDao;
-	
+
 	@Autowired
 	TagDao tagDao;
-	
+
 	@Autowired
 	UserDao userDao;
 
-	
+
 	@Transactional
 	public UserJobDTO postJob(UserJobDTO userJobDTO) {
 		Jobs job = UserJobDTO.constructJobToPost(userJobDTO);
@@ -42,11 +44,45 @@ public class JobServiceImpl implements JobService{
 			jobDao.update(job);
 		}else{
 			jobDao.save(job);
-			userJobDTO.setJobId(job.getId());	
+			userJobDTO.setJobId(job.getId());
 		}
 		return userJobDTO;
 	}
 
+	public UserJobDTO viewJob(int jobId,HttpServletRequest request){
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			return null;
+		}else{
+			Jobs job = jobDao.findById(jobId);
+			UserJobDTO jobDTO = UserJobDTO.getJobDtoFromJob(job);
+			return jobDTO;
+		}
+	}
+
+	public List<UserJobDTO> getMyJobs(int userId, HttpServletRequest request){
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			return null;
+		}else{
+			List<Jobs> job = jobDao.findAllByUserId(userId);
+			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosFromJobs(job);
+			return jobDTO;
+		}
+	}
+
+
+	public List<UserDTO> getUsersAcceptedJob(int jobId, HttpServletRequest request){
+
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			return null;
+		}else{
+			List<User> users = jobDao.getUserAcceptedJobs(jobId);
+			List<UserDTO> userDTOs = UserDTO.constructUserDTOsForAcceptedJObs(users);
+			return userDTOs;
+		}
+	}
 
 	public List<UserJobDTO> searchJobsByTag(String tag, HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
@@ -54,9 +90,9 @@ public class JobServiceImpl implements JobService{
 			return null;
 		}else{
 			List<Jobs> jobs = jobDao.searchJobsByTag(tag);
-			List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosFronJobs(jobs);
+			List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosFromJobs(jobs);
 			return jobDTOs;
 		}
 	}
-	
+
 }

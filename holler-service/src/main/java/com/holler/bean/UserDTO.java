@@ -1,6 +1,8 @@
 package com.holler.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import com.holler.holler_dao.entity.User;
@@ -108,7 +110,7 @@ public class UserDTO {
 		userDTO.setPic(user.getPic());
 		return userDTO;
 	}
-	
+
 	public static User constructUserDTO(UserDTO userDTO) {
 		User user = new User();
 		if(CommonUtil.isNotNull(userDTO.getUserId())){
@@ -122,5 +124,18 @@ public class UserDTO {
 		user.setLastModified(new Date());
 		return user;
 	}
-	
+
+	public static List<UserDTO> constructUserDTOsForAcceptedJObs(List<User> users) {
+		List<UserDTO> UserDTOs = new ArrayList<UserDTO>();
+		for(User user:users){
+			UserDTO userDTO = new UserDTO();
+			userDTO.setUserId(user.getId());
+			userDTO.setName(user.getName());
+			userDTO.setPic(user.getPic());
+			UserDTOs.add(userDTO);
+		}
+
+		return UserDTOs;
+	}
+
 }

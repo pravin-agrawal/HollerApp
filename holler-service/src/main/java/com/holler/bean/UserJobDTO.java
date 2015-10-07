@@ -14,23 +14,24 @@ public class UserJobDTO {
 	private int userId;
 	private int jobId;
 	private String title;
-    private String jobDescription;
-    private String status;
-    private Set<Integer> tags;
-    private Integer compensation;
-    private Date jobTimeStamp;
-    private String specialrequirement;
-    private int genderRequirement;
-    public int getUserId() {
+	private String jobDescription;
+	private String status;
+	private Set<Integer> tags;
+	private Integer compensation;
+	private Date jobTimeStamp;
+	private String specialrequirement;
+	private int genderRequirement;
+	private Date jobdate;
+	public int getUserId() {
 		return userId;
 	}
-    public void setUserId(int userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-    public int getJobId() {
+	public int getJobId() {
 		return jobId;
 	}
-    public void setJobId(int jobId) {
+	public void setJobId(int jobId) {
 		this.jobId = jobId;
 	}
 	public String getTitle() {
@@ -81,7 +82,15 @@ public class UserJobDTO {
 	public void setTags(Set<Integer> tags) {
 		this.tags = tags;
 	}
-	
+
+	public Date getJobdate() {
+		return jobdate;
+	}
+
+	public void setJobdate(Date jobdate) {
+		this.jobdate = jobdate;
+	}
+
 	public static List<UserJobDTO> constructUserJobDTO(List<Object[]> userJobs){
 		List<UserJobDTO> userJobDTOs = new ArrayList<UserJobDTO>();
 		if(userJobs != null && !userJobs.isEmpty()){
@@ -96,7 +105,7 @@ public class UserJobDTO {
 		}
 		return userJobDTOs;
 	}
-	
+
 	public static Jobs constructJobToPost(UserJobDTO userJobDTO) {
 		Jobs job = new Jobs();
 		if(CommonUtil.isNotNull(userJobDTO.getJobId())){
@@ -111,8 +120,8 @@ public class UserJobDTO {
 		//job.setCreated(new Date());
 		return job;
 	}
-	
-	public static List<UserJobDTO> getJobDtosFronJobs(List<Jobs> jobs){
+
+	public static List<UserJobDTO> getJobDtosFromJobs(List<Jobs> jobs){
 		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
 		for (Jobs job : CommonUtil.safe(jobs)) {
 			UserJobDTO userJobDTO = new UserJobDTO();
@@ -127,5 +136,20 @@ public class UserJobDTO {
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;
+	}
+
+	public static UserJobDTO getJobDtoFromJob(Jobs job){
+		UserJobDTO jobDTO = new UserJobDTO();
+		jobDTO.setUserId(job.getUser().getId());
+		jobDTO.setJobId(job.getId());
+		jobDTO.setTitle(job.getTitle());
+		jobDTO.setJobDescription(job.getDescription());
+		jobDTO.setCompensation(job.getCompensation());
+		jobDTO.setSpecialrequirement(job.getSpecialRequirement());
+		jobDTO.setGenderRequirement(job.getGenderPreference());
+		//jobDTO.setTags(job.getTags());
+		//TODO
+		jobDTO.setJobdate(new Date());
+		return jobDTO;
 	}
 }
