@@ -1,33 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
- 
- <bean id="queryDao" class="com.holler.holler_dao.QueryDao">
- 	<property name="map">
- 		<map>
 
- 			<entry key="AUTHENTICATE_USER" value="SELECT * FROM user where email = ? and password = ?">
- 			</entry>
- 			
- 			<entry key="GET_USER_JOBS" >
- 				<value>
- 					SELECT jobs.* FROM jobs jobs
+	<bean id="queryDao" class="com.holler.holler_dao.QueryDao">
+		<property name="map">
+			<map>
+
+				<entry key="AUTHENTICATE_USER" value="SELECT * FROM user where email = ? and password = ?">
+				</entry>
+
+				<entry key="GET_USER_JOBS" >
+					<value>
+						SELECT jobs.* FROM jobs jobs
 						JOIN user_job_map map ON  map.jobid = jobs.id
 						JOIN USER usr ON (usr.id = map.userid AND usr.id = :requestUserId );
- 				</value>
- 			</entry>
- 			<entry key="GET_JOBS_BY_TAG" >
- 				<value>
- 					SELECT j.* FROM 
+					</value>
+				</entry>
+				<entry key="GET_JOBS_BY_TAG" >
+					<value>
+						SELECT j.* FROM
 						jobs AS j JOIN job_tag AS jt ON j.id = jt.job_id
 						JOIN tags AS t ON (jt.tag_id = t.id AND t.tag_name LIKE (:searchedTag))
 						GROUP BY j.id
- 				</value>
- 			</entry>
- 		</map>
- 	</property>
- </bean>
-  
+					</value>
+				</entry>
+				<entry key="GET_ACCEPTED_USERS_BY_JOB_ID" >
+					<value>
+						select usr.* from user usr
+						join user_job uj on usr.id = uj.userId
+						And uj.jobId=:jobId and uj.status IN (:userJobStatus);
+					</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
 </beans>

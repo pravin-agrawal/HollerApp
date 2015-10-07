@@ -12,6 +12,8 @@
 hs_err_pid*
 
 *.metadata/
+*.idea/
+*.iml
 */target
 *Servers/
 *RemoteSystemsTempFiles/
