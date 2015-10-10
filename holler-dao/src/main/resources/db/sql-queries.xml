@@ -33,6 +33,22 @@
 						And uj.jobId=:jobId and uj.status IN (:userJobStatus);
 					</value>
 				</entry>
+				<entry key="GET_JOBS_BY_TAG_IDS" >
+					<value>
+						SELECT *,
+							CASE WHEN X.tagIds = :tagIdsString THEN 0 ELSE 1 END AS jobOrder
+						FROM (
+							SELECT
+								j.*,
+								GROUP_CONCAT(t.id) AS tagIds
+							FROM
+								jobs AS j JOIN job_tag AS jt ON j.id = jt.job_id
+								JOIN tags AS t ON (jt.tag_id = t.id AND t.id IN (:tagIds))
+								GROUP BY j.id
+						) AS X
+						ORDER BY jobOrder ASC
+					</value>
+				</entry>
 			</map>
 		</property>
 	</bean>

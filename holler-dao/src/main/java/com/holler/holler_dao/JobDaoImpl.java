@@ -5,6 +5,7 @@ import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.mapper.UserMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
@@ -72,15 +74,20 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 
 	public List<User> getUserAcceptedJobs(Integer jobId) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_ACCEPTED_USERS_BY_JOB_ID);
-        /*TypedQuery<User> query = entityManager.createQuery(sql,User.class);
-        query.setParameter("jobId", jobId);
-        query .setParameter("userJobStatus", UserJobStatusType.Accepted.toString());
-        return query.getResultList();*/
-
 		Query queryObject = entityManager.createNativeQuery(sql,User.class)
 				.setParameter("jobId", jobId)
 				.setParameter("userJobStatus", UserJobStatusType.Accepted.toString());
 		List<User> resultList = queryObject.getResultList();
 		return resultList;
 	}
+
+	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_IDS);
+		String tagIdsString = StringUtils.join(tagIds, ',');
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
+				.setParameter("tagIdsString", tagIdsString).setParameter("tagIds", tagIds);
+		List<Jobs> resultList = queryObject.getResultList();
+		return resultList;
+	}
+
 }

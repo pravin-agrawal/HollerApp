@@ -15,7 +15,7 @@ public interface UserService {
 	
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId);
 	
-	public Map<String, String> signInUser(String email, String password, HttpServletRequest request);
+	public Map<String, Object> signInUser(String phoneNumber, HttpServletRequest request);
 	
 	public Map<String, String> signOutUser(HttpServletRequest request);
 	
@@ -24,4 +24,6 @@ public interface UserService {
 	public UserDTO getUserProfile(int userId, HttpServletRequest request);
 	
 	public UserDTO updateUserProfile(UserDTO userDTO, HttpServletRequest request);
+
+	public boolean isUserPresent(String email, String phoneNumber);
 }

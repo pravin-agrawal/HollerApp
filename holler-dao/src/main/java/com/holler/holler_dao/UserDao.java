@@ -11,4 +11,10 @@ public interface UserDao extends BaseDao<User> {
 	public List<Object[]> getUserJobs(int requestUserId);
 	
 	public User getByEmailAndPassword(String email, String password);
+
+	boolean checkIfUserExists(String email, String phoneNumber);
+
+	public User getByPhoneNumber(String phoneNumber);
+
+	public User findByIdWithTags(int userId);
 }

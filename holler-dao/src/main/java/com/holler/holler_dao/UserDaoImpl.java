@@ -6,6 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.holler.holler_dao.entity.enums.UserStatusType;
+import com.holler.holler_dao.util.CommonUtil;
+import com.holler.holler_dao.util.LazyIterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -44,8 +47,19 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		}
 		return null;
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	public boolean checkIfUserExists(String email, String phoneNumber) {
+		List<User> userList = entityManager.createQuery("from " + User.class.getName()
+				+ " where (email=:email OR phoneNumber = :phoneNumber) AND status NOT IN (:status)", User.class)
+				.setParameter("email", email)
+				.setParameter("phoneNumber", phoneNumber)
+				.setParameter("status", UserStatusType.DELETED).getResultList();
+		if(CommonUtil.notNullAndEmpty(userList)){
+			return true;
+		}
+		return false;
+	}
+
 	public List<Object[]> getUserJobs(int requestUserId){
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_USER_JOBS);
 		Query queryObject = entityManager.createNativeQuery(sql)
@@ -53,4 +67,27 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		List<Object[]> resultList = queryObject.getResultList();
 		return resultList;
 	}
+
+	public User getByPhoneNumber(String phoneNumber){
+		List<User> userList = entityManager.createQuery("from " + User.class.getName()
+				+ " where phoneNumber = :phoneNumber AND status NOT IN (:status)", User.class)
+				.setParameter("phoneNumber", phoneNumber)
+				.setParameter("status", UserStatusType.DELETED).getResultList();
+		if(CommonUtil.notNullAndEmpty(userList)){
+			return userList.get(0);
+		}
+		return null;
+	}
+
+	public User findByIdWithTags(int userId) {
+		List<User> userList = entityManager.createQuery("from " + User.class.getName()
+				+ " where id = :userId AND status NOT IN (:status)", User.class)
+				.setParameter("userId", userId)
+				.setParameter("status", UserStatusType.DELETED).getResultList();
+		if(CommonUtil.notNullAndEmpty(userList)) {
+			return userList.get(0);
+		}
+		return null;
+	}
+
 }

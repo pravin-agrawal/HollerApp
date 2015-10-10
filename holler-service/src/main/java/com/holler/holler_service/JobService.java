@@ -1,6 +1,7 @@
 package com.holler.holler_service;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,4 +15,5 @@ public interface JobService {
 	public List<UserJobDTO> getMyJobs(int userId, HttpServletRequest request);
 	public List<UserDTO> getUsersAcceptedJob(int jobId, HttpServletRequest request);
 	public List<UserJobDTO> searchJobsByTag(String tag, HttpServletRequest request);
+	public List<UserJobDTO> searchJobsByTagIds(Set<Integer> tagIds, HttpServletRequest request);
 }

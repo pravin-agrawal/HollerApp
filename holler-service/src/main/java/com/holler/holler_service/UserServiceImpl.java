@@ -47,16 +47,16 @@ public class UserServiceImpl implements UserService{
 		return userJobDTO;
 	}
 
-	public Map<String, String> signInUser(String email, String password, HttpServletRequest request) {
-		Map<String, String> result = new HashMap<String, String>();
-		User user = userDao.getByEmailAndPassword(email, password); 
+	public Map<String, Object> signInUser(String phoneNumber, HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		User user = userDao.getByPhoneNumber(phoneNumber);
 		if(user != null){
-			HttpSession session = request.getSession(false);
-			session = request.getSession();
+			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
-			result.put(HollerConstants.LOGIN_SUCCESS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.SUCCESS, HollerConstants.LOGIN_SUCCESS);
+			result.put("loggedInUserId", user.getId());
 		}else{
-			result.put(HollerConstants.LOGIN_FAILURE, HollerConstants.INVALID_CREDENTIALS);
+			result.put(HollerConstants.FAILURE, HollerConstants.INVALID_CREDENTIALS);
 		}
 		return result;
 	}
@@ -67,21 +67,25 @@ public class UserServiceImpl implements UserService{
 		if(session != null){
             session.invalidate();
         }
-		result.put(HollerConstants.LOGOUT_SUCCESS, HollerConstants.SUCCESS);
+		result.put(HollerConstants.SUCCESS, HollerConstants.LOGOUT_SUCCESS);
 		return result;
 	}
 	
 	public Map<String, String> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request) {
 		Map<String, String> result = new HashMap<String, String>();
 		try {
-			User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPassword(), signUpDTO.getPhoneNumber());
-			userDao.save(user);
-			HttpSession session = request.getSession(false);
-			session = request.getSession();
-			session.setAttribute("user", user);
-			result.put(HollerConstants.SIGNUP_SUCCESS, HollerConstants.SUCCESS);
+			if(isUserPresent(signUpDTO.getEmail(), signUpDTO.getPhoneNumber())){
+				result.put(HollerConstants.FAILURE, HollerConstants.DUPLICATE_USER);
+			}else{
+				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPhoneNumber());
+				userDao.save(user);
+				HttpSession session = request.getSession();
+				session.setAttribute("user", user);
+				result.put(HollerConstants.SUCCESS, HollerConstants.SIGNUP_SUCCESS);
+			}
 		} catch (Exception e) {
-			result.put(HollerConstants.SIGNUP_FAILURE, HollerConstants.INVALID_CREDENTIALS);
+			e.printStackTrace();
+			result.put(HollerConstants.FAILURE, HollerConstants.SIGNUP_FAILURE);
 		}
 		return result;
 	}
@@ -91,7 +95,7 @@ public class UserServiceImpl implements UserService{
 		if(session == null){
 			return null;
 		}else{
-			User user = userDao.findById(userId);
+			User user = userDao.findByIdWithTags(userId);
 			UserDTO userDTO = UserDTO.getDtoForUserProfile(user);
 			return userDTO;
 		}
@@ -99,20 +103,31 @@ public class UserServiceImpl implements UserService{
 	
 	public UserDTO updateUserProfile(UserDTO userDTO, HttpServletRequest request){
 		HttpSession session = request.getSession(false);
-		if(session == null){
+		User loggedInUser = (User) session.getAttribute("user");
+		if(session == null && userDTO.getUserId() != loggedInUser.getId()){
 			return null;
-		}else{
-			User user = UserDTO.constructUserDTO(userDTO);
+		}else {
+			User user = userDao.findById(userDTO.getUserId());
+			UserDTO.setUserDataToUpdate(userDTO, user);
 			Set<Tags> tags = new HashSet<Tags>(tagDao.findbyIds(userDTO.getTags()));
 			user.setTags(tags);
-			if(CommonUtil.isNotNull(userDTO.getUserId())){
-				userDao.update(user);
-			}else{
-				userDao.save(user);
-				userDTO.setUserId(user.getId());
-			}
+			userDao.update(user);
+			setTagsMapInUserDto(tags, userDTO);
 			return userDTO;
 		}
 	}
-	
+
+	private void setTagsMapInUserDto(Set<Tags> tags, UserDTO userDTO) {
+		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
+		for (Tags tag : CommonUtil.safe(tags)) {
+            tagMaps.put(tag.getId(), tag.getTagName());
+        }
+		userDTO.setTagsMap(tagMaps);
+	}
+
+	public boolean isUserPresent(String email, String phoneNumber) {
+		boolean isUserPresent = userDao.checkIfUserExists(email, phoneNumber);
+		return isUserPresent;
+	}
+
 }

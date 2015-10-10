@@ -152,4 +152,16 @@ public class UserJobDTO {
 		jobDTO.setJobdate(new Date());
 		return jobDTO;
 	}
+
+	public static List<UserJobDTO> getJobIdAndTitleDtosFromJobs(List<Jobs> jobs){
+		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
+		for (Jobs job : CommonUtil.safe(jobs)) {
+			UserJobDTO userJobDTO = new UserJobDTO();
+			userJobDTO.setJobId(job.getId());
+			userJobDTO.setTitle(job.getTitle());
+			jobDTOs.add(userJobDTO);
+		}
+		return jobDTOs;
+	}
+
 }

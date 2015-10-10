@@ -3,6 +3,7 @@ package com.holler.bean;
 public class LoginDTO {
 	private String email;
 	private String password;
+	private String phoneNumber;
 	public String getEmail() {
 		return email;
 	}
@@ -15,5 +16,12 @@ public class LoginDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
 }

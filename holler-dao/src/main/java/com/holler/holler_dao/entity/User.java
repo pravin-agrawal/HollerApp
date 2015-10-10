@@ -1,17 +1,10 @@
 package com.holler.holler_dao.entity;
 
+import com.holler.holler_dao.entity.enums.UserStatusType;
+
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
@@ -44,8 +37,12 @@ public class User extends BaseEntity{
 	
 	@Column(name = "pic")
 	private String pic;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status")
+	private UserStatusType status;
 	
-	@ManyToMany(cascade = {CascadeType.REFRESH})
+	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_tag",
 		joinColumns = @JoinColumn(name = "user_id"),
 		inverseJoinColumns = @JoinColumn(name="tag_id"))
@@ -113,13 +110,20 @@ public class User extends BaseEntity{
 		this.tags = tags;
 	}
 
-	public static User constructUserForSignUp(String name, String email,
-			String password, String phoneNumber) {
+	public UserStatusType getStatus() {
+		return status;
+	}
+
+	public void setStatus(UserStatusType status) {
+		this.status = status;
+	}
+
+	public static User constructUserForSignUp(String name, String email, String phoneNumber) {
 		User user = new User();
 		user.setName(name);
 		user.setEmail(email);
-		user.setPassword(password);
 		user.setPhoneNumber(phoneNumber);
+		user.setStatus(UserStatusType.ACTIVE);
 		return user;
 	}
 

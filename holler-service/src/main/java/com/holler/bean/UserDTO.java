@@ -1,10 +1,8 @@
 package com.holler.bean;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.holler.holler_dao.entity.Tags;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.util.CommonUtil;
 
@@ -21,6 +19,7 @@ public class UserDTO {
 	private boolean allowSms = false;
 	private String about;
 	private Set<Integer> tags;
+	private Map<Integer, String> tagsMap;
 	private Float avgRating;
 	public int getUserId() {
 		return userId;
@@ -101,21 +100,31 @@ public class UserDTO {
 		this.avgRating = avgRating;
 	}
 
+	public void setTagsMap(Map<Integer, String> tagsMap) {
+		this.tagsMap = tagsMap;
+	}
+
+	public Map<Integer, String> getTagsMap() {
+		return tagsMap;
+	}
+
 	public static UserDTO getDtoForUserProfile(User user){
 		UserDTO userDTO = new UserDTO();
+		userDTO.setUserId(user.getId());
 		userDTO.setName(user.getName());
 		userDTO.setEmailId(user.getEmail());
 		userDTO.setPhoneNumber(user.getPhoneNumber());
 		userDTO.setAbout(user.getAbout());
 		userDTO.setPic(user.getPic());
+		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
+		for (Tags tag : CommonUtil.safe(user.getTags())) {
+			tagMaps.put(tag.getId(), tag.getTagName());
+		}
+		userDTO.setTagsMap(tagMaps);
 		return userDTO;
 	}
 
-	public static User constructUserDTO(UserDTO userDTO) {
-		User user = new User();
-		if(CommonUtil.isNotNull(userDTO.getUserId())){
-			user.setId(userDTO.getUserId());
-		}
+	public static User setUserDataToUpdate(UserDTO userDTO, User user) {
 		user.setName(userDTO.getName());
 		user.setEmail(userDTO.getEmailId());
 		user.setPhoneNumber(userDTO.getPhoneNumber());

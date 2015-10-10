@@ -2,7 +2,6 @@ package com.holler.bean;
 
 public class SignUpDTO {
 	private String name;
-	private String password;
 	private String email;
 	private String phoneNumber;
 
@@ -12,14 +11,6 @@ public class SignUpDTO {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getEmail() {

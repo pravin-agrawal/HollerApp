@@ -3,6 +3,7 @@ package com.holler.controller;
 
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,9 +50,16 @@ public class JobsController {
 		return userDTOs;
 	}
 
-	@RequestMapping(value="/searchJobsByTag", method=RequestMethod.POST)
-	public @ResponseBody List<UserJobDTO> searchJobsByTag(@RequestParam("tag")String tag, HttpServletRequest request){
+	@RequestMapping(value="/searchJobsByTagName", method=RequestMethod.POST)
+	public @ResponseBody List<UserJobDTO> searchJobsByTagName(@RequestParam("tag")String tag, HttpServletRequest request){
 		List<UserJobDTO> userJobDTO = jobService.searchJobsByTag(tag, request);
 		return userJobDTO;
 	}
+
+	@RequestMapping(value="/searchJobsByTagIds", method=RequestMethod.POST)
+	public @ResponseBody List<UserJobDTO> searchJobsByTagIds(@RequestParam("tagIds")Set<Integer> tagIds, HttpServletRequest request){
+		List<UserJobDTO> userJobDTO = jobService.searchJobsByTagIds(tagIds, request);
+		return userJobDTO;
+	}
+
 }

@@ -95,4 +95,14 @@ public class JobServiceImpl implements JobService{
 		}
 	}
 
+	public List<UserJobDTO> searchJobsByTagIds(Set<Integer> tagIds, HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			return null;
+		}else{
+			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagIds);
+			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleDtosFromJobs(jobs);
+			return jobDTOs;
+		}
+	}
 }

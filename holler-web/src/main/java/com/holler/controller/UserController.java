@@ -29,7 +29,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/updateUserProfile", method=RequestMethod.POST)
-	public @ResponseBody UserDTO updateuserProfile(@RequestBody UserDTO userDTO, HttpServletRequest request){
+	public @ResponseBody UserDTO updateUserProfile(@RequestBody UserDTO userDTO, HttpServletRequest request){
 		userDTO = userService.updateUserProfile(userDTO, request);
 		return userDTO;
 	}
