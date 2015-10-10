@@ -3,11 +3,13 @@ package com.holler.controller;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.holler.bean.UserDTO;
+import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,4 +64,17 @@ public class JobsController {
 		return userJobDTO;
 	}
 
+	@RequestMapping(value="/acceptOrUnAcceptJob", method=RequestMethod.GET)
+	public @ResponseBody Map<String, Object> acceptOrUnAcceptJob(@RequestParam("jobId") int jobId,
+			@RequestParam("status") UserJobStatusType status,HttpServletRequest request){
+		Map<String, Object> result = jobService.acceptOrUnacceptJob(jobId, status, request);
+		return result;
+	}
+
+	@RequestMapping(value="/grantOrUnGrantJob", method=RequestMethod.GET)
+	public @ResponseBody Map<String, Object> grantOrUnGrantJob(@RequestParam("userId") int userId,
+			@RequestParam("jobId") int jobId,@RequestParam("status") UserJobStatusType status,HttpServletRequest request){
+		Map<String, Object> result = jobService.grantOrUnGrantJob(userId, jobId, status, request);
+		return result;
+	}
 }

@@ -49,6 +49,21 @@
 						ORDER BY jobOrder ASC
 					</value>
 				</entry>
+				<entry key="ACCEPT_JOB" >
+					<value>
+						INSERT INTO user_job(userId, jobId, status) VALUES(:userId, :jobId, :status)
+					</value>
+				</entry>
+				<entry key="UNACCEPT_JOB" >
+					<value>
+						DELETE FROM user_job WHERE userId = :userId AND jobId = :jobId
+					</value>
+				</entry>
+				<entry key="UPDATE_JOB" >
+					<value>
+						UPDATE user_job SET status = :status WHERE userId = :userId AND jobId = :jobId
+					</value>
+				</entry>
 			</map>
 		</property>
 	</bean>

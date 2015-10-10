@@ -12,5 +12,9 @@ public class HollerConstants {
 
 	public static final String SIGNUP_SUCCESS = "Sign up successful";
 	public static final String SIGNUP_FAILURE = "Error while sign up. Please try after some time.";
+	public static final String JOB_ACCEPTED_SUCCESSFULLY = "Job Accepted Successfully";
+	public static final String JOB_UNACCEPTED_SUCCESSFULLY = "Job Unaccepted Successfully";
+	public static final String JOB_GRANTED_SUCCESSFULLY = "Job Granted Successfully";
+	public static final String JOB_UNGRANTED_SUCCESSFULLY = "Job Un-granted Successfully";
 
 }

@@ -76,7 +76,7 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_ACCEPTED_USERS_BY_JOB_ID);
 		Query queryObject = entityManager.createNativeQuery(sql,User.class)
 				.setParameter("jobId", jobId)
-				.setParameter("userJobStatus", UserJobStatusType.Accepted.toString());
+				.setParameter("userJobStatus", UserJobStatusType.ACCEPTED.toString());
 		List<User> resultList = queryObject.getResultList();
 		return resultList;
 	}
@@ -89,5 +89,37 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}
+
+	public void acceptJob(int userId, int jobId, UserJobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.ACCEPT_JOB));
+		query.setParameter("userId", userId);
+		query.setParameter("jobId", jobId);
+		query.setParameter("status", status.toString());
+		query.executeUpdate();
+	}
+
+	public void unAcceptJob(int userId, int jobId) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UNACCEPT_JOB));
+		query.setParameter("userId", userId);
+		query.setParameter("jobId", jobId);
+		query.executeUpdate();
+	}
+
+	public void grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB));
+		query.setParameter("userId", userId);
+		query.setParameter("jobId", jobId);
+		query.setParameter("status", status.toString());
+		query.executeUpdate();
+	}
+
+/*
+	public void unGrantJob(int userId, int jobId, UserJobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB));
+		query.setParameter("userId", userId);
+		query.setParameter("jobId", jobId);
+		query.executeUpdate();
+	}
+*/
 
 }

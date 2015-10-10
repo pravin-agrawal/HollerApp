@@ -1,14 +1,14 @@
 package com.holler.holler_service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.holler.bean.UserDTO;
+import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,5 +104,37 @@ public class JobServiceImpl implements JobService{
 			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleDtosFromJobs(jobs);
 			return jobDTOs;
 		}
+	}
+
+	@Transactional
+	public Map<String, Object> acceptOrUnacceptJob(int jobId, UserJobStatusType status, HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		HttpSession session = request.getSession(false);
+		User loggedInUser = (User) session.getAttribute("user");
+		if(session == null){
+			return null;
+		}else {
+			if(UserJobStatusType.ACCEPTED == status){
+				jobDao.acceptJob(loggedInUser.getId(), jobId, status);
+				result.put(HollerConstants.SUCCESS, HollerConstants.JOB_ACCEPTED_SUCCESSFULLY);
+			}else if(UserJobStatusType.UNACCEPT == status){
+				jobDao.unAcceptJob(loggedInUser.getId(), jobId);
+				result.put(HollerConstants.SUCCESS, HollerConstants.JOB_UNACCEPTED_SUCCESSFULLY);
+			}
+			return result;
+		}
+	}
+
+	@Transactional
+	public Map<String, Object> grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status, HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(UserJobStatusType.GRANTED == status){
+			jobDao.grantOrUnGrantJob(userId, jobId, status);
+			result.put(HollerConstants.SUCCESS, HollerConstants.JOB_GRANTED_SUCCESSFULLY);
+		}else if(UserJobStatusType.UNGRANT == status){
+			jobDao.grantOrUnGrantJob(userId, jobId, UserJobStatusType.ACCEPTED);
+			result.put(HollerConstants.SUCCESS, HollerConstants.JOB_UNGRANTED_SUCCESSFULLY);
+		}
+		return result;
 	}
 }
