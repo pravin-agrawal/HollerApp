@@ -77,4 +77,10 @@ public class JobsController {
 		Map<String, Object> result = jobService.grantOrUnGrantJob(userId, jobId, status, request);
 		return result;
 	}
+
+	@RequestMapping(value="/myPingedJobs", method=RequestMethod.GET)
+	public @ResponseBody List<UserJobDTO> myPingedJobs(HttpServletRequest request){
+		List<UserJobDTO> userJobDTOs = jobService.getMyPingedJobs(request);
+		return userJobDTOs;
+	}
 }

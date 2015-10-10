@@ -15,6 +15,7 @@ public interface JobService {
 	public UserJobDTO postJob(UserJobDTO userJobDTO);
 	public UserJobDTO viewJob(int jobId, HttpServletRequest request);
 	public List<UserJobDTO> getMyJobs(int userId, HttpServletRequest request);
+	public List<UserJobDTO> getMyPingedJobs(HttpServletRequest request);
 	public List<UserDTO> getUsersAcceptedJob(int jobId, HttpServletRequest request);
 	public List<UserJobDTO> searchJobsByTag(String tag, HttpServletRequest request);
 	public List<UserJobDTO> searchJobsByTagIds(Set<Integer> tagIds, HttpServletRequest request);

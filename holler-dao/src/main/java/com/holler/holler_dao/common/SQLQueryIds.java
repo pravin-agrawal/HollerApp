@@ -9,5 +9,7 @@ public class SQLQueryIds {
 	public static final String ACCEPT_JOB = "ACCEPT_JOB";
 	public static final String UNACCEPT_JOB = "UNACCEPT_JOB";
 	public static final String UPDATE_JOB = "UPDATE_JOB";
+	public static final String GET_TAGS_FOR_USER_HOME_PAGE = "GET_TAGS_FOR_USER_HOME_PAGE";
+	public static final String GET_MY_PINGED_JOBS = "GET_MY_PINGED_JOBS";
 
 }

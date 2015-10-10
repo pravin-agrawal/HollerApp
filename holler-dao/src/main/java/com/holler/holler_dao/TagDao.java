@@ -8,5 +8,6 @@ import com.holler.holler_dao.entity.Tags;
 public interface TagDao extends BaseDao<Tags> {
 	
 	public List<Tags> findbyIds(Set<Integer> tagIds);
-	
+
+	List<Tags> fetchTagsForUserHomePage(Integer userId);
 }

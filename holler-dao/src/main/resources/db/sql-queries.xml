@@ -64,6 +64,28 @@
 						UPDATE user_job SET status = :status WHERE userId = :userId AND jobId = :jobId
 					</value>
 				</entry>
+
+				<entry key="GET_TAGS_FOR_USER_HOME_PAGE" >
+					<value>
+						SELECT X.* FROM
+						(
+							SELECT
+								t.*,
+								CASE WHEN ut.user_id > 0 THEN 0 ELSE 1 END AS tagOrder
+							FROM
+								job_tag jt
+								JOIN tags t ON jt.tag_id = t.id
+								LEFT JOIN (SELECT * FROM user_tag WHERE user_id = :userId) ut ON jt.tag_id = ut.tag_id
+								GROUP BY jt.tag_id
+						) AS X ORDER BY X.tagOrder ASC
+					</value>
+				</entry>
+				<entry key="GET_MY_PINGED_JOBS" >
+					<value>
+						SELECT j.* FROM jobs j JOIN user_job uj ON
+							j.id = uj.jobId AND uj.userId = :userId
+					</value>
+				</entry>
 			</map>
 		</property>
 	</bean>

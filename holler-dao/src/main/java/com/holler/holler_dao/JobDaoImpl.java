@@ -68,15 +68,23 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 
 	@Transactional(readOnly = true)
 	public List<Jobs> findAllByUserId(final Integer userId) {
-		return entityManager.createQuery("from " + Jobs.class.getName() + " jobs where jobs.user.id in (:userId)", Jobs.class)
+		return entityManager.createQuery("from " + Jobs.class.getName() + " jobs where jobs.user.id in (:userId) "
+				 + " order by jobs.created desc", Jobs.class)
 				.setParameter("userId", userId).getResultList();
+	}
+
+	public List<Jobs> getMyPingedJobs(Integer userId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_MY_PINGED_JOBS);
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class).setParameter("userId", userId);
+		List<Jobs> resultList = queryObject.getResultList();
+		return resultList;
 	}
 
 	public List<User> getUserAcceptedJobs(Integer jobId) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_ACCEPTED_USERS_BY_JOB_ID);
 		Query queryObject = entityManager.createNativeQuery(sql,User.class)
 				.setParameter("jobId", jobId)
-				.setParameter("userJobStatus", UserJobStatusType.ACCEPTED.toString());
+				.setParameter("userJobStatus", UserJobStatusType.getAcceptedAndGrantedStatus());
 		List<User> resultList = queryObject.getResultList();
 		return resultList;
 	}

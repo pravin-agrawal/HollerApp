@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.holler.bean.TagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,6 +129,12 @@ public class UserServiceImpl implements UserService{
 	public boolean isUserPresent(String email, String phoneNumber) {
 		boolean isUserPresent = userDao.checkIfUserExists(email, phoneNumber);
 		return isUserPresent;
+	}
+
+	public List<TagDTO> fetchTagsForUserHomePage(Integer userId) {
+		List<Tags> tags = tagDao.fetchTagsForUserHomePage(userId);
+		List<TagDTO> tagDTOs = TagDTO.getTagDTOsFromTags(tags);
+		return tagDTOs;
 	}
 
 }

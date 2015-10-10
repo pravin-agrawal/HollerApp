@@ -66,7 +66,19 @@ public class JobServiceImpl implements JobService{
 			return null;
 		}else{
 			List<Jobs> job = jobDao.findAllByUserId(userId);
-			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosFromJobs(job);
+			List<UserJobDTO> jobDTO = UserJobDTO.getJobIdAndTitleDtosFromJobs(job);
+			return jobDTO;
+		}
+	}
+
+	public List<UserJobDTO> getMyPingedJobs(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			return null;
+		}else {
+			User loggedInUser = (User) session.getAttribute("user");
+			List<Jobs> job = jobDao.getMyPingedJobs(loggedInUser.getId());
+			List<UserJobDTO> jobDTO = UserJobDTO.getJobIdAndTitleDtosFromJobs(job);
 			return jobDTO;
 		}
 	}
