@@ -111,9 +111,10 @@ public class JobServiceImpl implements JobService{
 		HttpSession session = request.getSession(false);
 		if(session == null){
 			return null;
-		}else{
+		}else {
+			User loggedInUser = (User) session.getAttribute("user");
 			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagIds);
-			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleDtosFromJobs(jobs);
+			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
 			return jobDTOs;
 		}
 	}

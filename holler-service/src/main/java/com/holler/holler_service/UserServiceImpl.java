@@ -9,13 +9,10 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.holler.bean.TagDTO;
+import com.holler.bean.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.holler.bean.SignUpDTO;
-import com.holler.bean.UserDTO;
-import com.holler.bean.UserJobDTO;
 import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.common.HollerConstants;
@@ -135,6 +132,19 @@ public class UserServiceImpl implements UserService{
 		List<Tags> tags = tagDao.fetchTagsForUserHomePage(userId);
 		List<TagDTO> tagDTOs = TagDTO.getTagDTOsFromTags(tags);
 		return tagDTOs;
+	}
+
+	public Map<String, Object> updateUserCurrentLocationAndAddress(UserLocationDTO userLocationDTO) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		User user = userDao.findById(userLocationDTO.getUserId());
+		String currentLocation = UserLocationDTO.getLocationInCommaSeparatedString(userLocationDTO);
+		String currentAddress = UserLocationDTO.getAddressFromLocation(userLocationDTO);
+
+		user.setCurrentLocation(currentLocation);
+		user.setCurrentAddress(currentAddress);
+		userDao.update(user);
+		result.put(HollerConstants.SUCCESS, HollerConstants.LOCATION_UPDATED_SUCCESSFULLY);
+		return result;
 	}
 
 }

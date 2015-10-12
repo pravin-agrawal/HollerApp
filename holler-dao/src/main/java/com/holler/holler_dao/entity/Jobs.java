@@ -51,6 +51,12 @@ public class Jobs extends BaseEntity{
 		inverseJoinColumns = @JoinColumn(name="tag_id"))
 	private Set<Tags> tags;
 
+	@Column(name = "job_location")
+	private String jobLocation;
+
+	@Column(name = "job_address")
+	private String jobAddress;
+
 	public User getUser() {
 		return user;
 	}
@@ -123,9 +129,28 @@ public class Jobs extends BaseEntity{
 		this.compensation = compensation;
 	}
 
+	public void setJobLocation(String jobLocation) {
+		this.jobLocation = jobLocation;
+	}
 
+	public String getJobLocation() {
+		return jobLocation;
+	}
 
-	
+	public void setJobAddress(String jobAddress) {
+		this.jobAddress = jobAddress;
+	}
 
+	public String getJobAddress() {
+		return jobAddress;
+	}
+
+	public Double[] getLatLongFromJobLocation() {
+		Double[] latLong = new Double[2];
+		String[] latLongString = this.jobLocation.split(",");
+		latLong[0] = Double.parseDouble(latLongString[0]);
+		latLong[1] = Double.parseDouble(latLongString[1]);
+		return latLong;
+	}
 
 }

@@ -16,5 +16,6 @@ public class HollerConstants {
 	public static final String JOB_UNACCEPTED_SUCCESSFULLY = "Job Unaccepted Successfully";
 	public static final String JOB_GRANTED_SUCCESSFULLY = "Job Granted Successfully";
 	public static final String JOB_UNGRANTED_SUCCESSFULLY = "Job Un-granted Successfully";
+	public static final String LOCATION_UPDATED_SUCCESSFULLY = "Current Address and location updated successfully";
 
 }

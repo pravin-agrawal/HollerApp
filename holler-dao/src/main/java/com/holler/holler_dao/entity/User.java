@@ -48,6 +48,15 @@ public class User extends BaseEntity{
 		inverseJoinColumns = @JoinColumn(name="tag_id"))
 	private Set<Tags> tags;
 
+	@Column(name = "current_location")
+	private String currentLocation;
+
+	@Column(name = "current_address")
+	private String currentAddress;
+
+	@Column(name = "job_discovery_limit")
+	private int jobDiscoveryLimit;
+
 	public int getId() {
 		return id;
 	}
@@ -118,6 +127,30 @@ public class User extends BaseEntity{
 		this.status = status;
 	}
 
+	public String getCurrentAddress() {
+		return currentAddress;
+	}
+
+	public void setCurrentAddress(String currentAddress) {
+		this.currentAddress = currentAddress;
+	}
+
+	public String getCurrentLocation() {
+		return currentLocation;
+	}
+
+	public void setCurrentLocation(String currentLocation) {
+		this.currentLocation = currentLocation;
+	}
+
+	public int getJobDiscoveryLimit() {
+		return jobDiscoveryLimit;
+	}
+
+	public void setJobDiscoveryLimit(int jobDiscoveryLimit) {
+		this.jobDiscoveryLimit = jobDiscoveryLimit;
+	}
+
 	public static User constructUserForSignUp(String name, String email, String phoneNumber) {
 		User user = new User();
 		user.setName(name);
@@ -127,5 +160,12 @@ public class User extends BaseEntity{
 		return user;
 	}
 
+	public Double[] getLatLongFromCurrentLocation() {
+		Double[] latLong = new Double[2];
+		String[] latLongString = this.currentLocation.split(",");
+		latLong[0] = Double.parseDouble(latLongString[0]);
+		latLong[1] = Double.parseDouble(latLongString[1]);
+		return latLong;
+	}
 
 }

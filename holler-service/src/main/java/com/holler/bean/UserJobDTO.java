@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.holler.holler_dao.entity.Jobs;
+import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
 
 
@@ -22,6 +24,9 @@ public class UserJobDTO {
 	private String specialrequirement;
 	private int genderRequirement;
 	private Date jobdate;
+	private double lat;
+	private double lng;
+
 	public int getUserId() {
 		return userId;
 	}
@@ -91,6 +96,22 @@ public class UserJobDTO {
 		this.jobdate = jobdate;
 	}
 
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	public void setLng(double lng) {
+		this.lng = lng;
+	}
+
 	public static List<UserJobDTO> constructUserJobDTO(List<Object[]> userJobs){
 		List<UserJobDTO> userJobDTOs = new ArrayList<UserJobDTO>();
 		if(userJobs != null && !userJobs.isEmpty()){
@@ -117,7 +138,8 @@ public class UserJobDTO {
 		job.setGenderPreference(userJobDTO.getGenderRequirement());
 		job.setSpecialRequirement(userJobDTO.getSpecialrequirement());
 		job.setStatus(userJobDTO.getStatus());
-		//job.setCreated(new Date());
+		job.setJobLocation(getLocationInCommaSeparatedString(userJobDTO));
+		job.setJobAddress(getAddressFromLocation(userJobDTO));
 		return job;
 	}
 
@@ -162,6 +184,34 @@ public class UserJobDTO {
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;
+	}
+
+
+	public static List<UserJobDTO> getJobIdAndTitleByDiscoveryPreference(List<Jobs> jobs, User user) {
+		int jobDiscoveryLimit = user.getJobDiscoveryLimit();
+		Double[] userLatLong = user.getLatLongFromCurrentLocation();
+		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
+		for (Jobs job : CommonUtil.safe(jobs)) {
+			Double[] jobLatLong = job.getLatLongFromJobLocation();
+			Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
+			if (userAndJobDistance <= jobDiscoveryLimit) {
+				UserJobDTO userJobDTO = new UserJobDTO();
+				userJobDTO.setJobId(job.getId());
+				userJobDTO.setTitle(job.getTitle());
+				jobDTOs.add(userJobDTO);
+			}
+		}
+		return jobDTOs;
+	}
+
+	public static String getLocationInCommaSeparatedString(UserJobDTO userJobDTO) {
+		StringBuilder locationBuilder = new StringBuilder();
+		locationBuilder.append(String.valueOf(userJobDTO.getLat())).append(",").append(String.valueOf(userJobDTO.getLng()));
+		return locationBuilder.toString();
+	}
+
+	public static String getAddressFromLocation(UserJobDTO userJobDTO){
+		return AddressConverter.getAddressFromLatLong(getLocationInCommaSeparatedString(userJobDTO));
 	}
 
 }
