@@ -4,7 +4,6 @@
 	<groupId>com.holler</groupId>
 	<artifactId>holler-web</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>holler-web Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
@@ -124,4 +123,10 @@
 	<build>
 		<finalName>holler-web</finalName>
 	</build>
+	<parent>
+		<groupId>holler</groupId>
+		<artifactId>holler</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../holler/pom.xml</relativePath>
+	</parent>
 </project>

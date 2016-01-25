@@ -102,4 +102,11 @@
 		</dependency>
 
 	</dependencies>
+	
+	<parent>
+		<groupId>holler</groupId>
+		<artifactId>holler</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../holler/pom.xml</relativePath>
+	</parent>
 </project>
