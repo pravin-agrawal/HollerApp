@@ -1,8 +1,6 @@
 package com.holler.holler_dao;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,16 +11,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.holler.holler_dao.common.SQLQueryIds;
+import com.holler.holler_dao.entity.Notification;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.UserStatusType;
 import com.holler.holler_dao.mapper.UserMapper;
 import com.holler.holler_dao.util.CommonUtil;
 
 @Repository
-public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
+public class NotificationDaoImpl extends BaseDaoImpl<Notification> implements NotificationDao {
 	
-	public UserDaoImpl() {
-		super(User.class);
+	public NotificationDaoImpl() {
+		super(Notification.class);
 	}
 	
 	@Autowired
@@ -89,22 +88,6 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 			return userList.get(0);
 		}
 		return null;
-	}
-
-	public Set<Integer> getUserIdsByTagIds(Set<Integer> tagIds) {
-		String sql = queryDao.getQueryString(SQLQueryIds.GET_USERS_IDS_BY_TAG_IDS);
-		Query queryObject = entityManager.createNativeQuery(sql)
-				.setParameter("tagIds", tagIds);
-		List<Object[]> resultList = queryObject.getResultList();
-		Set<Integer> userIds = new HashSet<Integer>();
-		if(resultList != null && !resultList.isEmpty()){
-			for (Object[] object : resultList) {
-				if(object != null){
-					userIds.add((Integer)object[0]);
-				}
-			}
-		}
-		return userIds;
 	}
 
 }

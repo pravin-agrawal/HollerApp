@@ -1,24 +1,29 @@
 package com.holler.holler_service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.holler.bean.UserDTO;
-import com.holler.holler_dao.common.HollerConstants;
-import com.holler.holler_dao.entity.User;
-import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.holler.bean.UserDTO;
 import com.holler.bean.UserJobDTO;
 import com.holler.holler_dao.JobDao;
 import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
+import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Tags;
+import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.NotificationType;
+import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.util.CommonUtil;
 
 @Service
@@ -33,7 +38,9 @@ public class JobServiceImpl implements JobService{
 	@Autowired
 	UserDao userDao;
 
-
+	@Autowired
+	NotificationService notificationService;
+	
 	@Transactional
 	public UserJobDTO postJob(UserJobDTO userJobDTO) {
 		Jobs job = UserJobDTO.constructJobToPost(userJobDTO);
@@ -42,8 +49,10 @@ public class JobServiceImpl implements JobService{
 		job.setTags(tags);
 		if(CommonUtil.isNotNull(userJobDTO.getJobId())){
 			jobDao.update(job);
+			notificationService.createJobUpdateNotification(userJobDTO.getTags(), userJobDTO.getUserId(), job.getId());
 		}else{
 			jobDao.save(job);
+			notificationService.createJobPostNotification(userJobDTO.getTags(), userJobDTO.getUserId(), job.getId());
 			userJobDTO.setJobId(job.getId());
 		}
 		return userJobDTO;
@@ -127,11 +136,14 @@ public class JobServiceImpl implements JobService{
 		if(session == null){
 			return null;
 		}else {
+			Jobs job = jobDao.findById(jobId);
 			if(UserJobStatusType.ACCEPTED == status){
 				jobDao.acceptJob(loggedInUser.getId(), jobId, status);
+				notificationService.createNotification(loggedInUser.getId(), job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
 				result.put(HollerConstants.SUCCESS, HollerConstants.JOB_ACCEPTED_SUCCESSFULLY);
 			}else if(UserJobStatusType.UNACCEPT == status){
 				jobDao.unAcceptJob(loggedInUser.getId(), jobId);
+				notificationService.createNotification(loggedInUser.getId(), job.getUser().getId(), NotificationType.UnAcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
 				result.put(HollerConstants.SUCCESS, HollerConstants.JOB_UNACCEPTED_SUCCESSFULLY);
 			}
 			return result;
@@ -141,11 +153,15 @@ public class JobServiceImpl implements JobService{
 	@Transactional
 	public Map<String, Object> grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		HttpSession session = request.getSession(false);
+		User loggedInUser = (User) session.getAttribute("user");
 		if(UserJobStatusType.GRANTED == status){
 			jobDao.grantOrUnGrantJob(userId, jobId, status);
+			notificationService.createNotification(loggedInUser.getId(), userId, NotificationType.GrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
 			result.put(HollerConstants.SUCCESS, HollerConstants.JOB_GRANTED_SUCCESSFULLY);
 		}else if(UserJobStatusType.UNGRANT == status){
 			jobDao.grantOrUnGrantJob(userId, jobId, UserJobStatusType.ACCEPTED);
+			notificationService.createNotification(loggedInUser.getId(), userId, NotificationType.UnGrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
 			result.put(HollerConstants.SUCCESS, HollerConstants.JOB_UNGRANTED_SUCCESSFULLY);
 		}
 		return result;
