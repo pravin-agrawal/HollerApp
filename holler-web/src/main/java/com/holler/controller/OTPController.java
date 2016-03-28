@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.twilioSms.SmsSender;
+import com.twilio.sdk.TwilioRestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -21,11 +23,19 @@ public class OTPController {
 	
 	@Autowired
 	OTPService otpService;
+
+	@Autowired
+	SmsSender smsSender;
 	
 	@RequestMapping(value="/generateOTP", method=RequestMethod.POST, consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> generateOTP(HttpServletRequest request){
 		Map<String, Object> result = otpService.generateOtpAndSaveOnRedis(request);
 		//send sms service
+		try {
+			smsSender.sendSMS(result);
+		} catch (TwilioRestException e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 	
