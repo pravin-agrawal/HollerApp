@@ -1,22 +1,23 @@
 package com.holler.holler_dao;
 
-import com.holler.holler_dao.common.SQLQueryIds;
-import com.holler.holler_dao.entity.Jobs;
-import com.holler.holler_dao.entity.User;
-import com.holler.holler_dao.entity.enums.UserJobStatusType;
-import com.holler.holler_dao.mapper.UserMapper;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.util.List;
-import java.util.Set;
+import com.holler.holler_dao.common.SQLQueryIds;
+import com.holler.holler_dao.entity.Jobs;
+import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.UserJobStatusType;
+import com.holler.holler_dao.mapper.UserMapper;
 
 @Repository
 public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {

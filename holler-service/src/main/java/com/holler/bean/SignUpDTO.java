@@ -4,6 +4,7 @@ public class SignUpDTO {
 	private String name;
 	private String email;
 	private String phoneNumber;
+	private String otp;
 
 	public String getName() {
 		return name;
@@ -29,4 +30,12 @@ public class SignUpDTO {
 		this.phoneNumber = phoneNumber;
 	}
 
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+	
 }

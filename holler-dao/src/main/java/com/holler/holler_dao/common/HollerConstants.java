@@ -18,4 +18,13 @@ public class HollerConstants {
 	public static final String JOB_UNGRANTED_SUCCESSFULLY = "Job Un-granted Successfully";
 	public static final String LOCATION_UPDATED_SUCCESSFULLY = "Current Address and location updated successfully";
 
+	public static final String USER_TOKENS = "test-ABCD1212AA,user-BBBB4444AA";
+	public static final String OTP_GENERATION_FAILURE = "Unable to generate OTP";
+	public static final String OTP_SIGNUP_FAILURE = "Incorrect Otp";
+	public static final String STATUS = "status";
+	public static final String RESULT = "result";
+	public static final String MESSAGE = "message";
+	
+	public static final String TOKEN_VALIDATION_FAILED = "Token validation failed";
+	
 }

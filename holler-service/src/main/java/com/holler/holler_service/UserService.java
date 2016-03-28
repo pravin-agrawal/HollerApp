@@ -12,13 +12,15 @@ public interface UserService {
 	
 	public boolean authenticateUser(String email, String password);
 	
+	public boolean authenticateUserWithPhoneNumber(String email, String phoneNumber);
+
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId);
 	
 	public Map<String, Object> signInUser(String phoneNumber, HttpServletRequest request);
 	
 	public Map<String, String> signOutUser(HttpServletRequest request);
 	
-	public Map<String, String> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request);
+	public Map<String, Object> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request);
 
 	public UserDTO getUserProfile(int userId, HttpServletRequest request);
 	
@@ -29,4 +31,6 @@ public interface UserService {
 	List<TagDTO> fetchTagsForUserHomePage(Integer userId);
 
 	Map<String,Object> updateUserCurrentLocationAndAddress(UserLocationDTO userLocationDTO);
+	
+
 }

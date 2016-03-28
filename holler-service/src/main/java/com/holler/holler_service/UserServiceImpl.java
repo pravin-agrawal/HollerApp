@@ -9,10 +9,15 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.holler.bean.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.holler.bean.SignUpDTO;
+import com.holler.bean.SignUpResponseDTO;
+import com.holler.bean.TagDTO;
+import com.holler.bean.UserDTO;
+import com.holler.bean.UserJobDTO;
+import com.holler.bean.UserLocationDTO;
 import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.common.HollerConstants;
@@ -29,8 +34,18 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	TagDao tagDao;
 	
+	@Autowired
+	OTPService otpService;
+	
+	@Autowired
+	TokenService tokenService;
+	
 	public boolean authenticateUser(String email, String password){
 		return userDao.authenticateUser(email, password);
+	}
+	
+	public boolean authenticateUserWithPhoneNumber(String email, String phoneNumber){
+		return userDao.authenticateUserWithPhoneNumber(email, phoneNumber);
 	}
 	
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId){
@@ -69,21 +84,33 @@ public class UserServiceImpl implements UserService{
 		return result;
 	}
 	
-	public Map<String, String> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request) {
-		Map<String, String> result = new HashMap<String, String>();
+	public Map<String, Object> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request) {
+		boolean isValidOtp = otpService.validateOtp(signUpDTO.getPhoneNumber(), signUpDTO.getOtp());
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(!isValidOtp){
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_SIGNUP_FAILURE);
+			return result;
+		}
 		try {
 			if(isUserPresent(signUpDTO.getEmail(), signUpDTO.getPhoneNumber())){
-				result.put(HollerConstants.FAILURE, HollerConstants.DUPLICATE_USER);
+				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+				result.put(HollerConstants.MESSAGE, HollerConstants.DUPLICATE_USER);
 			}else{
 				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPhoneNumber());
 				userDao.save(user);
-				HttpSession session = request.getSession();
-				session.setAttribute("user", user);
-				result.put(HollerConstants.SUCCESS, HollerConstants.SIGNUP_SUCCESS);
+				
+				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail(), signUpDTO.getPhoneNumber());
+				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
+						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic());
+				
+				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+				result.put(HollerConstants.RESULT, signUpResponseDTO);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.put(HollerConstants.FAILURE, HollerConstants.SIGNUP_FAILURE);
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.SIGNUP_FAILURE);
 		}
 		return result;
 	}
@@ -146,5 +173,7 @@ public class UserServiceImpl implements UserService{
 		result.put(HollerConstants.SUCCESS, HollerConstants.LOCATION_UPDATED_SUCCESSFULLY);
 		return result;
 	}
+
+
 
 }

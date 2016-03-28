@@ -3,11 +3,9 @@ package com.holler.controller;
 
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -115,13 +113,6 @@ public class HelloController {
 		UserJobDTO userJobDTO = userService.getUserJobs(user, 1);
 		return userJobDTO;
 	}
-	
-	 @RequestMapping(value = "/testUrl", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-	            produces = MediaType.APPLICATION_JSON_VALUE)
-	 public @ResponseBody String testUrl(@RequestBody String secretKey, HttpServletRequest request, HttpServletResponse response) 
-			 throws Exception {
-	        return "successfully consumed";
-	    }
 	
 	private ModelAndView setDefaultLoginAction(){
 		ModelAndView mv = new ModelAndView("login");
