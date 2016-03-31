@@ -24,7 +24,7 @@ public class SignUpController {
 	UserService userService;
 	
 	@RequestMapping(value="/signUpUser", method=RequestMethod.POST)
-	public @ResponseBody Map<String, Object> login(@RequestBody SignUpDTO signUpDTO, HttpServletRequest request){
+	public @ResponseBody Map<String, Object> singUp(@RequestBody SignUpDTO signUpDTO, HttpServletRequest request){
 		Map<String, Object> result = userService.signUpUser(signUpDTO, request);
 		return result;
 	}

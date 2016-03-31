@@ -101,14 +101,10 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_USERS_IDS_BY_TAG_IDS);
 		Query queryObject = entityManager.createNativeQuery(sql)
 				.setParameter("tagIds", tagIds);
-		List<Object[]> resultList = queryObject.getResultList();
+		List<Integer> resultList = queryObject.getResultList();
 		Set<Integer> userIds = new HashSet<Integer>();
 		if(resultList != null && !resultList.isEmpty()){
-			for (Object[] object : resultList) {
-				if(object != null){
-					userIds.add((Integer)object[0]);
-				}
-			}
+			userIds.addAll(resultList);
 		}
 		return userIds;
 	}

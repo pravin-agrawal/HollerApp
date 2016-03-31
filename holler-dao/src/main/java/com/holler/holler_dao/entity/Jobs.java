@@ -1,5 +1,6 @@
 package com.holler.holler_dao.entity;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "jobs")
@@ -56,6 +59,10 @@ public class Jobs extends BaseEntity{
 
 	@Column(name = "job_address")
 	private String jobAddress;
+	
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "job_date")
+	protected Date jobDate;
 
 	public User getUser() {
 		return user;
@@ -143,6 +150,14 @@ public class Jobs extends BaseEntity{
 
 	public String getJobAddress() {
 		return jobAddress;
+	}
+
+	public Date getJobDate() {
+		return jobDate;
+	}
+	
+	public void setJobDate(Date jobDate) {
+		this.jobDate = jobDate;
 	}
 
 	public Double[] getLatLongFromJobLocation() {

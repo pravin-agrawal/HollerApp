@@ -55,7 +55,7 @@ public class User extends BaseEntity{
 	private String currentAddress;
 
 	@Column(name = "job_discovery_limit")
-	private int jobDiscoveryLimit;
+	private Integer jobDiscoveryLimit;
 
 	public int getId() {
 		return id;
@@ -143,11 +143,11 @@ public class User extends BaseEntity{
 		this.currentLocation = currentLocation;
 	}
 
-	public int getJobDiscoveryLimit() {
+	public Integer getJobDiscoveryLimit() {
 		return jobDiscoveryLimit;
 	}
 
-	public void setJobDiscoveryLimit(int jobDiscoveryLimit) {
+	public void setJobDiscoveryLimit(Integer jobDiscoveryLimit) {
 		this.jobDiscoveryLimit = jobDiscoveryLimit;
 	}
 

@@ -28,6 +28,8 @@ public class OTPServiceImpl implements OTPService{
 				redisDao.setex("OTP_" + phoneNumber, 120, otp);
 			}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.PHONE_NUMBER, phoneNumber);
+			result.put(HollerConstants.OTP, otp);
 		} catch (Exception e) {
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_GENERATION_FAILURE);

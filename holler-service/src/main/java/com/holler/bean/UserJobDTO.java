@@ -1,7 +1,6 @@
 package com.holler.bean;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -13,30 +12,31 @@ import com.holler.holler_dao.util.CommonUtil;
 
 
 public class UserJobDTO {
-	private int userId;
-	private int jobId;
+	private Integer userId;
+	private Integer jobId;
 	private String title;
 	private String jobDescription;
 	private String status;
 	private Set<Integer> tags;
 	private Integer compensation;
-	private Date jobTimeStamp;
+	private Date jobTimeStamp;	//job created date
 	private String specialrequirement;
 	private int genderRequirement;
-	private Date jobdate;
+	private Date jobdate;	//date on which job should be done
+	private String jobAddress;
 	private double lat;
 	private double lng;
 
-	public int getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public int getJobId() {
+	public Integer getJobId() {
 		return jobId;
 	}
-	public void setJobId(int jobId) {
+	public void setJobId(Integer jobId) {
 		this.jobId = jobId;
 	}
 	public String getTitle() {
@@ -95,7 +95,13 @@ public class UserJobDTO {
 	public void setJobdate(Date jobdate) {
 		this.jobdate = jobdate;
 	}
-
+	
+	public String getJobAddress() {
+		return jobAddress;
+	}
+	public void setJobAddress(String jobAddress) {
+		this.jobAddress = jobAddress;
+	}
 	public double getLat() {
 		return lat;
 	}
@@ -137,6 +143,7 @@ public class UserJobDTO {
 		job.setCompensation(userJobDTO.getCompensation());
 		job.setGenderPreference(userJobDTO.getGenderRequirement());
 		job.setSpecialRequirement(userJobDTO.getSpecialrequirement());
+		job.setJobDate(userJobDTO.getJobdate());
 		job.setStatus(userJobDTO.getStatus());
 		job.setJobLocation(getLocationInCommaSeparatedString(userJobDTO));
 		job.setJobAddress(getAddressFromLocation(userJobDTO));
@@ -169,9 +176,8 @@ public class UserJobDTO {
 		jobDTO.setCompensation(job.getCompensation());
 		jobDTO.setSpecialrequirement(job.getSpecialRequirement());
 		jobDTO.setGenderRequirement(job.getGenderPreference());
-		//jobDTO.setTags(job.getTags());
-		//TODO
-		jobDTO.setJobdate(new Date());
+		jobDTO.setJobAddress(job.getJobAddress());
+		jobDTO.setJobdate(job.getJobDate());
 		return jobDTO;
 	}
 
@@ -181,6 +187,19 @@ public class UserJobDTO {
 			UserJobDTO userJobDTO = new UserJobDTO();
 			userJobDTO.setJobId(job.getId());
 			userJobDTO.setTitle(job.getTitle());
+			jobDTOs.add(userJobDTO);
+		}
+		return jobDTOs;
+	}
+	
+	public static List<UserJobDTO> getJobDtosForMyPostedJobs(List<Jobs> jobs){
+		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
+		for (Jobs job : CommonUtil.safe(jobs)) {
+			UserJobDTO userJobDTO = new UserJobDTO();
+			userJobDTO.setJobId(job.getId());
+			userJobDTO.setTitle(job.getTitle());
+			userJobDTO.setCompensation(job.getCompensation());
+			userJobDTO.setJobdate(job.getJobDate());
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;

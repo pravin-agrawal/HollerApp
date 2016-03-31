@@ -30,7 +30,6 @@ public class OTPController {
 	@RequestMapping(value="/generateOTP", method=RequestMethod.POST, consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> generateOTP(HttpServletRequest request){
 		Map<String, Object> result = otpService.generateOtpAndSaveOnRedis(request);
-		//send sms service
 		try {
 			smsSender.sendSMS(result);
 		} catch (TwilioRestException e) {

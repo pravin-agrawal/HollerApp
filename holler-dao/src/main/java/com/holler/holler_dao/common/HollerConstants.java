@@ -12,6 +12,8 @@ public class HollerConstants {
 
 	public static final String SIGNUP_SUCCESS = "Sign up successful";
 	public static final String SIGNUP_FAILURE = "Error while sign up. Please try after some time.";
+	public static final String LOGIN_FAILURE = "Error while login. Please try after some time.";
+	
 	public static final String JOB_ACCEPTED_SUCCESSFULLY = "Job Accepted Successfully";
 	public static final String JOB_UNACCEPTED_SUCCESSFULLY = "Job Unaccepted Successfully";
 	public static final String JOB_GRANTED_SUCCESSFULLY = "Job Granted Successfully";
@@ -26,5 +28,8 @@ public class HollerConstants {
 	public static final String MESSAGE = "message";
 	
 	public static final String TOKEN_VALIDATION_FAILED = "Token validation failed";
-	
+
+	public static final String USER_NOT_FOUND = "User does not exists";
+	public static final String PHONE_NUMBER = "phoneNumber";
+	public static final String OTP = "otp";
 }

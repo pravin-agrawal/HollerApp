@@ -28,13 +28,19 @@ public class LoginLogoutController {
 	@Autowired
 	private RedisDAO redisDao;
 
-	@RequestMapping(value = "/signInUser", method = RequestMethod.POST)
+	@RequestMapping(value="/loginUser", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request){
+		Map<String, Object> result = userService.loginUser(loginDTO, request);
+		return result;
+	}
+	
+	/*@RequestMapping(value = "/signInUser", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> login(
 			@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
 		Map<String, Object> result = userService.signInUser(
 				loginDTO.getPhoneNumber(), request);
 		return result;
-	}
+	}*/
 
 	@RequestMapping(value = "/signOutUser", method = RequestMethod.POST)
 	public @ResponseBody Map<String, String> logoutUser(

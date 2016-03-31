@@ -4,18 +4,21 @@ package com.holler.twilioSms;
  * Created by pravina on 29/03/16.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.springframework.stereotype.Service;
+
 import com.twilio.sdk.TwilioRestClient;
 import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.factory.MessageFactory;
 import com.twilio.sdk.resource.instance.Account;
 import com.twilio.sdk.resource.instance.Message;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+@Service
 public class SmsSender {
 
     /* Find your sid and token at twilio.com/user/account */
@@ -25,14 +28,15 @@ public class SmsSender {
     public void sendSMS(Map<String, Object> result) throws TwilioRestException {
 
         TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
+        String phoneNumber = (String) result.get("phoneNumber");
         String msg = "Your verification code is" + result.get("otp");
         Account account = client.getAccount();
-
+        
         MessageFactory messageFactory = account.getMessageFactory();
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("To", "+919930297373")); // Replace with a valid phone number for your account.
+        params.add(new BasicNameValuePair("To", phoneNumber)); // Replace with a valid phone number for your account.
         params.add(new BasicNameValuePair("From", "+14846854344")); // Replace with a valid phone number for your account.
-        params.add(new BasicNameValuePair("Body", "msg"));
+        params.add(new BasicNameValuePair("Body", msg));
         Message sms = messageFactory.create(params);
     }
 

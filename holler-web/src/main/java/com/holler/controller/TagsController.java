@@ -22,8 +22,13 @@ public class TagsController {
 	TagsService tagsService;
 
 	@RequestMapping(value="/fetchParentTagsWithChildTags", method=RequestMethod.POST)
-	public @ResponseBody Map<String, Object> postJob(HttpServletRequest request){
+	public @ResponseBody Map<String, Object> fetchParentTagsWithChildTags(HttpServletRequest request){
 		return tagsService.getAllParentTagsWithChildTags(request);
+	}
+	
+	@RequestMapping(value="/fetchAllChildTags", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> fetchAllChildTags(HttpServletRequest request){
+		return tagsService.getAllChildTags(request);
 	}
 
 	

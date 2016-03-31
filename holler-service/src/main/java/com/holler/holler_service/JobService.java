@@ -12,9 +12,9 @@ import com.holler.holler_dao.entity.enums.UserJobStatusType;
 
 public interface JobService {
 
-	public UserJobDTO postJob(UserJobDTO userJobDTO);
-	public UserJobDTO viewJob(int jobId, HttpServletRequest request);
-	public List<UserJobDTO> getMyJobs(int userId, HttpServletRequest request);
+	public Map<String, Object> postJob(UserJobDTO userJobDTO, HttpServletRequest request);
+	public Map<String, Object> viewJob(HttpServletRequest request);
+	public Map<String, Object> getMyJobs(HttpServletRequest request);
 	public List<UserJobDTO> getMyPingedJobs(HttpServletRequest request);
 	public List<UserDTO> getUsersAcceptedJob(int jobId, HttpServletRequest request);
 	public List<UserJobDTO> searchJobsByTag(String tag, HttpServletRequest request);

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.holler.bean.LoginDTO;
 import com.holler.bean.SignUpDTO;
 import com.holler.bean.SignUpResponseDTO;
 import com.holler.bean.TagDTO;
@@ -171,6 +172,34 @@ public class UserServiceImpl implements UserService{
 		user.setCurrentAddress(currentAddress);
 		userDao.update(user);
 		result.put(HollerConstants.SUCCESS, HollerConstants.LOCATION_UPDATED_SUCCESSFULLY);
+		return result;
+	}
+
+	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request) {
+		boolean isValidOtp = otpService.validateOtp(loginDTO.getPhoneNumber(), loginDTO.getOtp());
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(!isValidOtp){
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_SIGNUP_FAILURE);
+			return result;
+		}
+		try {
+			User user = userDao.getByPhoneNumber(loginDTO.getPhoneNumber());
+			if(user != null){
+				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail(), loginDTO.getPhoneNumber());
+				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
+						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic());
+				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+				result.put(HollerConstants.RESULT, signUpResponseDTO);
+			}else{
+				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+				result.put(HollerConstants.MESSAGE, HollerConstants.USER_NOT_FOUND);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.LOGIN_FAILURE);
+		}
 		return result;
 	}
 
