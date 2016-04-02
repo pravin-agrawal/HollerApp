@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.holler.bean.UserDTO;
 import com.holler.bean.UserLocationDTO;
+import com.holler.bean.UserSettingDTO;
 import com.holler.holler_service.UserService;
 
 
@@ -24,16 +25,12 @@ public class UserController {
     UserService userService;
 
     @RequestMapping(value = "/getUserProfile", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Map<String, Object> login(HttpServletRequest request) {
+    public @ResponseBody Map<String, Object> login(HttpServletRequest request) {
         return userService.getUserProfile(request);
     }
 
     @RequestMapping(value = "/updateUserProfile", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Map<String, Object> updateUserProfile(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+    public @ResponseBody Map<String, Object> updateUserProfile(@RequestBody UserDTO userDTO, HttpServletRequest request) {
         return userService.updateUserProfile(userDTO, request);
     }
 
@@ -46,10 +43,19 @@ public class UserController {
     }*/
 
     @RequestMapping(value = "/updateUserCurrentLocationAndAddress", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Map<String, Object> updateUserCurrentLocationAndAddress(@RequestBody UserLocationDTO userLocationDTO, HttpServletRequest request) {
+    public @ResponseBody Map<String, Object> updateUserCurrentLocationAndAddress(@RequestBody UserLocationDTO userLocationDTO, HttpServletRequest request) {
         Map<String, Object> result = userService.updateUserCurrentLocationAndAddress(userLocationDTO);
+        return result;
+    }
+    
+    @RequestMapping(value = "/getUserSettings", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> getUserSettings(HttpServletRequest request) {
+        return userService.getUserSettings(request);
+    }
+    
+    @RequestMapping(value = "/updateUserSettings", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> updateUserSettings(@RequestBody UserSettingDTO userSettingRequestDTO, HttpServletRequest request) {
+        Map<String, Object> result = userService.updateUserSetting(userSettingRequestDTO);
         return result;
     }
 }

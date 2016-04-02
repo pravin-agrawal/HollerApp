@@ -56,6 +56,12 @@ public class User extends BaseEntity{
 
 	@Column(name = "job_discovery_limit")
 	private Integer jobDiscoveryLimit;
+	
+	@Column(name = "compensation_range")
+	private Integer compensationRange;
+
+	@Column(name = "push_notification")
+	private Integer pushNotification;
 
 	public int getId() {
 		return id;
@@ -149,6 +155,22 @@ public class User extends BaseEntity{
 
 	public void setJobDiscoveryLimit(Integer jobDiscoveryLimit) {
 		this.jobDiscoveryLimit = jobDiscoveryLimit;
+	}
+
+	public Integer getCompensationRange() {
+		return compensationRange;
+	}
+
+	public void setCompensationRange(Integer compensationRange) {
+		this.compensationRange = compensationRange;
+	}
+
+	public Integer getPushNotification() {
+		return pushNotification;
+	}
+
+	public void setPushNotification(Integer pushNotification) {
+		this.pushNotification = pushNotification;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber) {

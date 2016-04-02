@@ -19,6 +19,7 @@ import com.holler.bean.TagDTO;
 import com.holler.bean.UserDTO;
 import com.holler.bean.UserJobDTO;
 import com.holler.bean.UserLocationDTO;
+import com.holler.bean.UserSettingDTO;
 import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.common.HollerConstants;
@@ -187,8 +188,39 @@ public class UserServiceImpl implements UserService{
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
 		return result;
-		
+	}
 	
+	public Map<String, Object> getUserSettings(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
+			UserSettingDTO userSettingResponseDTO = UserSettingDTO.getDtoForUserSetting(user);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, userSettingResponseDTO);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+	
+	public Map<String, Object> updateUserSetting(UserSettingDTO userSettingRequestDTO) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			User user = userDao.findById(userSettingRequestDTO.getUserId());
+			user.setJobDiscoveryLimit(userSettingRequestDTO.getJobDiscoveryLimit());
+			user.setPushNotification(userSettingRequestDTO.getPushNotification());
+			user.setCompensationRange(userSettingRequestDTO.getCompensationRange());
+			userDao.update(user);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
 	}
 
 	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request) {

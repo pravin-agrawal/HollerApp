@@ -31,8 +31,11 @@ public interface UserService {
 	List<TagDTO> fetchTagsForUserHomePage(Integer userId);
 
 	Map<String,Object> updateUserCurrentLocationAndAddress(UserLocationDTO userLocationDTO);
+	
+	public Map<String, Object> getUserSettings(HttpServletRequest request);
+
+	Map<String,Object> updateUserSetting(UserSettingDTO userSettingRequestDTO);
 
 	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request);
-	
 
 }
