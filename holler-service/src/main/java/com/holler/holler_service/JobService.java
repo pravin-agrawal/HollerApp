@@ -1,26 +1,24 @@
 package com.holler.holler_service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.holler.bean.UserDTO;
+import com.holler.bean.UpdateUserJobRequestDTO;
 import com.holler.bean.UserJobDTO;
-import com.holler.holler_dao.entity.enums.UserJobStatusType;
 
 public interface JobService {
 
 	public Map<String, Object> postJob(UserJobDTO userJobDTO, HttpServletRequest request);
 	public Map<String, Object> viewJob(HttpServletRequest request);
 	public Map<String, Object> getMyJobs(HttpServletRequest request);
-	public List<UserJobDTO> getMyPingedJobs(HttpServletRequest request);
-	public List<UserDTO> getUsersAcceptedJob(int jobId, HttpServletRequest request);
-	public List<UserJobDTO> searchJobsByTag(String tag, HttpServletRequest request);
-	public List<UserJobDTO> searchJobsByTagIds(Set<Integer> tagIds, HttpServletRequest request);
+	public Map<String, Object> getMyPingedJobs(HttpServletRequest request);
+	public Map<String, Object> getUsersAcceptedJob(HttpServletRequest request);
+	public Map<String, Object> searchJobsByTag(HttpServletRequest request);
+	public Map<String, Object> searchJobsByTagIds(Set<Integer> tagIds, Integer userId, HttpServletRequest request);
 
-	Map<String,Object> acceptOrUnacceptJob(int jobId, UserJobStatusType status, HttpServletRequest request);
+	Map<String,Object> acceptOrUnacceptJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
 
-	Map<String,Object> grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status, HttpServletRequest request);
+	Map<String,Object> grantOrUnGrantJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
 }

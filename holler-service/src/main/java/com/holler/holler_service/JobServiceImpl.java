@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.holler.bean.UpdateUserJobRequestDTO;
 import com.holler.bean.UserDTO;
 import com.holler.bean.UserJobDTO;
 import com.holler.holler_dao.JobDao;
@@ -93,7 +93,7 @@ public class JobServiceImpl implements JobService{
 		//if(tokenService.isValidToken(request)){
 		 if(Boolean.TRUE){
 			List<Jobs> job = jobDao.findAllByUserId(Integer.valueOf(request.getHeader("userId")));
-			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosForMyPostedJobs(job);
+			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosToViewJobList(job);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, jobDTO);
 		 }else{
@@ -103,89 +103,115 @@ public class JobServiceImpl implements JobService{
 		return result;
 	}
 
-	public List<UserJobDTO> getMyPingedJobs(HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
-		if(session == null){
-			return null;
-		}else {
-			User loggedInUser = (User) session.getAttribute("user");
-			List<Jobs> job = jobDao.getMyPingedJobs(loggedInUser.getId());
-			List<UserJobDTO> jobDTO = UserJobDTO.getJobIdAndTitleDtosFromJobs(job);
-			return jobDTO;
+	public Map<String, Object> getMyPingedJobs(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			List<Jobs> job = jobDao.getMyPingedJobs(Integer.valueOf(request.getHeader("userId")));
+			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosToViewJobList(job);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, jobDTO);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
+		return result;
 	}
 
 
-	public List<UserDTO> getUsersAcceptedJob(int jobId, HttpServletRequest request){
-
-		HttpSession session = request.getSession(false);
-		if(session == null){
-			return null;
-		}else{
-			List<User> users = jobDao.getUserAcceptedJobs(jobId);
+	public Map<String, Object> getUsersAcceptedJob(HttpServletRequest request){
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			List<User> users = jobDao.getUserAcceptedJobs(Integer.valueOf(request.getHeader("jobId")));
 			List<UserDTO> userDTOs = UserDTO.constructUserDTOsForAcceptedJObs(users);
-			return userDTOs;
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, userDTOs);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
+		return result;
 	}
 
-	public List<UserJobDTO> searchJobsByTag(String tag, HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
-		if(session == null){
-			return null;
-		}else{
-			List<Jobs> jobs = jobDao.searchJobsByTag(tag);
-			List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosFromJobs(jobs);
-			return jobDTOs;
+	public Map<String, Object> searchJobsByTag(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			List<Jobs> jobs = jobDao.searchJobsByTag(request.getHeader("tag"));
+			List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosToViewJobList(jobs);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, jobDTOs);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
+		return result;
 	}
 
-	public List<UserJobDTO> searchJobsByTagIds(Set<Integer> tagIds, HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
-		if(session == null){
-			return null;
-		}else {
-			User loggedInUser = (User) session.getAttribute("user");
+	public Map<String, Object> searchJobsByTagIds(Set<Integer> tagIds, Integer userId, HttpServletRequest request) {
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
 			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagIds);
+			User loggedInUser = userDao.findById(userId);
 			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
-			return jobDTOs;
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, jobDTOs);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
+		return result;
 	}
 
 	@Transactional
-	public Map<String, Object> acceptOrUnacceptJob(int jobId, UserJobStatusType status, HttpServletRequest request) {
+	public Map<String, Object> acceptOrUnacceptJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		HttpSession session = request.getSession(false);
-		User loggedInUser = (User) session.getAttribute("user");
-		if(session == null){
-			return null;
-		}else {
-			Jobs job = jobDao.findById(jobId);
-			if(UserJobStatusType.ACCEPTED == status){
-				jobDao.acceptJob(loggedInUser.getId(), jobId, status);
-				notificationService.createNotification(loggedInUser.getId(), job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
-				result.put(HollerConstants.SUCCESS, HollerConstants.JOB_ACCEPTED_SUCCESSFULLY);
-			}else if(UserJobStatusType.UNACCEPT == status){
-				jobDao.unAcceptJob(loggedInUser.getId(), jobId);
-				notificationService.createNotification(loggedInUser.getId(), job.getUser().getId(), NotificationType.UnAcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
-				result.put(HollerConstants.SUCCESS, HollerConstants.JOB_UNACCEPTED_SUCCESSFULLY);
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			 Integer jobId = updateUserJobRequestDTO.getJobId();
+			 Integer userId = updateUserJobRequestDTO.getUserId();
+			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
+				Jobs job = jobDao.findById(jobId);
+				if(UserJobStatusType.ACCEPTED == status){
+					jobDao.acceptJob(userId, jobId, status);
+					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
+				}else if(UserJobStatusType.UNACCEPT == status){
+					jobDao.unAcceptJob(userId, jobId);
+					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.UnAcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
+				}
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+
+	@Transactional
+	public Map<String, Object> grantOrUnGrantJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request) {
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			 Integer jobId = updateUserJobRequestDTO.getJobId();
+			 Integer userId = updateUserJobRequestDTO.getUserId();
+			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
+			if(UserJobStatusType.GRANTED == status){
+				jobDao.grantOrUnGrantJob(userId, jobId, status);
+				notificationService.createNotification(userId, userId, NotificationType.GrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
+			}else if(UserJobStatusType.UNGRANT == status){
+				jobDao.grantOrUnGrantJob(userId, jobId, UserJobStatusType.ACCEPTED);
+				notificationService.createNotification(userId, userId, NotificationType.UnGrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
 			}
-			return result;
-		}
-	}
-
-	@Transactional
-	public Map<String, Object> grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status, HttpServletRequest request) {
-		Map<String, Object> result = new HashMap<String, Object>();
-		HttpSession session = request.getSession(false);
-		User loggedInUser = (User) session.getAttribute("user");
-		if(UserJobStatusType.GRANTED == status){
-			jobDao.grantOrUnGrantJob(userId, jobId, status);
-			notificationService.createNotification(loggedInUser.getId(), userId, NotificationType.GrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
-			result.put(HollerConstants.SUCCESS, HollerConstants.JOB_GRANTED_SUCCESSFULLY);
-		}else if(UserJobStatusType.UNGRANT == status){
-			jobDao.grantOrUnGrantJob(userId, jobId, UserJobStatusType.ACCEPTED);
-			notificationService.createNotification(loggedInUser.getId(), userId, NotificationType.UnGrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
-			result.put(HollerConstants.SUCCESS, HollerConstants.JOB_UNGRANTED_SUCCESSFULLY);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
 		return result;
 	}

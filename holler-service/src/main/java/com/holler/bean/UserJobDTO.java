@@ -150,23 +150,6 @@ public class UserJobDTO {
 		return job;
 	}
 
-	public static List<UserJobDTO> getJobDtosFromJobs(List<Jobs> jobs){
-		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
-		for (Jobs job : CommonUtil.safe(jobs)) {
-			UserJobDTO userJobDTO = new UserJobDTO();
-			userJobDTO.setUserId(job.getUser().getId());
-			userJobDTO.setJobId(job.getId());
-			userJobDTO.setTitle(job.getTitle());
-			userJobDTO.setJobDescription(job.getDescription());
-			userJobDTO.setStatus(job.getStatus());
-			userJobDTO.setCompensation(job.getCompensation());
-			userJobDTO.setSpecialrequirement(job.getSpecialRequirement());
-			userJobDTO.setGenderRequirement(job.getGenderPreference());
-			jobDTOs.add(userJobDTO);
-		}
-		return jobDTOs;
-	}
-
 	public static UserJobDTO getJobDtoFromJob(Jobs job){
 		UserJobDTO jobDTO = new UserJobDTO();
 		jobDTO.setUserId(job.getUser().getId());
@@ -192,7 +175,7 @@ public class UserJobDTO {
 		return jobDTOs;
 	}
 	
-	public static List<UserJobDTO> getJobDtosForMyPostedJobs(List<Jobs> jobs){
+	public static List<UserJobDTO> getJobDtosToViewJobList(List<Jobs> jobs){
 		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
 		for (Jobs job : CommonUtil.safe(jobs)) {
 			UserJobDTO userJobDTO = new UserJobDTO();
@@ -217,6 +200,8 @@ public class UserJobDTO {
 				UserJobDTO userJobDTO = new UserJobDTO();
 				userJobDTO.setJobId(job.getId());
 				userJobDTO.setTitle(job.getTitle());
+				userJobDTO.setCompensation(job.getCompensation());
+				userJobDTO.setJobdate(job.getJobDate());
 				jobDTOs.add(userJobDTO);
 			}
 		}

@@ -5,6 +5,7 @@ import com.holler.holler_dao.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class TagDTO {
 	private Integer tagId;
@@ -34,7 +35,7 @@ public class TagDTO {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
-
+	
 	public static List<TagDTO> getTagDTOsFromTags(List<Tags> tags) {
 		List<TagDTO> tagDTOs = new ArrayList<TagDTO>();
 		for (Tags tag : CommonUtil.safe(tags)) {
