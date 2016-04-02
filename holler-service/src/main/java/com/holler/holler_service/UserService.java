@@ -22,9 +22,9 @@ public interface UserService {
 	
 	public Map<String, Object> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request);
 
-	public UserDTO getUserProfile(int userId, HttpServletRequest request);
+	public Map<String, Object> getUserProfile(HttpServletRequest request);
 	
-	public UserDTO updateUserProfile(UserDTO userDTO, HttpServletRequest request);
+	public Map<String, Object> updateUserProfile(UserDTO userDTO, HttpServletRequest request);
 
 	public boolean isUserPresent(String email, String phoneNumber);
 

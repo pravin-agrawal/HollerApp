@@ -116,31 +116,38 @@ public class UserServiceImpl implements UserService{
 		return result;
 	}
 
-	public UserDTO getUserProfile(int userId, HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
-		if(session == null){
-			return null;
-		}else{
-			User user = userDao.findByIdWithTags(userId);
+	public Map<String, Object> getUserProfile(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
 			UserDTO userDTO = UserDTO.getDtoForUserProfile(user);
-			return userDTO;
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, userDTO);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
+		return result;
 	}
 	
-	public UserDTO updateUserProfile(UserDTO userDTO, HttpServletRequest request){
-		HttpSession session = request.getSession(false);
-		User loggedInUser = (User) session.getAttribute("user");
-		if(session == null && userDTO.getUserId() != loggedInUser.getId()){
-			return null;
-		}else {
+	public Map<String, Object> updateUserProfile(UserDTO userDTO, HttpServletRequest request){
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
 			User user = userDao.findById(userDTO.getUserId());
 			UserDTO.setUserDataToUpdate(userDTO, user);
 			Set<Tags> tags = new HashSet<Tags>(tagDao.findbyIds(userDTO.getTags()));
 			user.setTags(tags);
 			userDao.update(user);
 			setTagsMapInUserDto(tags, userDTO);
-			return userDTO;
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, userDTO);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
+		return result;
 	}
 
 	private void setTagsMapInUserDto(Set<Tags> tags, UserDTO userDTO) {
@@ -164,15 +171,24 @@ public class UserServiceImpl implements UserService{
 
 	public Map<String, Object> updateUserCurrentLocationAndAddress(UserLocationDTO userLocationDTO) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		User user = userDao.findById(userLocationDTO.getUserId());
-		String currentLocation = UserLocationDTO.getLocationInCommaSeparatedString(userLocationDTO);
-		String currentAddress = UserLocationDTO.getAddressFromLocation(userLocationDTO);
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			User user = userDao.findById(userLocationDTO.getUserId());
+			String currentLocation = UserLocationDTO.getLocationInCommaSeparatedString(userLocationDTO);
+			String currentAddress = UserLocationDTO.getAddressFromLocation(userLocationDTO);
 
-		user.setCurrentLocation(currentLocation);
-		user.setCurrentAddress(currentAddress);
-		userDao.update(user);
-		result.put(HollerConstants.SUCCESS, HollerConstants.LOCATION_UPDATED_SUCCESSFULLY);
+			user.setCurrentLocation(currentLocation);
+			user.setCurrentAddress(currentAddress);
+			userDao.update(user);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
 		return result;
+		
+	
 	}
 
 	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request) {
