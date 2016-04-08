@@ -17,11 +17,14 @@ public class HollerServiceImpl implements HollerService{
 	
 	@Autowired
 	CompensationDao compensationDao;
+	
+	@Autowired
+	TokenService tokenService;
 
 	public Map<String, Object> getCompensationRange(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		//if(Boolean.TRUE){
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, CompensationDTO.getCompensationDTOsFromCompensation(compensationDao.findAll()));
 		}else{

@@ -47,8 +47,8 @@ public class JobServiceImpl implements JobService{
 	@Transactional
 	public Map<String, Object> postJob(UserJobDTO userJobDTO, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		   if(tokenService.isValidToken(request)){
+		 //if(Boolean.TRUE){
 			Jobs job = UserJobDTO.constructJobToPost(userJobDTO);
 			userJobDTO.setJobAddress(job.getJobAddress());
 			job.setUser(userDao.findById(userJobDTO.getUserId()));
@@ -74,8 +74,8 @@ public class JobServiceImpl implements JobService{
 	public Map<String, Object> viewJob(HttpServletRequest request){
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+			if(tokenService.isValidToken(request)){
+		 //if(Boolean.TRUE){
 			Jobs job = jobDao.findById(Integer.valueOf(request.getHeader("jobId")));
 			UserJobDTO jobDTO = UserJobDTO.getJobDtoFromJob(job);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -90,8 +90,8 @@ public class JobServiceImpl implements JobService{
 	public Map<String, Object> getMyJobs(HttpServletRequest request){
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		 if(tokenService.isValidToken(request)){
+		 //if(Boolean.TRUE){
 			List<Jobs> job = jobDao.findAllByUserId(Integer.valueOf(request.getHeader("userId")));
 			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosToViewJobList(job);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -105,8 +105,8 @@ public class JobServiceImpl implements JobService{
 
 	public Map<String, Object> getMyPingedJobs(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		 //if(Boolean.TRUE){
 			List<Jobs> job = jobDao.getMyPingedJobs(Integer.valueOf(request.getHeader("userId")));
 			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosToViewJobList(job);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -121,8 +121,8 @@ public class JobServiceImpl implements JobService{
 
 	public Map<String, Object> getUsersAcceptedJob(HttpServletRequest request){
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		//if(Boolean.TRUE){
 			List<User> users = jobDao.getUserAcceptedJobs(Integer.valueOf(request.getHeader("jobId")));
 			List<UserDTO> userDTOs = UserDTO.constructUserDTOsForAcceptedJObs(users);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -136,8 +136,8 @@ public class JobServiceImpl implements JobService{
 
 	public Map<String, Object> searchJobsByTag(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		 //if(Boolean.TRUE){
 			List<Jobs> jobs = jobDao.searchJobsByTag(request.getHeader("tag"));
 			List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosToViewJobList(jobs);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -152,8 +152,8 @@ public class JobServiceImpl implements JobService{
 	public Map<String, Object> searchJobsByTagIds(Set<Integer> tagIds, Integer userId, HttpServletRequest request) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		 //if(Boolean.TRUE){
 			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagIds);
 			User loggedInUser = userDao.findById(userId);
 			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
@@ -169,8 +169,8 @@ public class JobServiceImpl implements JobService{
 	@Transactional
 	public Map<String, Object> acceptOrUnacceptJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		// if(Boolean.TRUE){
 			 Integer jobId = updateUserJobRequestDTO.getJobId();
 			 Integer userId = updateUserJobRequestDTO.getUserId();
 			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
@@ -195,8 +195,8 @@ public class JobServiceImpl implements JobService{
 	public Map<String, Object> grantOrUnGrantJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		//if(tokenService.isValidToken(request)){
-		 if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		// if(Boolean.TRUE){
 			 Integer jobId = updateUserJobRequestDTO.getJobId();
 			 Integer userId = updateUserJobRequestDTO.getUserId();
 			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());

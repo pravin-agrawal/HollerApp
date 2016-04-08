@@ -44,7 +44,7 @@ public class UserController {
 
     @RequestMapping(value = "/updateUserCurrentLocationAndAddress", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> updateUserCurrentLocationAndAddress(@RequestBody UserLocationDTO userLocationDTO, HttpServletRequest request) {
-        Map<String, Object> result = userService.updateUserCurrentLocationAndAddress(userLocationDTO);
+        Map<String, Object> result = userService.updateUserCurrentLocationAndAddress(userLocationDTO,request);
         return result;
     }
     
@@ -55,7 +55,7 @@ public class UserController {
     
     @RequestMapping(value = "/updateUserSettings", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> updateUserSettings(@RequestBody UserSettingDTO userSettingRequestDTO, HttpServletRequest request) {
-        Map<String, Object> result = userService.updateUserSetting(userSettingRequestDTO);
+        Map<String, Object> result = userService.updateUserSetting(userSettingRequestDTO, request);
         return result;
     }
 }
