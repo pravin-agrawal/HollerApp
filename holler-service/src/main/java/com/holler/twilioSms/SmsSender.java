@@ -34,7 +34,7 @@ public class SmsSender {
         
         MessageFactory messageFactory = account.getMessageFactory();
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("To", phoneNumber)); // Replace with a valid phone number for your account.
+        params.add(new BasicNameValuePair("To", "+91"+phoneNumber)); // Replace with a valid phone number for your account.
         params.add(new BasicNameValuePair("From", "+14846854344")); // Replace with a valid phone number for your account.
         params.add(new BasicNameValuePair("Body", msg));
         Message sms = messageFactory.create(params);

@@ -55,7 +55,7 @@ public class TokenServiceImpl implements TokenService{
 			String token = redisDao.get(email);
 			if(token == null) {
 				token = TokenGenerator.generateToken(email);
-				redisDao.setex(email, 60, token);
+				redisDao.setex(email, 7200, token);
 			}
 			result.put("code", "0");
 			result.put("token", token);
