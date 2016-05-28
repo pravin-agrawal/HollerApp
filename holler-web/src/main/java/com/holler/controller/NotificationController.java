@@ -1,18 +1,17 @@
 package com.holler.controller;
 
 
-import com.holler.bean.NotificationDTO;
-import com.holler.holler_service.NotificationService;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
+import com.holler.holler_service.NotificationService;
 
 
 @Controller
@@ -29,7 +28,7 @@ public class NotificationController {
         return notificationService.getUnreadNotificationCount(request);
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> getNotificationTemplatesForUser( HttpServletRequest request) throws Exception {
         return notificationService.fetchNotification(request);

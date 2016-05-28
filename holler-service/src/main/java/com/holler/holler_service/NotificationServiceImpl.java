@@ -1,11 +1,13 @@
 package com.holler.holler_service;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.holler.holler_dao.common.HollerConstants;
+
 import org.hibernate.loader.custom.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,8 +86,12 @@ public class NotificationServiceImpl implements NotificationService{
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)) {
 		//if(Boolean.TRUE){
-			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
-			Integer notificationCount = notificationDao.getUnreadNotificationCount(user.getId());
+			User user = userDao.findById(Integer.valueOf(request.getHeader("userId")));
+			Object notificationCountResult = notificationDao.getUnreadNotificationCount(user.getId());
+			Integer notificationCount = 0;
+			if(notificationCountResult != null){
+				notificationCount = ((BigInteger)notificationCountResult).intValue();
+			}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, notificationCount);
 		}else {
@@ -98,7 +104,8 @@ public class NotificationServiceImpl implements NotificationService{
 	public Map<String, Object> fetchNotification(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)) {
-			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
+		//if(Boolean.TRUE){
+			User user = userDao.findById(Integer.valueOf(request.getHeader("userId")));
 			List<Object[]> resultList = notificationDao.findByUserId(
 					user.getId());
 			List<String> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);

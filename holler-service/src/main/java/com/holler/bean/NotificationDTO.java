@@ -63,7 +63,9 @@ public class NotificationDTO {
 			for (Object[] object : notificationObj) {
 				if(object != null){
 					String template  = (String)object[6];
-					template.replace("FROM_USER",(String)object[4]).replace("JOB_TITLE",(String)object[5]).replace("NOTIFICATION_TYPE",(String) object[1]);
+					if(template != null){
+						template  = template.replace("FROM_USER",(String)object[4]).replace("JOB_TITLE",(String)object[5]).replace("NOTIFICATION_TYPE",(String) object[1]);
+					}
 					notificationTemplates.add(template);
 				}
 			}

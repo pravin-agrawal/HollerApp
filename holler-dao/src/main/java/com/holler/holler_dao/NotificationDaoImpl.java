@@ -90,12 +90,12 @@ public class NotificationDaoImpl extends BaseDaoImpl<Notification> implements No
 		return null;
 	}
 
-	public Integer getUnreadNotificationCount(Integer userId) {
+	public Object getUnreadNotificationCount(Integer userId) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_USERS_UNREAD_NOTIFICATION_COUNT);
 		Query queryObject = entityManager.createNativeQuery(sql)
 				.setParameter("userId", userId);
-		Integer count = queryObject.executeUpdate();
-		return count;
+		Object result = queryObject.getSingleResult();
+		return result;
 	}
 
 	public List<Object[]> findByUserId(int id) {
