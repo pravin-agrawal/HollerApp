@@ -1,6 +1,8 @@
 package com.holler.bean;
 
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationDTO {
 	private int id;
@@ -51,6 +53,22 @@ public class NotificationDTO {
 	}
 	public void setObjectId(int objectId) {
 		this.objectId = objectId;
+	}
+
+
+
+	public static List<String> constructNotificationTemplate(List<Object[]> notificationObj){
+		List<String> notificationTemplates = new ArrayList<String>();
+		if(notificationObj != null && !notificationObj.isEmpty()){
+			for (Object[] object : notificationObj) {
+				if(object != null){
+					String template  = (String)object[6];
+					template.replace("FROM_USER",(String)object[4]).replace("JOB_TITLE",(String)object[5]).replace("NOTIFICATION_TYPE",(String) object[1]);
+					notificationTemplates.add(template);
+				}
+			}
+		}
+		return notificationTemplates;
 	}
 
 

@@ -1,7 +1,12 @@
 package com.holler.holler_service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.holler.holler_dao.common.HollerConstants;
+import org.hibernate.loader.custom.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +17,8 @@ import com.holler.holler_dao.entity.Notification;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.NotificationType;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class NotificationServiceImpl implements NotificationService{
 
@@ -19,7 +26,10 @@ public class NotificationServiceImpl implements NotificationService{
 	NotificationDao notificationDao;
 
 	@Autowired
-	UserDao userDao; 
+	UserDao userDao;
+
+	@Autowired
+	TokenService tokenService;
 	
 	public boolean createNotification(NotificationDTO notificationDTO) {
 		Notification notification = new Notification();
@@ -69,5 +79,38 @@ public class NotificationServiceImpl implements NotificationService{
 		}
 		return true;
 	}
-	
+
+	public Map<String, Object> getUnreadNotificationCount(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)) {
+		//if(Boolean.TRUE){
+			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
+			Integer notificationCount = notificationDao.getUnreadNotificationCount(user.getId());
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, notificationCount);
+		}else {
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+
+	public Map<String, Object> fetchNotification(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)) {
+			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
+			List<Object[]> resultList = notificationDao.findByUserId(
+					user.getId());
+			List<String> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, notificationTemplates);
+		}else {
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+
+		return result;
+
+	}
+
 }

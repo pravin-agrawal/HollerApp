@@ -18,4 +18,8 @@ public interface NotificationDao extends BaseDao<Notification> {
 	public User getByPhoneNumber(String phoneNumber);
 
 	public User findByIdWithTags(int userId);
+
+	public Integer getUnreadNotificationCount(Integer userId);
+
+	public List<Object[]> findByUserId(int id);
 }
