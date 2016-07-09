@@ -11,7 +11,7 @@
 				<entry key="AUTHENTICATE_USER" value="SELECT * FROM user where email = ? and password = ?">
 				</entry>
 				
-				<entry key="AUTHENTICATE_USER_WITH_PHONE_NUMBER" value="SELECT * FROM user where email = ? and phone_number = ?">
+				<entry key="AUTHENTICATE_USER_WITH_EMAIL" value="SELECT * FROM user where email = ? ">
 				</entry>
 
 				<entry key="GET_USER_JOBS" >

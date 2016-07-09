@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService{
 		return userDao.authenticateUser(email, password);
 	}
 	
-	public boolean authenticateUserWithPhoneNumber(String email, String phoneNumber){
-		return userDao.authenticateUserWithPhoneNumber(email, phoneNumber);
+	public boolean authenticateUserWithEmail(String email){
+		return userDao.authenticateUserWithEmail(email);
 	}
 	
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId){
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService{
 				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPhoneNumber());
 				userDao.save(user);
 				
-				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail(), signUpDTO.getPhoneNumber());
+				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail());
 				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
 						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic());
 				
@@ -234,7 +234,7 @@ public class UserServiceImpl implements UserService{
 		try {
 			User user = userDao.getByPhoneNumber(loginDTO.getPhoneNumber());
 			if(user != null){
-				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail(), loginDTO.getPhoneNumber());
+				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail());
 				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
 						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic());
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);

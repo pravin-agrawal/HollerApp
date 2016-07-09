@@ -36,9 +36,8 @@ public class TestTokenController {
 
 		// 1. User Validation against DB
 		String email = map.get("email");
-		String phoneNumber = map.get("phoneNumber");
 		
-		Map<String, Object> result = tokenService.generateToken(email, phoneNumber);
+		Map<String, Object> result = tokenService.generateToken(email);
 		return result;
 	}
 

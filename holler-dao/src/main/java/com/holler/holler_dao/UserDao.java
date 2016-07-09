@@ -9,7 +9,7 @@ public interface UserDao extends BaseDao<User> {
 
 	public boolean authenticateUser(String email, String password);
 	
-	public boolean authenticateUserWithPhoneNumber(String email, String phoneNumber);
+	public boolean authenticateUserWithEmail(String email);
 
 	public List<Object[]> getUserJobs(int requestUserId);
 	

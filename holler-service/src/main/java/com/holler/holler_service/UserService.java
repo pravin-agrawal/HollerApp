@@ -12,7 +12,7 @@ public interface UserService {
 	
 	public boolean authenticateUser(String email, String password);
 	
-	public boolean authenticateUserWithPhoneNumber(String email, String phoneNumber);
+	public boolean authenticateUserWithEmail(String email);
 
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId);
 	

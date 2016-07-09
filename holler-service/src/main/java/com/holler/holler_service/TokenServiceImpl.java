@@ -46,10 +46,10 @@ public class TokenServiceImpl implements TokenService{
 		return result;
 	}
 	
-	public Map<String, Object> generateToken(String email, String phoneNumber){
+	public Map<String, Object> generateToken(String email){
 		Map<String, Object> result = new HashMap<String, Object>();
 		// 1. User Validation against DB
-		boolean isValidUser = userService.authenticateUserWithPhoneNumber(email, phoneNumber);
+		boolean isValidUser = userService.authenticateUserWithEmail(email);
 		// 2 .If success - Then - GetToken
 		if(isValidUser){
 			String token = redisDao.get(email);
