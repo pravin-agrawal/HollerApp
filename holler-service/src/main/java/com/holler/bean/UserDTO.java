@@ -134,17 +134,6 @@ public class UserDTO {
 		return user;
 	}
 
-	public static List<UserDTO> constructUserDTOsForAcceptedJObs(List<User> users) {
-		List<UserDTO> UserDTOs = new ArrayList<UserDTO>();
-		for(User user:users){
-			UserDTO userDTO = new UserDTO();
-			userDTO.setUserId(user.getId());
-			userDTO.setName(user.getName());
-			userDTO.setPic(user.getPic());
-			UserDTOs.add(userDTO);
-		}
-
-		return UserDTOs;
-	}
+	
 
 }

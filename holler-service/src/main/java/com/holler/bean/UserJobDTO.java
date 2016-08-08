@@ -15,6 +15,8 @@ public class UserJobDTO {
 	private Integer userId;
 	private Integer jobId;
 	private String title;
+	private String userName;
+	private String userProfilePic;
 	private String jobDescription;
 	private String status;
 	private Set<Integer> tags;
@@ -118,6 +120,22 @@ public class UserJobDTO {
 		this.lng = lng;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+	
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
+	public String getUserProfilePic() {
+		return userProfilePic;
+	}
+	
+	public void setUserProfilePic(String userProfilePic) {
+		this.userProfilePic = userProfilePic;
+	}
+	
 	public static List<UserJobDTO> constructUserJobDTO(List<Object[]> userJobs){
 		List<UserJobDTO> userJobDTOs = new ArrayList<UserJobDTO>();
 		if(userJobs != null && !userJobs.isEmpty()){
@@ -153,6 +171,8 @@ public class UserJobDTO {
 	public static UserJobDTO getJobDtoFromJob(Jobs job){
 		UserJobDTO jobDTO = new UserJobDTO();
 		jobDTO.setUserId(job.getUser().getId());
+		jobDTO.setUserName(job.getUser().getName());
+		jobDTO.setUserProfilePic(job.getUser().getPic());
 		jobDTO.setJobId(job.getId());
 		jobDTO.setTitle(job.getTitle());
 		jobDTO.setJobDescription(job.getDescription());
@@ -183,6 +203,8 @@ public class UserJobDTO {
 			userJobDTO.setTitle(job.getTitle());
 			userJobDTO.setCompensation(job.getCompensation());
 			userJobDTO.setJobdate(job.getJobDate());
+			userJobDTO.setJobTimeStamp(job.getCreated());
+			userJobDTO.setJobDescription(job.getDescription());
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;
@@ -202,6 +224,8 @@ public class UserJobDTO {
 				userJobDTO.setTitle(job.getTitle());
 				userJobDTO.setCompensation(job.getCompensation());
 				userJobDTO.setJobdate(job.getJobDate());
+				userJobDTO.setJobTimeStamp(job.getCreated());
+				userJobDTO.setJobDescription(job.getDescription());
 				jobDTOs.add(userJobDTO);
 			}
 		}
@@ -218,4 +242,21 @@ public class UserJobDTO {
 		return AddressConverter.getAddressFromLatLong(getLocationInCommaSeparatedString(userJobDTO));
 	}
 
+	
+	public static List<UserJobDTO> constructUserDTOsForAcceptedJObs(List<Object[]> users) {
+		List<UserJobDTO> userJobDTOs = new ArrayList<UserJobDTO>();
+		if(users != null && !users.isEmpty()){
+			for (Object[] object : users) {
+				if(object != null){
+					UserJobDTO userJobDTO = new UserJobDTO();
+					userJobDTO.setUserId((Integer)object[0]);
+					userJobDTO.setUserName((String)object[1]);
+					userJobDTO.setUserProfilePic((String)object[2]);
+					userJobDTO.setStatus((String)object[3]);
+					userJobDTOs.add(userJobDTO);
+				}
+			}
+		}
+		return userJobDTOs;
+	}
 }

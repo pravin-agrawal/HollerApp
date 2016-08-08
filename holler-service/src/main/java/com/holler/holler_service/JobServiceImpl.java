@@ -123,8 +123,8 @@ public class JobServiceImpl implements JobService{
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		//if(Boolean.TRUE){
-			List<User> users = jobDao.getUserAcceptedJobs(Integer.valueOf(request.getHeader("jobId")));
-			List<UserDTO> userDTOs = UserDTO.constructUserDTOsForAcceptedJObs(users);
+			List<Object[]> users = jobDao.getUserAcceptedJobs(Integer.valueOf(request.getHeader("jobId")));
+			List<UserJobDTO> userDTOs = UserJobDTO.constructUserDTOsForAcceptedJObs(users);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, userDTOs);
 		 }else{

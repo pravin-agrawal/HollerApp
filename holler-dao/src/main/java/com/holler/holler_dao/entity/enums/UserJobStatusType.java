@@ -13,10 +13,11 @@ public enum UserJobStatusType {
     UNACCEPT,
     UNGRANT;
 
-    public static List<String> getAcceptedAndGrantedStatus() {
+    public static List<String> getUsersAcceptedJobStatus() {
         List<String> list = new ArrayList<String>();
         list.add(ACCEPTED.toString());
         list.add(GRANTED.toString());
+        list.add(REJECTED.toString());
         return list;
     }
 }

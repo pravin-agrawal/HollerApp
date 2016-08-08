@@ -31,7 +31,8 @@
 				</entry>
 				<entry key="GET_ACCEPTED_USERS_BY_JOB_ID" >
 					<value>
-						select usr.* from user usr
+						select usr.id, usr.name, usr.pic, uj.status 
+						from user usr
 						join user_job uj on usr.id = uj.userId
 						And uj.jobId=:jobId and uj.status IN (:userJobStatus);
 					</value>
