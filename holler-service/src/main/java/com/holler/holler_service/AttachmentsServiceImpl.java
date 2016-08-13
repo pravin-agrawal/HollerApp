@@ -5,11 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.holler_dao.util.HollerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,11 +36,6 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 	@Autowired
 	TokenService tokenService;
 	
-	private String folderSeparator = "\\";
-	private String fileUploadPath = "D:\\HollerFileUpload";
-	private String profileImageFolder = "images\\profile";
-	private String otherDocumentFolder = "documents";
-	
 	@Transactional
 	public Map<String, Object> saveDocument(MultipartFile uploadedFile, DocumentType uploadedFileType, Integer userId, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -46,13 +44,13 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 			String docUrl = "";
 			switch(uploadedFileType){
 			case PROFILE_IMAGE:
-				docUrl = saveDocument(uploadedFile, fileUploadPath + folderSeparator + profileImageFolder);
+				docUrl = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.profileImageFolder"));
 				User user = userDao.findById(userId);
 				user.setPic(docUrl);
 				userDao.update(user);
 				break;
 			default:
-				docUrl = saveDocument(uploadedFile, fileUploadPath + folderSeparator + otherDocumentFolder);
+				docUrl = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.otherDocumentFolder"));
 				UserDocument userDocument = new UserDocument(userDao.findById(userId), docUrl, uploadedFileType);
 				userDocumentDao.save(userDocument);
 				break;
@@ -69,7 +67,7 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 	private String saveDocument(MultipartFile uploadedFile, String folder) {
 		File fileToSave = null;
 		try {
-			fileToSave = new File(folder + folderSeparator + UUID.randomUUID() + uploadedFile.getOriginalFilename());
+			fileToSave = new File(folder + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + UUID.randomUUID() + uploadedFile.getOriginalFilename());
 			fileToSave.createNewFile();
 			FileOutputStream fos = new FileOutputStream(fileToSave); 
 		    fos.write(uploadedFile.getBytes());
