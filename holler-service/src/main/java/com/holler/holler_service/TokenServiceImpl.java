@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import com.holler.util.TokenGenerator;
 @Service
 public class TokenServiceImpl implements TokenService{
 	
+	static final Logger log = LogManager.getLogger(TokenServiceImpl.class.getName());
+	
 	@Autowired
 	private RedisDAO redisDao;
 
@@ -22,10 +26,12 @@ public class TokenServiceImpl implements TokenService{
 	UserService userService;
 	
 	public Map<String, Object> validateToken(HttpServletRequest request){
+		log.info("validateToken :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		String email = request.getHeader("email");
 		String token = request.getHeader("token");
 
+		log.info("validateToken :: validate token {} for email {}", token, email);
 		if(StringUtils.isBlank(token)) {
 			result.put("code", "1");
 			result.put("message", "Token is null or empty");
@@ -36,6 +42,7 @@ public class TokenServiceImpl implements TokenService{
 		// 2 .If success - Process
 		
 		String storedToken = redisDao.get(email);
+		log.info("validateToken :: stored token is {}", storedToken);
 		if(token.equals(storedToken)) {
 			result.put("code", "0");
 			result.put("message", "successfully consumed");
@@ -47,9 +54,11 @@ public class TokenServiceImpl implements TokenService{
 	}
 	
 	public Map<String, Object> generateToken(String email){
+		log.info("generateToken :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		// 1. User Validation against DB
 		boolean isValidUser = userService.authenticateUserWithEmail(email);
+		log.info("generateToken :: is valid user {}", isValidUser);
 		// 2 .If success - Then - GetToken
 		if(isValidUser){
 			String token = redisDao.get(email);
@@ -67,10 +76,13 @@ public class TokenServiceImpl implements TokenService{
 	}
 
 	public Boolean isValidToken(HttpServletRequest request) {
+		log.info("isValidToken :: called");
 		Map<String, Object> tokenResult = validateToken(request);
 		if(tokenResult.get("code").equals("0")){
+			log.info("isValidToken :: true");
 			return Boolean.TRUE;
 		}
+		log.info("isValidToken :: false");
 		return Boolean.FALSE;
 	}
 

@@ -5,14 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.holler.holler_dao.util.HollerProperties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,10 +22,13 @@ import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.UserDocument;
 import com.holler.holler_dao.entity.enums.DocumentType;
+import com.holler.holler_dao.util.HollerProperties;
 
 @Service
 public class AttachmentsServiceImpl implements AttachmentsService{
 
+	static final Logger log = LogManager.getLogger(AttachmentsServiceImpl.class.getName());
+	
 	@Autowired
 	UserDao userDao;
 
@@ -38,9 +40,12 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 	
 	@Transactional
 	public Map<String, Object> saveDocument(MultipartFile uploadedFile, DocumentType uploadedFileType, Integer userId, HttpServletRequest request) {
+		log.info("saveDocument :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		 if(tokenService.isValidToken(request)){
 		 //if(Boolean.TRUE){
+			 log.info("saveDocument :: valid token");
+			 log.info("saveDocument :: user {} uploaded doc type {}", userId, uploadedFileType);
 			String docUrl = "";
 			switch(uploadedFileType){
 			case PROFILE_IMAGE:
@@ -67,7 +72,9 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 	private String saveDocument(MultipartFile uploadedFile, String folder) {
 		File fileToSave = null;
 		try {
-			fileToSave = new File(folder + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + UUID.randomUUID() + uploadedFile.getOriginalFilename());
+			String path = folder + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + UUID.randomUUID() + uploadedFile.getOriginalFilename();
+			log.info("saveDocument :: doc will be saved to path {}", path);
+			fileToSave = new File(path);
 			fileToSave.createNewFile();
 			FileOutputStream fos = new FileOutputStream(fileToSave); 
 		    fos.write(uploadedFile.getBytes());

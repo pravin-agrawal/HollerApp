@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ import com.holler.holler_dao.common.HollerConstants;
 
 @Service
 public class HollerServiceImpl implements HollerService{
-	
+	static final Logger log = LogManager.getLogger(HollerServiceImpl.class.getName());
 	@Autowired
 	CompensationDao compensationDao;
 	
@@ -22,9 +24,11 @@ public class HollerServiceImpl implements HollerService{
 	TokenService tokenService;
 
 	public Map<String, Object> getCompensationRange(HttpServletRequest request) {
+		log.info("getCompensationRange :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		//if(Boolean.TRUE){
+			 log.info("getCompensationRange :: valid token");
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, CompensationDTO.getCompensationDTOsFromCompensation(compensationDao.findAll()));
 		}else{

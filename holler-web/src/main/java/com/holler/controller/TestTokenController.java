@@ -1,24 +1,31 @@
 package com.holler.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_service.TokenService;
 import com.holler.holler_service.UserService;
 import com.holler.redis.RedisDAO;
 
 @Controller
 public class TestTokenController {
+	
+	static final Logger log = LogManager.getLogger(TestTokenController.class.getName());
 	
 	@Autowired
 	private RedisDAO redisDao;
@@ -48,5 +55,14 @@ public class TestTokenController {
 		Map<String, Object> result = tokenService.validateToken(request);
 		return result;
 	}
+	
+	@RequestMapping(value = "/testUrl/{test}", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> testPathVariable(@PathVariable String test, HttpServletRequest request) {
+    	log.info("test message is - {}", test);
+    	Map<String, Object> result = new HashMap<String, Object>();
+    	result.put(HollerConstants.RESULT, HollerConstants.SUCCESS);
+		result.put(HollerConstants.MESSAGE, test);
+    	return result;
+    }
 
 }

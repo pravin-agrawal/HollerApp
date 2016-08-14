@@ -9,6 +9,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ import com.holler.holler_dao.util.CommonUtil;
 
 @Service
 public class UserServiceImpl implements UserService{
-
+	static final Logger log = LogManager.getLogger(UserServiceImpl.class.getName());
 	@Autowired
 	UserDao userDao;
 	
@@ -43,14 +45,21 @@ public class UserServiceImpl implements UserService{
 	TokenService tokenService;
 	
 	public boolean authenticateUser(String email, String password){
-		return userDao.authenticateUser(email, password);
+		log.info("authenticateUser :: called");
+		boolean isAuthenticatedUser = userDao.authenticateUser(email, password);
+		log.info("authenticateUser :: is user authentic {}", isAuthenticatedUser);
+		return isAuthenticatedUser;
 	}
 	
 	public boolean authenticateUserWithEmail(String email){
-		return userDao.authenticateUserWithEmail(email);
+		log.info("authenticateUserWithEmail :: called");
+		boolean isAuthenticatedUser = userDao.authenticateUserWithEmail(email);
+		log.info("authenticateUser :: is user authentic {}", isAuthenticatedUser);
+		return isAuthenticatedUser;
 	}
 	
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId){
+		log.info("getUserJobs :: called");
 		UserJobDTO userJobDTO = null;
 		if(loggedInUser != null && loggedInUser.getId() == requestUserId){
 			List<Object[]> userJobs = userDao.getUserJobs(requestUserId); 
@@ -87,7 +96,9 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	public Map<String, Object> signUpUser(SignUpDTO signUpDTO, HttpServletRequest request) {
+		log.info("signUpUser :: called");
 		boolean isValidOtp = otpService.validateOtp(signUpDTO.getPhoneNumber(), signUpDTO.getOtp());
+		log.info("signUpUser :: is valid otp {}", isValidOtp);
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(!isValidOtp){
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
@@ -96,9 +107,11 @@ public class UserServiceImpl implements UserService{
 		}
 		try {
 			if(isUserPresent(signUpDTO.getEmail(), signUpDTO.getPhoneNumber())){
+				log.info("signUpUser :: user already present");
 				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 				result.put(HollerConstants.MESSAGE, HollerConstants.DUPLICATE_USER);
 			}else{
+				log.info("signUpUser :: creating new user with name " + signUpDTO.getName() + " and email " + signUpDTO.getEmail() + " and phoneNumber " + signUpDTO.getPhoneNumber());
 				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPhoneNumber());
 				userDao.save(user);
 				
@@ -118,9 +131,12 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public Map<String, Object> getUserProfile(HttpServletRequest request) {
+		log.info("getUserProfile :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		// if(Boolean.TRUE){
+			log.info("getUserProfile :: valid token");
+			log.info("getUserProfile :: fetch profile ofr user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
 			UserDTO userDTO = UserDTO.getDtoForUserProfile(user);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -133,9 +149,12 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	public Map<String, Object> updateUserProfile(UserDTO userDTO, HttpServletRequest request){
+		log.info("updateUserProfile :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		// if(Boolean.TRUE){
+			log.info("updateUserProfile :: valid token");
+			log.info("updateUserProfile :: update profile for user {}", userDTO.getUserId());
 			User user = userDao.findById(userDTO.getUserId());
 			UserDTO.setUserDataToUpdate(userDTO, user);
 			Set<Tags> tags = new HashSet<Tags>(tagDao.findbyIds(userDTO.getTags()));
@@ -160,24 +179,32 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public boolean isUserPresent(String email, String phoneNumber) {
+		log.info("isUserPresent :: valid token");
 		boolean isUserPresent = userDao.checkIfUserExists(email, phoneNumber);
+		log.info("isUserPresent :: is user present {}", isUserPresent);
 		return isUserPresent;
 	}
 
 	public List<TagDTO> fetchTagsForUserHomePage(Integer userId) {
+		log.info("fetchTagsForUserHomePage :: called");
+		log.info("fetchTagsForUserHomePage :: for user {}", userId);
 		List<Tags> tags = tagDao.fetchTagsForUserHomePage(userId);
 		List<TagDTO> tagDTOs = TagDTO.getTagDTOsFromTags(tags);
 		return tagDTOs;
 	}
 
 	public Map<String, Object> updateUserCurrentLocationAndAddress(UserLocationDTO userLocationDTO, HttpServletRequest request) {
+		log.info("updateUserCurrentLocationAndAddress :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		// if(Boolean.TRUE){
+			log.info("updateUserCurrentLocationAndAddress :: valid token");
+			log.info("updateUserCurrentLocationAndAddress :: for user {}", userLocationDTO.getUserId());
 			User user = userDao.findById(userLocationDTO.getUserId());
 			String currentLocation = UserLocationDTO.getLocationInCommaSeparatedString(userLocationDTO);
 			String currentAddress = UserLocationDTO.getAddressFromLocation(userLocationDTO);
 
+			log.info("updateUserCurrentLocationAndAddress :: for user " + userLocationDTO.getUserId() + " currLoc is " + currentLocation + " and currAddr is " + currentAddress);
 			user.setCurrentLocation(currentLocation);
 			user.setCurrentAddress(currentAddress);
 			userDao.update(user);
@@ -191,9 +218,12 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	public Map<String, Object> getUserSettings(HttpServletRequest request) {
+		log.info("getUserSettings :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		// if(Boolean.TRUE){
+			log.info("getUserSettings :: valid token");
+			log.info("getUserSettings :: for user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
 			UserSettingDTO userSettingResponseDTO = UserSettingDTO.getDtoForUserSetting(user);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -206,9 +236,12 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	public Map<String, Object> updateUserSetting(UserSettingDTO userSettingRequestDTO, HttpServletRequest request) {
+		log.info("updateUserSetting :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		// if(Boolean.TRUE){
+			log.info("updateUserSetting :: valid token");
+			log.info("updateUserSetting :: for user {}", userSettingRequestDTO.getUserId());
 			User user = userDao.findById(userSettingRequestDTO.getUserId());
 			user.setJobDiscoveryLimit(userSettingRequestDTO.getJobDiscoveryLimit());
 			user.setPushNotification(userSettingRequestDTO.getPushNotification());
@@ -224,14 +257,18 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request) {
+		log.info("loginUser :: called");
 		boolean isValidOtp = otpService.validateOtp(loginDTO.getPhoneNumber(), loginDTO.getOtp());
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(!isValidOtp){
+			log.info("loginUser :: otp entered is invalid");
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_SIGNUP_FAILURE);
 			return result;
 		}
 		try {
+			log.info("loginUser :: otp entered is valid");
+			log.info("loginUser :: try to login user with phone number {}", loginDTO.getPhoneNumber());
 			User user = userDao.getByPhoneNumber(loginDTO.getPhoneNumber());
 			if(user != null){
 				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail());
@@ -240,6 +277,7 @@ public class UserServiceImpl implements UserService{
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 				result.put(HollerConstants.RESULT, signUpResponseDTO);
 			}else{
+				log.info("loginUser :: user with phone number {} not found", loginDTO.getPhoneNumber());
 				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 				result.put(HollerConstants.MESSAGE, HollerConstants.USER_NOT_FOUND);
 			}
@@ -250,7 +288,4 @@ public class UserServiceImpl implements UserService{
 		}
 		return result;
 	}
-
-
-
 }
