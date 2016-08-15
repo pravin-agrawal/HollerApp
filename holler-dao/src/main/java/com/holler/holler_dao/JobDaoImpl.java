@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.holler.holler_dao.entity.enums.JobStatusType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -64,7 +65,8 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG);
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
 				.setParameter("searchedTag", tag + "%")
-				.setParameter("appropriate", Boolean.FALSE);;
+				.setParameter("appropriate", Boolean.FALSE)
+				.setParameter("status", JobStatusType.Active.name());
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}
@@ -100,7 +102,8 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
 				.setParameter("tagIdsString", tagIdsString)
 				.setParameter("tagIds", tagIds)
-				.setParameter("appropriate", Boolean.FALSE);
+				.setParameter("appropriate", Boolean.FALSE)
+				.setParameter("status", JobStatusType.Active.name());;
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.JobStatusType;
 import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
 
@@ -162,7 +163,7 @@ public class UserJobDTO {
 		job.setGenderPreference(userJobDTO.getGenderRequirement());
 		job.setSpecialRequirement(userJobDTO.getSpecialrequirement());
 		job.setJobDate(userJobDTO.getJobdate());
-		job.setStatus(userJobDTO.getStatus());
+		job.setStatus(JobStatusType.Active);
 		job.setJobLocation(getLocationInCommaSeparatedString(userJobDTO));
 		job.setJobAddress(getAddressFromLocation(userJobDTO));
 		return job;
@@ -181,6 +182,7 @@ public class UserJobDTO {
 		jobDTO.setGenderRequirement(job.getGenderPreference());
 		jobDTO.setJobAddress(job.getJobAddress());
 		jobDTO.setJobdate(job.getJobDate());
+		jobDTO.setStatus(job.getStatus().name());
 		return jobDTO;
 	}
 
@@ -205,6 +207,7 @@ public class UserJobDTO {
 			userJobDTO.setJobdate(job.getJobDate());
 			userJobDTO.setJobTimeStamp(job.getCreated());
 			userJobDTO.setJobDescription(job.getDescription());
+			userJobDTO.setStatus(job.getStatus().name());
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;

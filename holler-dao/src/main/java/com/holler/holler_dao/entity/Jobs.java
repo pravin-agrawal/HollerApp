@@ -1,21 +1,11 @@
 package com.holler.holler_dao.entity;
 
+import com.holler.holler_dao.entity.enums.JobStatusType;
+
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "jobs")
@@ -36,8 +26,9 @@ public class Jobs extends BaseEntity{
 	@Column(name = "job_description")
 	private String description;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
-	private String status;
+	private JobStatusType status;
 
 	@Column(name = "special_requirement")
 	private String specialRequirement;
@@ -107,11 +98,11 @@ public class Jobs extends BaseEntity{
 		this.description = description;
 	}
 
-	public String getStatus() {
+	public JobStatusType getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(JobStatusType status) {
 		this.status = status;
 	}
 

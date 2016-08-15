@@ -24,7 +24,7 @@
 				<entry key="GET_JOBS_BY_TAG" >
 					<value>
 						SELECT j.* FROM
-						jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate)
+						jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status))
 						JOIN tags AS t ON (jt.tag_id = t.id AND t.tag_name LIKE (:searchedTag))
 						GROUP BY j.id
 					</value>
@@ -46,7 +46,7 @@
 								j.*,
 								GROUP_CONCAT(t.id) AS tagIds
 							FROM
-								jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate)
+								jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status))
 								JOIN tags AS t ON (jt.tag_id = t.id AND t.id IN (:tagIds))
 								GROUP BY j.id
 						) AS X
