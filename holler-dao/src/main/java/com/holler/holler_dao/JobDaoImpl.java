@@ -62,7 +62,9 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 	@SuppressWarnings("unchecked")
 	public List<Jobs> searchJobsByTag(String tag) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG);
-		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class).setParameter("searchedTag", tag + "%");
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
+				.setParameter("searchedTag", tag + "%")
+				.setParameter("appropriate", Boolean.FALSE);;
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}
@@ -70,8 +72,10 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 	@Transactional(readOnly = true)
 	public List<Jobs> findAllByUserId(final Integer userId) {
 		return entityManager.createQuery("from " + Jobs.class.getName() + " jobs where jobs.user.id in (:userId) "
-				 + " order by jobs.created desc", Jobs.class)
-				.setParameter("userId", userId).getResultList();
+				 + " and jobs.inappropriateContent in (:appropriate) order by jobs.created desc", Jobs.class)
+				.setParameter("userId", userId)
+				.setParameter("appropriate", Boolean.FALSE)
+				.getResultList();
 	}
 
 	public List<Jobs> getMyPingedJobs(Integer userId) {
@@ -94,7 +98,9 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_IDS);
 		String tagIdsString = StringUtils.join(tagIds, ',');
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
-				.setParameter("tagIdsString", tagIdsString).setParameter("tagIds", tagIds);
+				.setParameter("tagIdsString", tagIdsString)
+				.setParameter("tagIds", tagIds)
+				.setParameter("appropriate", Boolean.FALSE);
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}

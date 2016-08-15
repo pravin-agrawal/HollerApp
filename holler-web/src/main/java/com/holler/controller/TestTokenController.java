@@ -59,7 +59,8 @@ public class TestTokenController {
 	@RequestMapping(value = "/testUrl/{test}", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> testPathVariable(@PathVariable String test, HttpServletRequest request) {
     	log.info("test message is - {}", test);
-    	Map<String, Object> result = new HashMap<String, Object>();
+		log.info("system property is - {}", System.getProperty("testProp"));
+		Map<String, Object> result = new HashMap<String, Object>();
     	result.put(HollerConstants.RESULT, HollerConstants.SUCCESS);
 		result.put(HollerConstants.MESSAGE, test);
     	return result;

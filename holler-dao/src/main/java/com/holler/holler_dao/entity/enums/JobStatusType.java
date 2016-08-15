@@ -8,6 +8,6 @@ public enum JobStatusType {
     Active,
     InActive,
     Blocked,
-    Resolved
+    Completed
 
 }

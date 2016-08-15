@@ -59,6 +59,9 @@ public class Jobs extends BaseEntity{
 
 	@Column(name = "job_address")
 	private String jobAddress;
+
+	@Column(name = "inappropriate_content")
+	boolean inappropriateContent = false;
 	
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "job_date")
@@ -158,6 +161,14 @@ public class Jobs extends BaseEntity{
 	
 	public void setJobDate(Date jobDate) {
 		this.jobDate = jobDate;
+	}
+
+	public boolean isInappropriateContent() {
+		return inappropriateContent;
+	}
+
+	public void setInappropriateContent(boolean inappropriateContent) {
+		this.inappropriateContent = inappropriateContent;
 	}
 
 	public Double[] getLatLongFromJobLocation() {
