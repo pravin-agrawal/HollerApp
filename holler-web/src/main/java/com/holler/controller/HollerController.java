@@ -23,4 +23,8 @@ public class HollerController {
 		return hollerService.getCompensationRange(request);
 	}
 
+	@RequestMapping(value = "/faqs", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Object> fetchFaqs() {
+		return hollerService.getFaqs();
+	}
 }

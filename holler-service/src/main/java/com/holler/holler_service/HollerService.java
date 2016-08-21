@@ -8,4 +8,5 @@ public interface HollerService {
 
 	Map<String, Object> getCompensationRange(HttpServletRequest request);
 
+	Map<String,Object> getFaqs();
 }

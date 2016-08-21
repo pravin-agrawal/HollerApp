@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.bean.FaqsDTO;
+import com.holler.holler_dao.FaqDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,10 @@ public class HollerServiceImpl implements HollerService{
 	static final Logger log = LogManager.getLogger(HollerServiceImpl.class.getName());
 	@Autowired
 	CompensationDao compensationDao;
-	
+
+	@Autowired
+	FaqDao faqDao;
+
 	@Autowired
 	TokenService tokenService;
 
@@ -35,6 +40,15 @@ public class HollerServiceImpl implements HollerService{
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
+		return result;
+	}
+
+	public Map<String, Object> getFaqs() {
+		log.info("getFaqs :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+		result.put(HollerConstants.RESULT, FaqsDTO.getFaqsDTO(faqDao.findAll()));
+
 		return result;
 	}
 
