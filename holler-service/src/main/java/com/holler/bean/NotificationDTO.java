@@ -2,7 +2,9 @@ package com.holler.bean;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NotificationDTO {
 	private int id;
@@ -12,6 +14,7 @@ public class NotificationDTO {
 	private boolean isRead;
 	private boolean isSent;
 	private int objectId;
+	private String notificationTemplate;
 	public int getId() {
 		return id;
 	}
@@ -55,22 +58,32 @@ public class NotificationDTO {
 		this.objectId = objectId;
 	}
 
+	public String getNotificationTemplate() {
+		return notificationTemplate;
+	}
 
+	public void setNotificationTemplate(String notificationTemplate) {
+		this.notificationTemplate = notificationTemplate;
+	}
 
-	public static List<String> constructNotificationTemplate(List<Object[]> notificationObj){
-		List<String> notificationTemplates = new ArrayList<String>();
+	public static List<NotificationDTO> constructNotificationTemplate(List<Object[]> notificationObj){
+		List<NotificationDTO> notificationDTOs = new ArrayList<NotificationDTO>();
 		if(notificationObj != null && !notificationObj.isEmpty()){
 			for (Object[] object : notificationObj) {
 				if(object != null){
-					String template  = (String)object[6];
+					NotificationDTO notificationDTO = new NotificationDTO();
+					String template  = (String)object[7];
 					if(template != null){
-						template  = template.replace("FROM_USER",(String)object[4]).replace("JOB_TITLE",(String)object[5]).replace("NOTIFICATION_TYPE",(String) object[1]);
+						template  = template.replace("FROM_USER",(String)object[5]).replace("JOB_TITLE",(String)object[6]).replace("NOTIFICATION_TYPE",(String) object[3]);
 					}
-					notificationTemplates.add(template);
+					notificationDTO.setNotificationTemplate(template);
+					notificationDTO.setObjectId((Integer)object[4]);
+					notificationDTO.setToUserId((Integer)object[2]);
+					notificationDTOs.add(notificationDTO);
 				}
 			}
 		}
-		return notificationTemplates;
+		return notificationDTOs;
 	}
 
 

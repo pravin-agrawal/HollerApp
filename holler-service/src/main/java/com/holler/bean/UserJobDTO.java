@@ -10,9 +10,13 @@ import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.JobStatusType;
 import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class UserJobDTO {
+	static final Logger log = LogManager.getLogger(UserJobDTO.class.getName());
+
 	private Integer userId;
 	private Integer jobId;
 	private String title;
@@ -198,6 +202,7 @@ public class UserJobDTO {
 	}
 	
 	public static List<UserJobDTO> getJobDtosToViewJobList(List<Jobs> jobs){
+		log.info("getJobDtosToViewJobList :: called");
 		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
 		for (Jobs job : CommonUtil.safe(jobs)) {
 			UserJobDTO userJobDTO = new UserJobDTO();
@@ -215,13 +220,19 @@ public class UserJobDTO {
 
 
 	public static List<UserJobDTO> getJobIdAndTitleByDiscoveryPreference(List<Jobs> jobs, User user) {
+		log.info("getJobIdAndTitleByDiscoveryPreference :: called");
 		int jobDiscoveryLimit = user.getJobDiscoveryLimit();
+		log.info("jobDiscoveryLimit : "+jobDiscoveryLimit);
 		Double[] userLatLong = user.getLatLongFromCurrentLocation();
+		log.info("userLatLong : "+userLatLong);
 		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
 		for (Jobs job : CommonUtil.safe(jobs)) {
 			Double[] jobLatLong = job.getLatLongFromJobLocation();
+			log.info("jobLatLong : "+jobLatLong);
 			Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
+			log.info("userAndJobDistance : "+userAndJobDistance);
 			if (userAndJobDistance <= jobDiscoveryLimit) {
+				log.info("user Job Distance is less than the discovery limit.");
 				UserJobDTO userJobDTO = new UserJobDTO();
 				userJobDTO.setJobId(job.getId());
 				userJobDTO.setTitle(job.getTitle());

@@ -7,6 +7,8 @@ public enum DocumentType {
 
     PROFILE_IMAGE,
     PAN_CARD,
-    DRIVING_LICENSE
+    DRIVING_LICENSE,
+    VOTER_ID,
+    ADHAAR_CARD
 
 }

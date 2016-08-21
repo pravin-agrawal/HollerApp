@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService{
 
 	@Autowired
 	TokenService tokenService;
-	
+
 	public boolean createNotification(NotificationDTO notificationDTO) {
 		Notification notification = new Notification();
 		User fromUser = userDao.findById(notificationDTO.getFromUserId());
@@ -121,7 +121,7 @@ public class NotificationServiceImpl implements NotificationService{
 			log.info("fetchNotification :: fetch notifications for user {}", request.getHeader("userId"));
 			User user = userDao.findById(Integer.valueOf(request.getHeader("userId")));
 			List<Object[]> resultList = notificationDao.findByUserId(user.getId());
-			List<String> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);
+			List<NotificationDTO> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);
 			log.info("fetchNotification :: fetched {} notifications for user {}", notificationTemplates.size(), request.getHeader("userId"));
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, notificationTemplates);
