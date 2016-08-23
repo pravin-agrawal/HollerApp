@@ -46,22 +46,21 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 		 //if(Boolean.TRUE){
 			 log.info("saveDocument :: valid token");
 			 log.info("saveDocument :: user {} uploaded doc type {}", userId, uploadedFileType);
-			String docUrl = "";
 			switch(uploadedFileType){
 			case PROFILE_IMAGE:
-				docUrl = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.profileImageFolder"));
+				saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.profileImageFolder"));
 				User user = userDao.findById(userId);
 				user.setPic(uploadedFile.getOriginalFilename());
 				userDao.update(user);
 				break;
 			default:
-				docUrl = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.otherDocumentFolder"));
+				saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.otherDocumentFolder"));
 				UserDocument userDocument = new UserDocument(userDao.findById(userId), uploadedFile.getOriginalFilename(), uploadedFileType);
 				userDocumentDao.save(userDocument);
 				break;
 			}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
-			result.put(HollerConstants.RESULT, docUrl);
+			result.put(HollerConstants.RESULT, uploadedFile.getOriginalFilename());
 		}else{
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
