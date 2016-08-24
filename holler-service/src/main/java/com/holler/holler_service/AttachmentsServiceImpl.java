@@ -51,12 +51,12 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 			case PROFILE_IMAGE:
 				fileName = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.profileImageFolder"));
 				User user = userDao.findById(userId);
-				user.setPic(uploadedFile.getOriginalFilename());
+				user.setPic(fileName);
 				userDao.update(user);
 				break;
 			default:
 				fileName = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.otherDocumentFolder"));
-				UserDocument userDocument = new UserDocument(userDao.findById(userId), uploadedFile.getOriginalFilename(), uploadedFileType);
+				UserDocument userDocument = new UserDocument(userDao.findById(userId), fileName, uploadedFileType);
 				userDocumentDao.save(userDocument);
 				break;
 			}
