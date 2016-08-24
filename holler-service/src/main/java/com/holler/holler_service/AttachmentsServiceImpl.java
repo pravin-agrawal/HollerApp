@@ -46,21 +46,22 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 		 //if(Boolean.TRUE){
 			 log.info("saveDocument :: valid token");
 			 log.info("saveDocument :: user {} uploaded doc type {}", userId, uploadedFileType);
+			 String fileName = null;
 			switch(uploadedFileType){
 			case PROFILE_IMAGE:
-				saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.profileImageFolder"));
+				fileName = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.profileImageFolder"));
 				User user = userDao.findById(userId);
 				user.setPic(uploadedFile.getOriginalFilename());
 				userDao.update(user);
 				break;
 			default:
-				saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.otherDocumentFolder"));
+				fileName = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.otherDocumentFolder"));
 				UserDocument userDocument = new UserDocument(userDao.findById(userId), uploadedFile.getOriginalFilename(), uploadedFileType);
 				userDocumentDao.save(userDocument);
 				break;
 			}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
-			result.put(HollerConstants.RESULT, uploadedFile.getOriginalFilename());
+			result.put(HollerConstants.RESULT, fileName);
 		}else{
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
@@ -70,8 +71,9 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 
 	private String saveDocument(MultipartFile uploadedFile, String folder) {
 		File fileToSave = null;
+		String uploadedFileName = UUID.randomUUID() + uploadedFile.getOriginalFilename();
 		try {
-			String path = folder + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + UUID.randomUUID() + uploadedFile.getOriginalFilename();
+			String path = folder + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + uploadedFileName;
 			log.info("saveDocument :: doc will be saved to path {}", path);
 			fileToSave = new File(path);
 			fileToSave.createNewFile();
@@ -81,7 +83,7 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return fileToSave.getAbsolutePath();
+		return uploadedFileName;
 	}
 
 }
