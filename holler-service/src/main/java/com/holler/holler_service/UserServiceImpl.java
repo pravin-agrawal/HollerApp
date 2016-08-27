@@ -238,14 +238,15 @@ public class UserServiceImpl implements UserService{
 	public Map<String, Object> updateUserSetting(UserSettingDTO userSettingRequestDTO, HttpServletRequest request) {
 		log.info("updateUserSetting :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
-		if(tokenService.isValidToken(request)){
-		// if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)) {
+			// if(Boolean.TRUE){
 			log.info("updateUserSetting :: valid token");
 			log.info("updateUserSetting :: for user {}", userSettingRequestDTO.getUserId());
 			User user = userDao.findById(userSettingRequestDTO.getUserId());
-			user.setJobDiscoveryLimit(userSettingRequestDTO.getJobDiscoveryLimit());
-			user.setPushNotification(userSettingRequestDTO.getPushNotification());
-			user.setCompensationRange(userSettingRequestDTO.getCompensationRange());
+			user.getUserSettingDetails().setCompensationRangeMin(userSettingRequestDTO.getCompensationRangeMin());
+			user.getUserSettingDetails().setCompensationRangeMax(userSettingRequestDTO.getCompensationRangeMax());
+			user.getUserSettingDetails().setJobDiscoveryLimit(userSettingRequestDTO.getJobDiscoveryLimit());
+			user.getUserSettingDetails().setPushNotification(userSettingRequestDTO.getPushNotification());
 			userDao.update(user);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, Boolean.TRUE);

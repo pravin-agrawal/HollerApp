@@ -54,14 +54,9 @@ public class User extends BaseEntity{
 	@Column(name = "current_address")
 	private String currentAddress;
 
-	@Column(name = "job_discovery_limit")
-	private Integer jobDiscoveryLimit;
-	
-	@Column(name = "compensation_range")
-	private Integer compensationRange;
-
-	@Column(name = "push_notification")
-	private Integer pushNotification;
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+	@JoinColumn(name = "user_setting_details_id")
+	private UserSettingDetails userSettingDetails;
 
 	public int getId() {
 		return id;
@@ -149,28 +144,12 @@ public class User extends BaseEntity{
 		this.currentLocation = currentLocation;
 	}
 
-	public Integer getJobDiscoveryLimit() {
-		return jobDiscoveryLimit;
+	public UserSettingDetails getUserSettingDetails() {
+		return userSettingDetails;
 	}
 
-	public void setJobDiscoveryLimit(Integer jobDiscoveryLimit) {
-		this.jobDiscoveryLimit = jobDiscoveryLimit;
-	}
-
-	public Integer getCompensationRange() {
-		return compensationRange;
-	}
-
-	public void setCompensationRange(Integer compensationRange) {
-		this.compensationRange = compensationRange;
-	}
-
-	public Integer getPushNotification() {
-		return pushNotification;
-	}
-
-	public void setPushNotification(Integer pushNotification) {
-		this.pushNotification = pushNotification;
+	public void setUserSettingDetails(UserSettingDetails userSettingDetails) {
+		this.userSettingDetails = userSettingDetails;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber) {

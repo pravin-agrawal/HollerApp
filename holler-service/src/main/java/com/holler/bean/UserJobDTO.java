@@ -221,7 +221,7 @@ public class UserJobDTO {
 
 	public static List<UserJobDTO> getJobIdAndTitleByDiscoveryPreference(List<Jobs> jobs, User user) {
 		log.info("getJobIdAndTitleByDiscoveryPreference :: called");
-		int jobDiscoveryLimit = user.getJobDiscoveryLimit();
+		int jobDiscoveryLimit = user.getUserSettingDetails().getJobDiscoveryLimit();
 		log.info("jobDiscoveryLimit : "+jobDiscoveryLimit);
 		Double[] userLatLong = user.getLatLongFromCurrentLocation();
 		log.info("userLatLong : "+userLatLong);
