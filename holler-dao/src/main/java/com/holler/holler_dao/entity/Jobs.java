@@ -39,7 +39,7 @@ public class Jobs extends BaseEntity{
 	@Column(name = "compensation")
 	private Integer compensation;
 	
-	@ManyToMany(cascade = {CascadeType.REFRESH})
+	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = "job_tag",
 		joinColumns = @JoinColumn(name = "job_id"),
 		inverseJoinColumns = @JoinColumn(name="tag_id"))

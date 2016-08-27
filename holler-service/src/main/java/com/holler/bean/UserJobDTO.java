@@ -2,14 +2,17 @@ package com.holler.bean;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.holler.holler_dao.entity.Jobs;
+import com.holler.holler_dao.entity.Tags;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.JobStatusType;
 import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -187,6 +190,12 @@ public class UserJobDTO {
 		jobDTO.setJobAddress(job.getJobAddress());
 		jobDTO.setJobdate(job.getJobDate());
 		jobDTO.setStatus(job.getStatus().name());
+		Set<Tags> tags = job.getTags();
+		Set<Integer> tagIds = new HashSet<Integer>();
+		for(Tags tag : CommonUtil.safe(tags)){
+			tagIds.add(tag.getId());
+		}
+		jobDTO.tags = tagIds;
 		return jobDTO;
 	}
 
