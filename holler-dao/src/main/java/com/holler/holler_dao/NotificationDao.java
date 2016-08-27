@@ -22,4 +22,6 @@ public interface NotificationDao extends BaseDao<Notification> {
 	public Object getUnreadNotificationCount(Integer userId);
 
 	public List<Object[]> findByUserId(int id);
+	
+	public void markAllNotificationsAsRead(int userId);
 }

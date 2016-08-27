@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.holler.bean.NotificationDTO;
 import com.holler.holler_dao.NotificationDao;
@@ -112,6 +113,7 @@ public class NotificationServiceImpl implements NotificationService{
 		return result;
 	}
 
+	@Transactional
 	public Map<String, Object> fetchNotification(HttpServletRequest request) {
 		log.info("fetchNotification :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -123,6 +125,8 @@ public class NotificationServiceImpl implements NotificationService{
 			List<Object[]> resultList = notificationDao.findByUserId(user.getId());
 			List<NotificationDTO> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);
 			log.info("fetchNotification :: fetched {} notifications for user {}", notificationTemplates.size(), request.getHeader("userId"));
+			notificationDao.markAllNotificationsAsRead(user.getId());
+			log.info("Marking all notifications to read for user {}", user.getId());
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, notificationTemplates);
 		}else {

@@ -79,6 +79,7 @@ public class NotificationDTO {
 					notificationDTO.setNotificationTemplate(template);
 					notificationDTO.setObjectId((Integer)object[4]);
 					notificationDTO.setToUserId((Integer)object[2]);
+					notificationDTO.setRead(String.valueOf(object[8]).equals("1"));
 					notificationDTOs.add(notificationDTO);
 				}
 			}

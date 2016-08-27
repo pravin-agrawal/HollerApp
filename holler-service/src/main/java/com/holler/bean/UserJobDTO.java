@@ -216,6 +216,7 @@ public class UserJobDTO {
 		for (Jobs job : CommonUtil.safe(jobs)) {
 			UserJobDTO userJobDTO = new UserJobDTO();
 			userJobDTO.setJobId(job.getId());
+			userJobDTO.setUserId(job.getUser().getId());
 			userJobDTO.setTitle(job.getTitle());
 			userJobDTO.setCompensation(job.getCompensation());
 			userJobDTO.setJobdate(job.getJobDate());
@@ -244,6 +245,7 @@ public class UserJobDTO {
 				log.info("user Job Distance is less than the discovery limit.");
 				UserJobDTO userJobDTO = new UserJobDTO();
 				userJobDTO.setJobId(job.getId());
+				userJobDTO.setUserId(job.getUser().getId());
 				userJobDTO.setTitle(job.getTitle());
 				userJobDTO.setCompensation(job.getCompensation());
 				userJobDTO.setJobdate(job.getJobDate());
