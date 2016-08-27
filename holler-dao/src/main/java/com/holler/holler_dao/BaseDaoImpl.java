@@ -1,9 +1,3 @@
-/*
-* Copyright (c) 2011 Fidelis. Inc. All Rights Reserved.
-*
-* This software is the proprietary information of Fidelis, Inc.
-* Use is subject to license terms.
-*/
 
 package com.holler.holler_dao;
 

@@ -19,7 +19,6 @@ public class ServerLauncher {
         Tomcat tomcat = new Tomcat();
         String userHome = System.getProperty("user.home");
 
-        //String keyStorePath = new File(userHome, "fidelis/ssl_cert/fidelis.jks").getAbsolutePath();
 
         // The port that we should run on can be set into an environment
         // variable
@@ -39,7 +38,6 @@ public class ServerLauncher {
         httpsConnector.setPort(8443);
         //httpsConnector.setSecure(true);
         //httpsConnector.setScheme("https");
-        //httpsConnector.setAttribute("keyAlias", "fidelis");
         //httpsConnector.setAttribute("keystorePass", "qwer1234");
         //httpsConnector.setAttribute("keystoreFile", keyStorePath);
         httpsConnector.setAttribute("clientAuth", "false");
