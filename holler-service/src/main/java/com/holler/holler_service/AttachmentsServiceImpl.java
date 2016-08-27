@@ -22,6 +22,7 @@ import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.UserDocument;
 import com.holler.holler_dao.entity.enums.DocumentType;
+import com.holler.holler_dao.util.CommonUtil;
 import com.holler.holler_dao.util.HollerProperties;
 
 @Service
@@ -56,8 +57,14 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 				break;
 			default:
 				fileName = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.otherDocumentFolder"));
-				UserDocument userDocument = new UserDocument(userDao.findById(userId), fileName, uploadedFileType);
-				userDocumentDao.save(userDocument);
+				UserDocument existingDocument = userDocumentDao.getUserDocument(userId, uploadedFileType);
+				if(CommonUtil.isNotNull(existingDocument)){
+					existingDocument.setDocumentUrl(fileName);
+					userDocumentDao.update(existingDocument);
+				}else{
+					UserDocument userDocument = new UserDocument(userDao.findById(userId), fileName, uploadedFileType);
+					userDocumentDao.save(userDocument);
+				}
 				break;
 			}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
