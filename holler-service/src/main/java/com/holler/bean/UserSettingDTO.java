@@ -10,7 +10,8 @@ import com.holler.holler_dao.entity.User;
 public class UserSettingDTO {
 
 	private Integer userId;
-	private Integer compensationRange;
+	private Integer compensationRangeMin;
+	private Integer compensationRangeMax;
 	private Integer pushNotification;
 	private Integer jobDiscoveryLimit;
 	
@@ -20,12 +21,23 @@ public class UserSettingDTO {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public Integer getCompensationRange() {
-		return compensationRange;
+
+	public Integer getCompensationRangeMax() {
+		return compensationRangeMax;
 	}
-	public void setCompensationRange(Integer compensationRange) {
-		this.compensationRange = compensationRange;
+
+	public void setCompensationRangeMax(Integer compensationRangeMax) {
+		this.compensationRangeMax = compensationRangeMax;
 	}
+
+	public Integer getCompensationRangeMin() {
+		return compensationRangeMin;
+	}
+
+	public void setCompensationRangeMin(Integer compensationRangeMin) {
+		this.compensationRangeMin = compensationRangeMin;
+	}
+
 	public Integer getPushNotification() {
 		return pushNotification;
 	}
@@ -41,7 +53,8 @@ public class UserSettingDTO {
 	public static UserSettingDTO getDtoForUserSetting(User user) {
 		UserSettingDTO userSettingDTO = new UserSettingDTO();
 		userSettingDTO.setUserId(user.getId());
-		userSettingDTO.setCompensationRange(user.getCompensationRange());
+		userSettingDTO.setCompensationRangeMin(user.getCompensationRangeMin());
+		userSettingDTO.setCompensationRangeMax(user.getCompensationRangeMax());
 		userSettingDTO.setPushNotification(user.getPushNotification());
 		userSettingDTO.setJobDiscoveryLimit(user.getJobDiscoveryLimit());
 		return userSettingDTO;
