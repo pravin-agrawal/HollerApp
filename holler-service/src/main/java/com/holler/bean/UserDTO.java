@@ -21,6 +21,7 @@ public class UserDTO {
 	private Set<Integer> tags;
 	private Map<Integer, String> tagsMap;
 	private Float avgRating;
+	private boolean userVerified;
 	public int getUserId() {
 		return userId;
 	}
@@ -108,6 +109,14 @@ public class UserDTO {
 		return tagsMap;
 	}
 
+	public void setIsUserVerified(boolean isUserVerified) {
+		this.userVerified = isUserVerified;
+	}
+
+	public boolean isUserVerified() {
+		return userVerified;
+	}
+
 	public static UserDTO getDtoForUserProfile(User user){
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUserId(user.getId());
@@ -116,6 +125,7 @@ public class UserDTO {
 		userDTO.setPhoneNumber(user.getPhoneNumber());
 		userDTO.setAbout(user.getAbout());
 		userDTO.setPic(user.getPic());
+		userDTO.setIsUserVerified(user.getIsUserVerified());
 		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
 		for (Tags tag : CommonUtil.safe(user.getTags())) {
 			tagMaps.put(tag.getId(), tag.getTagName());

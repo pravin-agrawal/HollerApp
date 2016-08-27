@@ -57,11 +57,17 @@ public class User extends BaseEntity{
 	@Column(name = "job_discovery_limit")
 	private Integer jobDiscoveryLimit;
 	
-	@Column(name = "compensation_range")
-	private Integer compensationRange;
+	@Column(name = "compensation_range_min")
+	private Integer compensationRangeMin;
+
+	@Column(name = "compensation_range_max")
+	private Integer compensationRangeMax;
 
 	@Column(name = "push_notification")
 	private Integer pushNotification;
+
+	@Column(name = "is_user_verified")
+	private boolean isUserVerified;
 
 	public int getId() {
 		return id;
@@ -157,12 +163,20 @@ public class User extends BaseEntity{
 		this.jobDiscoveryLimit = jobDiscoveryLimit;
 	}
 
-	public Integer getCompensationRange() {
-		return compensationRange;
+	public Integer getCompensationRangeMin() {
+		return compensationRangeMin;
 	}
 
-	public void setCompensationRange(Integer compensationRange) {
-		this.compensationRange = compensationRange;
+	public void setCompensationRangeMin(Integer compensationRangeMin) {
+		this.compensationRangeMin = compensationRangeMin;
+	}
+
+	public Integer getCompensationRangeMax() {
+		return compensationRangeMax;
+	}
+
+	public void setCompensationRangeMax(Integer compensationRangeMax) {
+		this.compensationRangeMax = compensationRangeMax;
 	}
 
 	public Integer getPushNotification() {
@@ -171,6 +185,14 @@ public class User extends BaseEntity{
 
 	public void setPushNotification(Integer pushNotification) {
 		this.pushNotification = pushNotification;
+	}
+
+	public boolean getIsUserVerified() {
+		return isUserVerified;
+	}
+
+	public void setIsUserVerified(boolean isUserVerified) {
+		this.isUserVerified = isUserVerified;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber) {

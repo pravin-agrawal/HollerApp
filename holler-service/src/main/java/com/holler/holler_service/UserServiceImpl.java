@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService{
 		log.info("getUserProfile :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
-		// if(Boolean.TRUE){
+		 //if(Boolean.TRUE){
 			log.info("getUserProfile :: valid token");
 			log.info("getUserProfile :: fetch profile ofr user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService{
 		log.info("getUserSettings :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
-		// if(Boolean.TRUE){
+		 //if(Boolean.TRUE){
 			log.info("getUserSettings :: valid token");
 			log.info("getUserSettings :: for user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
@@ -239,13 +239,14 @@ public class UserServiceImpl implements UserService{
 		log.info("updateUserSetting :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
-		// if(Boolean.TRUE){
+		 //if(Boolean.TRUE){
 			log.info("updateUserSetting :: valid token");
 			log.info("updateUserSetting :: for user {}", userSettingRequestDTO.getUserId());
 			User user = userDao.findById(userSettingRequestDTO.getUserId());
 			user.setJobDiscoveryLimit(userSettingRequestDTO.getJobDiscoveryLimit());
 			user.setPushNotification(userSettingRequestDTO.getPushNotification());
-			user.setCompensationRange(userSettingRequestDTO.getCompensationRange());
+			user.setCompensationRangeMin(userSettingRequestDTO.getCompensationRangeMin());
+			user.setCompensationRangeMax(userSettingRequestDTO.getCompensationRangeMax());
 			userDao.update(user);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, Boolean.TRUE);
