@@ -14,6 +14,7 @@ public interface JobService {
 	public Map<String, Object> viewJob(HttpServletRequest request);
 	public Map<String, Object> getMyJobs(HttpServletRequest request);
 	public Map<String, Object> getMyPingedJobs(HttpServletRequest request);
+	public Map<String, Object> getMyPostedAndPingedJobIds(HttpServletRequest request);
 	public Map<String, Object> getUsersAcceptedJob(HttpServletRequest request);
 	public Map<String, Object> searchJobsByTag(HttpServletRequest request);
 	public Map<String, Object> searchJobsByTagIds(Set<Integer> tagIds, Integer userId, HttpServletRequest request);

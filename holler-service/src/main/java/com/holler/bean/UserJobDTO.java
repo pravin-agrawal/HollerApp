@@ -34,8 +34,8 @@ public class UserJobDTO {
 	private int genderRequirement;
 	private Date jobdate;	//date on which job should be done
 	private String jobAddress;
-	private double lat;
-	private double lng;
+	private String lat;
+	private String lng;
 
 	public Integer getUserId() {
 		return userId;
@@ -112,19 +112,19 @@ public class UserJobDTO {
 	public void setJobAddress(String jobAddress) {
 		this.jobAddress = jobAddress;
 	}
-	public double getLat() {
+	public String getLat() {
 		return lat;
 	}
 
-	public void setLat(double lat) {
+	public void setLat(String lat) {
 		this.lat = lat;
 	}
 
-	public double getLng() {
+	public String getLng() {
 		return lng;
 	}
 
-	public void setLng(double lng) {
+	public void setLng(String lng) {
 		this.lng = lng;
 	}
 
@@ -190,6 +190,8 @@ public class UserJobDTO {
 		jobDTO.setJobAddress(job.getJobAddress());
 		jobDTO.setJobdate(job.getJobDate());
 		jobDTO.setStatus(job.getStatus().name());
+		jobDTO.setLat(job.getJobLocation().split(",")[0]);
+		jobDTO.setLng(job.getJobLocation().split(",")[1]);
 		Set<Tags> tags = job.getTags();
 		Set<Integer> tagIds = new HashSet<Integer>();
 		for(Tags tag : CommonUtil.safe(tags)){

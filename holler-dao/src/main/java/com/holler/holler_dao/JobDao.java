@@ -15,6 +15,8 @@ public interface JobDao extends BaseDao<Jobs> {
 
     public List<Jobs> getMyPingedJobs(final Integer userId);
 
+    public List<Integer> getMyPostedAndPingedJobIds(final Integer userId);
+
     public List<Object[]> getUserAcceptedJobs(final Integer jobId);
 
     public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds);
