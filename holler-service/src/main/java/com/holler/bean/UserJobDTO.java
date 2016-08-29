@@ -10,6 +10,7 @@ import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Tags;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.JobStatusType;
+import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
 
@@ -36,6 +37,7 @@ public class UserJobDTO {
 	private String jobAddress;
 	private double lat;
 	private double lng;
+	private List<UserJobStatus> userJobStatusList;
 
 	public Integer getUserId() {
 		return userId;
@@ -142,6 +144,21 @@ public class UserJobDTO {
 	
 	public void setUserProfilePic(String userProfilePic) {
 		this.userProfilePic = userProfilePic;
+	}
+	
+	public void setUserJobStatusList(List<UserJobStatus> userJobStatusList) {
+		this.userJobStatusList = userJobStatusList;
+	}
+	
+	public List<UserJobStatus> getUserJobStatusList() {
+		return userJobStatusList;
+	}
+	
+	public void addUserJobStatus(UserJobStatus jobStatus){
+		if(CommonUtil.isNull(userJobStatusList)){
+			userJobStatusList = new ArrayList<UserJobStatus>();
+		}
+		userJobStatusList.add(jobStatus);
 	}
 	
 	public static List<UserJobDTO> constructUserJobDTO(List<Object[]> userJobs){
@@ -283,5 +300,18 @@ public class UserJobDTO {
 			}
 		}
 		return userJobDTOs;
+	}
+	public static List<UserJobStatus> getUserJobStatusList(List<Object[]> resultList) {
+		List<UserJobStatus> userJobStatusList = new ArrayList<UserJobStatus>();
+		if(CommonUtil.notNullAndEmpty(resultList)){
+			for (Object[] object : resultList) {
+				UserJobStatus jobStatus = new UserJobStatus();
+				jobStatus.setJobId((Integer)object[0]);
+				jobStatus.setAcceptedByUserId((Integer)object[1]);
+				jobStatus.setJobStatusType(UserJobStatusType.valueOf((String)object[2]));
+				userJobStatusList.add(jobStatus);
+			}
+		}
+		return userJobStatusList;
 	}
 }

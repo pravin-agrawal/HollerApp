@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.holler.holler_dao.entity.enums.JobStatusType;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -129,6 +130,13 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		query.setParameter("jobId", jobId);
 		query.setParameter("status", status.toString());
 		query.executeUpdate();
+	}
+
+	public List<Object[]> getUserJobStatus(int jobId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_USER_JOB_STATUS);
+		Query queryObject = entityManager.createNativeQuery(sql).setParameter("jobId", jobId);
+		List<Object[]> resultList = queryObject.getResultList();
+		return resultList;
 	}
 
 /*

@@ -1,11 +1,10 @@
 package com.holler.holler_dao;
 
-import com.holler.holler_dao.entity.Jobs;
-import com.holler.holler_dao.entity.User;
-import com.holler.holler_dao.entity.enums.UserJobStatusType;
-
 import java.util.List;
 import java.util.Set;
+
+import com.holler.holler_dao.entity.Jobs;
+import com.holler.holler_dao.entity.enums.UserJobStatusType;
 
 public interface JobDao extends BaseDao<Jobs> {
 
@@ -24,6 +23,8 @@ public interface JobDao extends BaseDao<Jobs> {
     void unAcceptJob(int userId, int jobId);
 
     void grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status);
+
+	public List<Object[]> getUserJobStatus(int jobId);
 
    // void unGrantJob(int userId, int jobId, UserJobStatusType status);
 }

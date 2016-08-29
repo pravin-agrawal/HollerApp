@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.holler.bean.UpdateUserJobRequestDTO;
 import com.holler.bean.UserJobDTO;
+import com.holler.bean.UserJobStatus;
 import com.holler.holler_dao.JobDao;
 import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
@@ -81,12 +82,15 @@ public class JobServiceImpl implements JobService{
 	public Map<String, Object> viewJob(HttpServletRequest request){
 		log.info("viewJob :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
-			if(tokenService.isValidToken(request)){
-		 //if(Boolean.TRUE){
+		if(tokenService.isValidToken(request)){
+		// if(Boolean.TRUE){
 			log.info("viewJob :: valid token");
 			log.info("viewJob :: view job with id {}", request.getHeader("jobId"));
 			Jobs job = jobDao.findById(Integer.valueOf(request.getHeader("jobId")));
 			UserJobDTO jobDTO = UserJobDTO.getJobDtoFromJob(job);
+			List<Object[]> resultList = jobDao.getUserJobStatus(job.getId());
+			List<UserJobStatus> userJobStatusList = UserJobDTO.getUserJobStatusList(resultList);
+			jobDTO.setUserJobStatusList(userJobStatusList);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, jobDTO);
 		 }else{

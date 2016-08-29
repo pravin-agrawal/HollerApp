@@ -118,7 +118,11 @@
 						UPDATE notification SET is_read = 1 WHERE to_user = :userId
 					</value>
 				</entry>
-
+				<entry key="GET_USER_JOB_STATUS" >
+					<value>
+						SELECT * from user_job where jobid = :jobId
+					</value>
+				</entry>
 
 			</map>
 		</property>
