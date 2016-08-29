@@ -12,6 +12,7 @@ public class SQLQueryIds {
 	public static final String UPDATE_JOB = "UPDATE_JOB";
 	public static final String GET_TAGS_FOR_USER_HOME_PAGE = "GET_TAGS_FOR_USER_HOME_PAGE";
 	public static final String GET_MY_PINGED_JOBS = "GET_MY_PINGED_JOBS";
+	public static final String GET_MY_POSTED_AND_PINGED_JOB_IDS = "GET_MY_POSTED_AND_PINGED_JOB_IDS";
 	public static final String GET_USERS_IDS_BY_TAG_IDS = "GET_USERS_IDS_BY_TAG_IDS";
 	public static final String GET_USERS_UNREAD_NOTIFICATION_COUNT = "GET_USERS_UNREAD_NOTIFICATION_COUNT";
 	public static final String GET_NOTIFICATION_TEMPLATE = "GET_NOTIFICATION_TEMPLATE";

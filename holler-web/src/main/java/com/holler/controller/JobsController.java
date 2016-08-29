@@ -71,4 +71,9 @@ public class JobsController {
 	public @ResponseBody Map<String, Object> myPingedJobs(HttpServletRequest request){
 		return jobService.getMyPingedJobs(request);
 	}
+
+	@RequestMapping(value="/postedAndPingedJobIds", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> postedAndPingedJobIds(HttpServletRequest request){
+		return jobService.getMyPostedAndPingedJobIds(request);
+	}
 }

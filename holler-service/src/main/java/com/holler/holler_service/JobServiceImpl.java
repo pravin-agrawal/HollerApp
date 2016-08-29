@@ -83,7 +83,7 @@ public class JobServiceImpl implements JobService{
 		log.info("viewJob :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
-		// if(Boolean.TRUE){
+		//if(Boolean.TRUE){
 			log.info("viewJob :: valid token");
 			log.info("viewJob :: view job with id {}", request.getHeader("jobId"));
 			Jobs job = jobDao.findById(Integer.valueOf(request.getHeader("jobId")));
@@ -130,6 +130,23 @@ public class JobServiceImpl implements JobService{
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, jobDTO);
 		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+
+	public Map<String, Object> getMyPostedAndPingedJobIds(HttpServletRequest request) {
+		log.info("getMyPostedAndPingedJobIds :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)){
+		//if(Boolean.TRUE){
+			log.info("getMyPostedAndPingedJobIds :: valid token");
+			log.info("getMyPostedAndPingedJobIds :: for user id {}", request.getHeader("userId"));
+			List<Integer> jobIds = jobDao.getMyPostedAndPingedJobIds(Integer.valueOf(request.getHeader("userId")));
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, jobIds);
+		}else{
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}

@@ -121,6 +121,13 @@
 				<entry key="GET_USER_JOB_STATUS" >
 					<value>
 						SELECT * from user_job where jobid = :jobId
+						</value>
+				</entry>
+				<entry key="GET_MY_POSTED_AND_PINGED_JOB_IDS" >
+					<value>
+						SELECT id FROM jobs where userId = :userId
+						UNION
+						SELECT jobId FROM user_job where userid = :userId
 					</value>
 				</entry>
 

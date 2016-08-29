@@ -88,6 +88,13 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 
+	public List<Integer> getMyPostedAndPingedJobIds(Integer userId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_MY_POSTED_AND_PINGED_JOB_IDS);
+		Query queryObject = entityManager.createNativeQuery(sql).setParameter("userId", userId);
+		List<Integer> resultList = queryObject.getResultList();
+		return resultList;
+	}
+
 	public List<Object[]> getUserAcceptedJobs(Integer jobId) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_ACCEPTED_USERS_BY_JOB_ID);
 		Query queryObject = entityManager.createNativeQuery(sql)

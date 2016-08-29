@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService{
 		log.info("getUserProfile :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
-		 //if(Boolean.TRUE){
+		// if(Boolean.TRUE){
 			log.info("getUserProfile :: valid token");
 			log.info("getUserProfile :: fetch profile ofr user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
