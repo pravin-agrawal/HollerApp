@@ -88,6 +88,24 @@ public class JobServiceImpl implements JobService{
 			log.info("viewJob :: view job with id {}", request.getHeader("jobId"));
 			Jobs job = jobDao.findById(Integer.valueOf(request.getHeader("jobId")));
 			UserJobDTO jobDTO = UserJobDTO.getJobDtoFromJob(job);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, jobDTO);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+	
+	public Map<String, Object> viewJobNew(HttpServletRequest request){
+		log.info("viewJob :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)){
+		//if(Boolean.TRUE){
+			log.info("viewJob :: valid token");
+			log.info("viewJob :: view job with id {}", request.getHeader("jobId"));
+			Jobs job = jobDao.findById(Integer.valueOf(request.getHeader("jobId")));
+			UserJobDTO jobDTO = UserJobDTO.getJobDtoFromJob(job);
 			List<Object[]> resultList = jobDao.getUserJobStatus(job.getId());
 			List<UserJobStatus> userJobStatusList = UserJobDTO.getUserJobStatusList(resultList);
 			jobDTO.setUserJobStatusList(userJobStatusList);

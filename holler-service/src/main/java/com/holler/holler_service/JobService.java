@@ -22,4 +22,5 @@ public interface JobService {
 	Map<String,Object> acceptOrUnacceptJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
 
 	Map<String,Object> grantOrUnGrantJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
+	public Map<String, Object> viewJobNew(HttpServletRequest request);
 }

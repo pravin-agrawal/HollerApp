@@ -55,16 +55,16 @@ public class User extends BaseEntity{
 	private String currentAddress;
 
 	@Column(name = "job_discovery_limit")
-	private Integer jobDiscoveryLimit;
+	private Integer jobDiscoveryLimit = 10;
 	
 	@Column(name = "compensation_range_min")
-	private Integer compensationRangeMin;
+	private Integer compensationRangeMin = 0;
 
 	@Column(name = "compensation_range_max")
-	private Integer compensationRangeMax;
+	private Integer compensationRangeMax = 50000;
 
 	@Column(name = "push_notification")
-	private Integer pushNotification;
+	private Integer pushNotification = 1;
 
 	@Column(name = "is_user_verified")
 	private boolean isUserVerified;

@@ -34,6 +34,11 @@ public class JobsController {
 	public @ResponseBody Map<String, Object> viewJob(HttpServletRequest request){
 		return jobService.viewJob(request);
 	}
+	
+	@RequestMapping(value="/viewJobNew", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> viewJobNew(HttpServletRequest request){
+		return jobService.viewJobNew(request);
+	}
 
 	@RequestMapping(value="/myJobs", method=RequestMethod.POST)
 	public @ResponseBody Map<String, Object> myJobs(HttpServletRequest request){
