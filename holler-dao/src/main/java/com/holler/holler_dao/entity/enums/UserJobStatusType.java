@@ -11,7 +11,9 @@ public enum UserJobStatusType {
     REJECTED,
     GRANTED,
     UNACCEPT,
-    UNGRANT;
+    UNGRANT,
+    ACCEPTER,
+    PROVIDER;
 
     public static List<String> getUsersAcceptedJobStatus() {
         List<String> list = new ArrayList<String>();

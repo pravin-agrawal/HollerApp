@@ -68,6 +68,17 @@
 						UPDATE user_job SET status = :status WHERE userId = :userId AND jobId = :jobId
 					</value>
 				</entry>
+				<entry key="UPDATE_JOB_PROVIDER_RATING_FLAG" >
+					<value>
+						UPDATE user_job SET provider_rating_flag = :flag WHERE userId = :userId AND jobId = :jobId
+					</value>
+				</entry>
+
+				<entry key="UPDATE_JOB_ACCEPTER_RATING_FLAG" >
+					<value>
+						UPDATE user_job SET accepter_rating_flag = :flag WHERE userId = :userId AND jobId = :jobId
+					</value>
+				</entry>
 
 				<entry key="GET_TAGS_FOR_USER_HOME_PAGE" >
 					<value>
@@ -128,6 +139,36 @@
 						SELECT id FROM jobs where userId = :userId
 						UNION
 						SELECT jobId FROM user_job where userid = :userId
+					</value>
+				</entry>
+				<entry key="GET_USER_FOR_RATING_SCREEN">
+					<value>
+						SELECT result.id userId, result.name, result.pic, jobDesignation
+						FROM
+						(
+							SELECT usr.*, "PROVIDER" as jobDesignation from
+							jobs j
+							JOIN user_job uj ON (j.id = uj.jobid AND uj.status=:userJobStatus)
+							JOIN user usr ON (uj.userid = usr.id)
+							WHERE j.userId = :userId
+							AND j.status=:jobStatus
+							AND uj.provider_rating_flag=:ratingFlag
+
+						UNION
+
+							SELECT usr.* , "ACCEPTER" as jobDesignation from
+							user_job uj
+							JOIN jobs j ON (uj.jobid = j.id AND uj.accepter_rating_flag= :ratingFlag)
+							JOIN user usr ON (j.userId = usr.id AND j.status=:jobStatus )
+							WHERE uj.userid = :userId
+						) result;
+					</value>
+				</entry>
+				<entry key="GET_USER_RATING_DATA">
+					<value>
+						SELECT usr.id, usr.name, usr.pic, ur.rating, ur.feedback from user_ratings ur
+						JOIN user usr ON (ur.from_user = usr.id)
+						WHERE ur.to_user= :userId ;
 					</value>
 				</entry>
 

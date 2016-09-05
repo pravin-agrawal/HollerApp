@@ -146,13 +146,18 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 
-/*
-	public void unGrantJob(int userId, int jobId, UserJobStatusType status) {
-		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB));
+	public void setUserJobRatingFlag(int userId, int jobId, String jobDesignation) {
+		String sql = null;
+		if(jobDesignation.equals(UserJobStatusType.ACCEPTER.name())){
+			sql = queryDao.getQueryString(SQLQueryIds.UPDATE_JOB_ACCEPTER_RATING_FLAG);
+		}else{
+			sql = queryDao.getQueryString(SQLQueryIds.UPDATE_JOB_PROVIDER_RATING_FLAG);
+		}
+		Query query = entityManager.createNativeQuery(sql);
 		query.setParameter("userId", userId);
 		query.setParameter("jobId", jobId);
+		query.setParameter("flag", Boolean.TRUE);
 		query.executeUpdate();
 	}
-*/
 
 }
