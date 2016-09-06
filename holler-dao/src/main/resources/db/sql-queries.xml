@@ -31,7 +31,7 @@
 				</entry>
 				<entry key="GET_ACCEPTED_USERS_BY_JOB_ID" >
 					<value>
-						select usr.id, usr.name, usr.pic, uj.status 
+						select usr.id, usr.name, usr.pic, uj.status,usr.avg_rating , usr.is_user_verified
 						from user usr
 						join user_job uj on usr.id = uj.userId
 						And uj.jobId=:jobId and uj.status IN (:userJobStatus);
@@ -131,8 +131,11 @@
 				</entry>
 				<entry key="GET_USER_JOB_STATUS" >
 					<value>
-						SELECT * from user_job where jobid = :jobId
-						</value>
+						SELECT uj.jobid, uj.userid, uj.status, usr.name, usr.pic, avg_rating ,usr.is_user_verified from
+						user_job uj
+						JOIN user usr ON (uj.userid = usr.id )
+						where jobid = :jobId
+					</value>
 				</entry>
 				<entry key="GET_MY_POSTED_AND_PINGED_JOB_IDS" >
 					<value>

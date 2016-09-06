@@ -148,4 +148,22 @@ public class UserRatingDTO {
 		rating.setFeedback(userRatingDTO.getFeedback());
 		return rating;
 	}
+
+	public static Float calculateAverageRatingForUser(List<Object[]> resultList) {
+		Float avgRating = 0f;
+		int totalRating = 0 ;
+		int totalCount = 0;
+		if(resultList != null && !resultList.isEmpty()){
+			for (Object[] object : resultList) {
+				if(object != null){
+					totalCount++;
+					totalRating = totalRating + (Integer) object[3];
+				}
+			}
+		}
+		if(totalCount != 0){
+			avgRating = (float)totalRating/totalCount;
+		}
+		return avgRating;
+	}
 }

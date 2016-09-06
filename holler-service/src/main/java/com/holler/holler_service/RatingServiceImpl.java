@@ -6,11 +6,13 @@ import com.holler.holler_dao.RatingDao;
 import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.Rating;
+import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.util.CommonUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +42,8 @@ public class RatingServiceImpl implements RatingService {
     public Map<String, Object> showRatingScreen(HttpServletRequest request) {
         log.info("showRatingScreen :: called");
         Map<String, Object> result = new HashMap<String, Object>();
-        //if (tokenService.isValidToken(request)) {
-            if(Boolean.TRUE){
+        if (tokenService.isValidToken(request)) {
+           // if(Boolean.TRUE){
             log.info("showRatingScreen :: valid token");
             log.info("showRatingScreen :: show rating screen for user with id {}", request.getHeader("userId"));
             List<Object[]> resultList = ratingDao.getUserForRatingScreen(Integer.valueOf(request.getHeader("userId")));
@@ -61,8 +63,8 @@ public class RatingServiceImpl implements RatingService {
     public Map<String, Object> getUserRatings(HttpServletRequest request) {
         log.info("getUserRatings :: called");
         Map<String, Object> result = new HashMap<String, Object>();
-        //if (tokenService.isValidToken(request)) {
-            if(Boolean.TRUE){
+        if (tokenService.isValidToken(request)) {
+           // if(Boolean.TRUE){
             log.info("getUserRatings :: valid token");
             log.info("getUserRatings :: get user rating for user with id {}", request.getHeader("userId"));
             List<Object[]> resultList = ratingDao.getUserRatings(Integer.valueOf(request.getHeader("userId")));
@@ -82,8 +84,8 @@ public class RatingServiceImpl implements RatingService {
     public Map<String, Object> setRating(UserRatingDTO userRatingDTO, HttpServletRequest request) {
         log.info("setRating :: called");
         Map<String, Object> result = new HashMap<String, Object>();
-        //if (tokenService.isValidToken(request)) {
-            if(Boolean.TRUE){
+        if (tokenService.isValidToken(request)) {
+           // if(Boolean.TRUE){
             log.info("setRating :: valid token");
             log.info("setRating :: set rating for userId {}", userRatingDTO.getToUserId());
             Rating rating = UserRatingDTO.constructRatingDTOToSave(userRatingDTO);
@@ -95,6 +97,7 @@ public class RatingServiceImpl implements RatingService {
                 }else{
                     jobDao.setUserJobRatingFlag(userRatingDTO.getToUserId(),userRatingDTO.getJobId(),userRatingDTO.getJobDesignation());
                 }
+                calculateRatingAndSave(userRatingDTO.getToUserId());
             result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
             result.put(HollerConstants.RESULT, userRatingDTO);
         } else {
@@ -102,5 +105,16 @@ public class RatingServiceImpl implements RatingService {
             result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
         }
         return result;
+    }
+
+    @Async
+    private void calculateRatingAndSave(int userId){
+        log.info("calculateRatingAndSave :: called for userId {}", userId);
+        List<Object[]> resultList = ratingDao.getUserRatings(userId);
+
+        Float avgRating = UserRatingDTO.calculateAverageRatingForUser(resultList);
+        User user = userDao.findById(userId);
+        user.setRating(avgRating);
+        userDao.update(user);
     }
 }

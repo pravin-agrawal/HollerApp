@@ -259,8 +259,8 @@ public class UserServiceImpl implements UserService{
 
 	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request) {
 		log.info("loginUser :: called");
-		boolean isValidOtp = otpService.validateOtp(loginDTO.getPhoneNumber(), loginDTO.getOtp());
 		Map<String, Object> result = new HashMap<String, Object>();
+		boolean isValidOtp = otpService.validateOtp(loginDTO.getPhoneNumber(), loginDTO.getOtp());
 		if(!isValidOtp){
 			log.info("loginUser :: otp entered is invalid");
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
@@ -274,7 +274,7 @@ public class UserServiceImpl implements UserService{
 			if(user != null){
 				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail());
 				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
-						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic());
+						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic(), user.getRating(),user.isUserVerified());
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 				result.put(HollerConstants.RESULT, signUpResponseDTO);
 			}else{

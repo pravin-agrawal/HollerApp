@@ -125,7 +125,8 @@ public class UserDTO {
 		userDTO.setPhoneNumber(user.getPhoneNumber());
 		userDTO.setAbout(user.getAbout());
 		userDTO.setPic(user.getPic());
-		userDTO.setIsUserVerified(user.getIsUserVerified());
+		userDTO.setAvgRating(user.getRating());
+		userDTO.setIsUserVerified(user.isUserVerified());
 		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
 		for (Tags tag : CommonUtil.safe(user.getTags())) {
 			tagMaps.put(tag.getId(), tag.getTagName());

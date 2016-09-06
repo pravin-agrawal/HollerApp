@@ -38,6 +38,8 @@ public class UserJobDTO {
 	private String lat;
 	private String lng;
 	private List<UserJobStatus> userJobStatusList;
+	private float rating;
+	private boolean userVerified;
 
 	public Integer getUserId() {
 		return userId;
@@ -153,7 +155,23 @@ public class UserJobDTO {
 	public List<UserJobStatus> getUserJobStatusList() {
 		return userJobStatusList;
 	}
-	
+
+	public float getRating() {
+		return rating;
+	}
+
+	public void setRating(float rating) {
+		this.rating = rating;
+	}
+
+	public boolean isUserVerified() {
+		return userVerified;
+	}
+
+	public void setUserVerified(boolean userVerified) {
+		this.userVerified = userVerified;
+	}
+
 	public void addUserJobStatus(UserJobStatus jobStatus){
 		if(CommonUtil.isNull(userJobStatusList)){
 			userJobStatusList = new ArrayList<UserJobStatus>();
@@ -293,10 +311,12 @@ public class UserJobDTO {
 			for (Object[] object : users) {
 				if(object != null){
 					UserJobDTO userJobDTO = new UserJobDTO();
-					userJobDTO.setUserId((Integer)object[0]);
-					userJobDTO.setUserName((String)object[1]);
-					userJobDTO.setUserProfilePic((String)object[2]);
-					userJobDTO.setStatus((String)object[3]);
+					userJobDTO.setUserId((Integer) object[0]);
+					userJobDTO.setUserName((String) object[1]);
+					userJobDTO.setUserProfilePic((String) object[2]);
+					userJobDTO.setStatus((String) object[3]);
+					userJobDTO.setRating((Float) object[4]);
+					userJobDTO.setUserVerified((Boolean) object[5]);
 					userJobDTOs.add(userJobDTO);
 				}
 			}
@@ -309,8 +329,12 @@ public class UserJobDTO {
 			for (Object[] object : resultList) {
 				UserJobStatus jobStatus = new UserJobStatus();
 				jobStatus.setJobId((Integer)object[0]);
-				jobStatus.setAcceptedByUserId((Integer)object[1]);
-				jobStatus.setJobStatusType(UserJobStatusType.valueOf((String)object[2]));
+				jobStatus.setAcceptedByUserId((Integer) object[1]);
+				jobStatus.setJobStatusType(UserJobStatusType.valueOf((String) object[2]));
+				jobStatus.setAcceptedByUsername((String) object[3]);
+				jobStatus.setAcceptedByPic((String) object[4]);
+				jobStatus.setAccepterAvgRating((Float) object[5]);
+				jobStatus.setAccepterVerified((Boolean) object[6]);
 				userJobStatusList.add(jobStatus);
 			}
 		}
