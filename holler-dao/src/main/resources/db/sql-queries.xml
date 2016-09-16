@@ -31,7 +31,7 @@
 				</entry>
 				<entry key="GET_ACCEPTED_USERS_BY_JOB_ID" >
 					<value>
-						select usr.id, usr.name, usr.pic, uj.status 
+						select usr.id, usr.name, usr.pic, uj.status,usr.avg_rating , usr.is_user_verified
 						from user usr
 						join user_job uj on usr.id = uj.userId
 						And uj.jobId=:jobId and uj.status IN (:userJobStatus);
@@ -66,6 +66,17 @@
 				<entry key="UPDATE_JOB" >
 					<value>
 						UPDATE user_job SET status = :status WHERE userId = :userId AND jobId = :jobId
+					</value>
+				</entry>
+				<entry key="UPDATE_JOB_PROVIDER_RATING_FLAG" >
+					<value>
+						UPDATE user_job SET provider_rating_flag = :flag WHERE userId = :userId AND jobId = :jobId
+					</value>
+				</entry>
+
+				<entry key="UPDATE_JOB_ACCEPTER_RATING_FLAG" >
+					<value>
+						UPDATE user_job SET accepter_rating_flag = :flag WHERE userId = :userId AND jobId = :jobId
 					</value>
 				</entry>
 
@@ -120,14 +131,47 @@
 				</entry>
 				<entry key="GET_USER_JOB_STATUS" >
 					<value>
-						SELECT * from user_job where jobid = :jobId
-						</value>
+						SELECT uj.jobid, uj.userid, uj.status, usr.name, usr.pic, avg_rating ,usr.is_user_verified from
+						user_job uj
+						JOIN user usr ON (uj.userid = usr.id )
+						where jobid = :jobId
+					</value>
 				</entry>
 				<entry key="GET_MY_POSTED_AND_PINGED_JOB_IDS" >
 					<value>
 						SELECT id FROM jobs where userId = :userId
 						UNION
 						SELECT jobId FROM user_job where userid = :userId
+					</value>
+				</entry>
+				<entry key="GET_USER_FOR_RATING_SCREEN">
+					<value>
+						SELECT result.id userId, result.name, result.pic, jobDesignation
+						FROM
+						(
+							SELECT usr.*, "PROVIDER" as jobDesignation from
+							jobs j
+							JOIN user_job uj ON (j.id = uj.jobid AND uj.status=:userJobStatus)
+							JOIN user usr ON (uj.userid = usr.id)
+							WHERE j.userId = :userId
+							AND j.status=:jobStatus
+							AND uj.provider_rating_flag=:ratingFlag
+
+						UNION
+
+							SELECT usr.* , "ACCEPTER" as jobDesignation from
+							user_job uj
+							JOIN jobs j ON (uj.jobid = j.id AND uj.accepter_rating_flag= :ratingFlag)
+							JOIN user usr ON (j.userId = usr.id AND j.status=:jobStatus )
+							WHERE uj.userid = :userId
+						) result;
+					</value>
+				</entry>
+				<entry key="GET_USER_RATING_DATA">
+					<value>
+						SELECT usr.id, usr.name, usr.pic, ur.rating, ur.feedback from user_ratings ur
+						JOIN user usr ON (ur.from_user = usr.id)
+						WHERE ur.to_user= :userId ;
 					</value>
 				</entry>
 

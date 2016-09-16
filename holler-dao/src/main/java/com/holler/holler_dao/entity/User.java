@@ -34,6 +34,9 @@ public class User extends BaseEntity{
 	
 	@Column(name = "about")
 	private String about;
+
+	@Column(name = "avg_rating")
+	private Float rating = 0f;
 	
 	@Column(name = "pic")
 	private String pic;
@@ -67,7 +70,7 @@ public class User extends BaseEntity{
 	private Integer pushNotification = 1;
 
 	@Column(name = "is_user_verified")
-	private boolean isUserVerified;
+	private boolean userVerified;
 
 	public int getId() {
 		return id;
@@ -187,12 +190,20 @@ public class User extends BaseEntity{
 		this.pushNotification = pushNotification;
 	}
 
-	public boolean getIsUserVerified() {
-		return isUserVerified;
+	public boolean isUserVerified() {
+		return userVerified;
 	}
 
-	public void setIsUserVerified(boolean isUserVerified) {
-		this.isUserVerified = isUserVerified;
+	public void setUserVerified(boolean isUserVerified) {
+		this.userVerified = isUserVerified;
+	}
+
+	public Float getRating() {
+		return rating;
+	}
+
+	public void setRating(Float rating) {
+		this.rating = rating;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber) {

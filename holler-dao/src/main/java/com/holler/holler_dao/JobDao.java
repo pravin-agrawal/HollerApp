@@ -30,5 +30,5 @@ public interface JobDao extends BaseDao<Jobs> {
 	
 	void completeJob(int userId, int jobId, UserJobStatusType accepted);
 
-   // void unGrantJob(int userId, int jobId, UserJobStatusType status);
+    void setUserJobRatingFlag(int userId, int jobId, String jobDesignation);
 }

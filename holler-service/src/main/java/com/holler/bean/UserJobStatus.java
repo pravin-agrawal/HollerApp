@@ -6,6 +6,11 @@ public class UserJobStatus {
 	private Integer jobId;
 	private Integer acceptedByUserId;
 	private UserJobStatusType jobStatusType;
+	private String acceptedByUsername;
+	private String acceptedByPic;
+	private float accepterAvgRating;
+	private boolean accepterVerified;
+
 	public Integer getJobId() {
 		return jobId;
 	}
@@ -23,5 +28,37 @@ public class UserJobStatus {
 	}
 	public void setJobStatusType(UserJobStatusType jobStatusType) {
 		this.jobStatusType = jobStatusType;
+	}
+
+	public String getAcceptedByUsername() {
+		return acceptedByUsername;
+	}
+
+	public void setAcceptedByUsername(String acceptedByUsername) {
+		this.acceptedByUsername = acceptedByUsername;
+	}
+
+	public String getAcceptedByPic() {
+		return acceptedByPic;
+	}
+
+	public void setAcceptedByPic(String acceptedByPic) {
+		this.acceptedByPic = acceptedByPic;
+	}
+
+	public float getAccepterAvgRating() {
+		return accepterAvgRating;
+	}
+
+	public void setAccepterAvgRating(float accepterAvgRating) {
+		this.accepterAvgRating = accepterAvgRating;
+	}
+
+	public boolean isAccepterVerified() {
+		return accepterVerified;
+	}
+
+	public void setAccepterVerified(boolean accepterVerified) {
+		this.accepterVerified = accepterVerified;
 	}
 }
