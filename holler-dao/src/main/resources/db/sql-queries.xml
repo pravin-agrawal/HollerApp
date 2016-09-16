@@ -174,7 +174,11 @@
 						WHERE ur.to_user= :userId ;
 					</value>
 				</entry>
-
+				<entry key="DOES_USER_HAS_INCOMPLETE_JOB">
+					<value>
+						SELECT * FROM user_job WHERE userid = :userId AND status IN (:userJobStatus) ;
+					</value>
+				</entry>
 			</map>
 		</property>
 	</bean>

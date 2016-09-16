@@ -32,4 +32,6 @@ public class HollerConstants {
 	public static final String USER_NOT_FOUND = "User does not exists";
 	public static final String PHONE_NUMBER = "phoneNumber";
 	public static final String OTP = "otp";
+	
+	public static final String INCOMPLETE_JOB_EXISTS = "Incomplete job exists";
 }

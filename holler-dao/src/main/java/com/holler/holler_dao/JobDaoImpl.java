@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.holler.holler_dao.entity.enums.JobStatusType;
+import com.holler.holler_dao.entity.enums.UserStatusType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.mapper.UserMapper;
+import com.holler.holler_dao.util.CommonUtil;
 
 @Repository
 public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
@@ -166,6 +168,17 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		query.setParameter("jobId", jobId);
 		query.setParameter("flag", Boolean.TRUE);
 		query.executeUpdate();
+	}
+	
+	public boolean doesUserHasInCompleteJob(int userId){
+		Query queryObject = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.DOES_USER_HAS_INCOMPLETE_JOB))
+				.setParameter("userId", userId)
+				.setParameter("userJobStatus", UserJobStatusType.getUsersAcceptedJobStatus());
+		List<Object[]> resultList = queryObject.getResultList();
+		if(CommonUtil.notNullAndEmpty(resultList)){
+			return true;
+		}
+		return false;
 	}
 
 }

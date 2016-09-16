@@ -239,9 +239,15 @@ public class JobServiceImpl implements JobService{
 			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
 				Jobs job = jobDao.findById(jobId);
 				if(UserJobStatusType.ACCEPTED == status){
-					jobDao.acceptJob(userId, jobId, status);
-					log.info("acceptOrUnacceptJob :: user {} accepted job {}", userId, jobId);
-					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
+					if(jobDao.doesUserHasInCompleteJob(userId)){
+						result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+						result.put(HollerConstants.RESULT, HollerConstants.INCOMPLETE_JOB_EXISTS);
+						return result;
+					}else{
+						jobDao.acceptJob(userId, jobId, status);
+						log.info("acceptOrUnacceptJob :: user {} accepted job {}", userId, jobId);
+						notificationService.createNotification(userId, job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
+					}
 				}else if(UserJobStatusType.UNACCEPT == status){
 					jobDao.unAcceptJob(userId, jobId);
 					log.info("acceptOrUnacceptJob :: user {} unaccepted job {}", userId, jobId);

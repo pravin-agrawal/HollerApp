@@ -23,4 +23,11 @@ public enum UserJobStatusType {
         list.add(REJECTED.toString());
         return list;
     }
+    
+    public static List<String> getAcceptedAndGrantedJobStatus() {
+        List<String> list = new ArrayList<String>();
+        list.add(ACCEPTED.toString());
+        list.add(GRANTED.toString());
+        return list;
+    }
 }

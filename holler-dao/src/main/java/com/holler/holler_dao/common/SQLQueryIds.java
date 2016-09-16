@@ -22,4 +22,5 @@ public class SQLQueryIds {
 	public static final String GET_USER_RATING_DATA = "GET_USER_RATING_DATA";
 	public static final String UPDATE_JOB_PROVIDER_RATING_FLAG = "UPDATE_JOB_PROVIDER_RATING_FLAG";
 	public static final String UPDATE_JOB_ACCEPTER_RATING_FLAG = "UPDATE_JOB_ACCEPTER_RATING_FLAG";
+	public static final String DOES_USER_HAS_INCOMPLETE_JOB = "DOES_USER_HAS_INCOMPLETE_JOB";
 }

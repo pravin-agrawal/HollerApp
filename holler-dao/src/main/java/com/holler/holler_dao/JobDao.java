@@ -31,4 +31,6 @@ public interface JobDao extends BaseDao<Jobs> {
 	void completeJob(int userId, int jobId, UserJobStatusType accepted);
 
     void setUserJobRatingFlag(int userId, int jobId, String jobDesignation);
+    
+    boolean doesUserHasInCompleteJob(int userId);
 }
