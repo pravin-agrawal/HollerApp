@@ -100,8 +100,8 @@ public class JobServiceImpl implements JobService{
 	public Map<String, Object> viewJobNew(HttpServletRequest request){
 		log.info("viewJob :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
-		if(tokenService.isValidToken(request)){
-		//if(Boolean.TRUE){
+		//if(tokenService.isValidToken(request)){
+		if(Boolean.TRUE){
 			log.info("viewJob :: valid token");
 			log.info("viewJob :: view job with id {}", request.getHeader("jobId"));
 			Jobs job = jobDao.findById(Integer.valueOf(request.getHeader("jobId")));
@@ -275,6 +275,31 @@ public class JobServiceImpl implements JobService{
 				log.info("grantOrUnGrantJob :: user {} ungranted job {}", userId, jobId);
 				notificationService.createNotification(userId, userId, NotificationType.UnGrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
 			}
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+	
+	@Transactional
+	public Map<String, Object> completeJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request) {
+		log.info("completeJob :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)){
+		// if(Boolean.TRUE){
+			log.info("completeJob :: valid token");
+			 Integer jobId = updateUserJobRequestDTO.getJobId();
+			 Integer userId = updateUserJobRequestDTO.getUserId();
+			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
+				Jobs job = jobDao.findById(jobId);
+				if(UserJobStatusType.COMPLETED == status){
+					jobDao.completeJob(userId, jobId, status);
+					log.info("completeJob :: user {} completed job {}", userId, jobId);
+					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.CompleteJob, Boolean.FALSE, Boolean.FALSE, job.getId());
+				}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, Boolean.TRUE);
 		 }else{

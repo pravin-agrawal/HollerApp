@@ -27,6 +27,8 @@ public interface JobDao extends BaseDao<Jobs> {
     void grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status);
 
 	public List<Object[]> getUserJobStatus(int jobId);
+	
+	void completeJob(int userId, int jobId, UserJobStatusType accepted);
 
    // void unGrantJob(int userId, int jobId, UserJobStatusType status);
 }

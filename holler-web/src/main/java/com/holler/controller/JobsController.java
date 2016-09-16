@@ -81,4 +81,10 @@ public class JobsController {
 	public @ResponseBody Map<String, Object> postedAndPingedJobIds(HttpServletRequest request){
 		return jobService.getMyPostedAndPingedJobIds(request);
 	}
+	
+	@RequestMapping(value="/completeJob", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> completeJob(@RequestBody UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request){
+		Map<String, Object> result = jobService.completeJob(updateUserJobRequestDTO, request);
+		return result;
+	}
 }

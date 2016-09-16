@@ -145,6 +145,14 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		List<Object[]> resultList = queryObject.getResultList();
 		return resultList;
 	}
+	
+	public void completeJob(int userId, int jobId, UserJobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB));
+		query.setParameter("userId", userId);
+		query.setParameter("jobId", jobId);
+		query.setParameter("status", status.toString());
+		query.executeUpdate();
+	}
 
 /*
 	public void unGrantJob(int userId, int jobId, UserJobStatusType status) {
