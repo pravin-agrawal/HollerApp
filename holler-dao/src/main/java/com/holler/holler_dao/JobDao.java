@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.holler.holler_dao.entity.Jobs;
+import com.holler.holler_dao.entity.enums.JobStatusType;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 
 public interface JobDao extends BaseDao<Jobs> {
@@ -28,9 +29,13 @@ public interface JobDao extends BaseDao<Jobs> {
 
 	public List<Object[]> getUserJobStatus(int jobId);
 	
-	void completeJob(int userId, int jobId, UserJobStatusType accepted);
+	void completeUserJob(int userId, int jobId, UserJobStatusType accepted);
+	
+	void completeJob(int jobId, JobStatusType status);
 
     void setUserJobRatingFlag(int userId, int jobId, String jobDesignation);
     
     boolean doesUserHasInCompleteJob(int userId);
+    
+    public List<Object[]> getUserJobsFromJobID(int jobId);
 }

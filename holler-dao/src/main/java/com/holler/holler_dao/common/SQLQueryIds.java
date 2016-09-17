@@ -9,7 +9,8 @@ public class SQLQueryIds {
 	public static final String GET_JOBS_BY_TAG_IDS = "GET_JOBS_BY_TAG_IDS";
 	public static final String ACCEPT_JOB = "ACCEPT_JOB";
 	public static final String UNACCEPT_JOB = "UNACCEPT_JOB";
-	public static final String UPDATE_JOB = "UPDATE_JOB";
+	public static final String UPDATE_USER_JOB = "UPDATE_USER_JOB";
+	public static final String UPDATE_JOB_STATUS = "UPDATE_JOB_STATUS";
 	public static final String GET_TAGS_FOR_USER_HOME_PAGE = "GET_TAGS_FOR_USER_HOME_PAGE";
 	public static final String GET_MY_PINGED_JOBS = "GET_MY_PINGED_JOBS";
 	public static final String GET_MY_POSTED_AND_PINGED_JOB_IDS = "GET_MY_POSTED_AND_PINGED_JOB_IDS";
@@ -23,4 +24,5 @@ public class SQLQueryIds {
 	public static final String UPDATE_JOB_PROVIDER_RATING_FLAG = "UPDATE_JOB_PROVIDER_RATING_FLAG";
 	public static final String UPDATE_JOB_ACCEPTER_RATING_FLAG = "UPDATE_JOB_ACCEPTER_RATING_FLAG";
 	public static final String DOES_USER_HAS_INCOMPLETE_JOB = "DOES_USER_HAS_INCOMPLETE_JOB";
+	public static final String GET_USER_JOBS_FROM_JOB_ID = "GET_USER_JOBS_FROM_JOB_ID";
 }

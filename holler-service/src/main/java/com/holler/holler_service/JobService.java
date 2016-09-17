@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.bean.UpdateJobRequestDTO;
 import com.holler.bean.UpdateUserJobRequestDTO;
 import com.holler.bean.UserJobDTO;
 
@@ -23,5 +24,6 @@ public interface JobService {
 
 	Map<String,Object> grantOrUnGrantJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
 	public Map<String, Object> viewJobNew(HttpServletRequest request);
-	Map<String,Object> completeJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
+	Map<String,Object> completeUserJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
+	Map<String,Object> completeJob(UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request);
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.holler.bean.UpdateJobRequestDTO;
 import com.holler.bean.UpdateUserJobRequestDTO;
 import com.holler.bean.UserJobDTO;
 import com.holler.bean.UserJobStatus;
@@ -24,6 +25,7 @@ import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Tags;
 import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.JobStatusType;
 import com.holler.holler_dao.entity.enums.NotificationType;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.util.CommonUtil;
@@ -239,15 +241,9 @@ public class JobServiceImpl implements JobService{
 			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
 				Jobs job = jobDao.findById(jobId);
 				if(UserJobStatusType.ACCEPTED == status){
-					if(jobDao.doesUserHasInCompleteJob(userId)){
-						result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
-						result.put(HollerConstants.RESULT, HollerConstants.INCOMPLETE_JOB_EXISTS);
-						return result;
-					}else{
-						jobDao.acceptJob(userId, jobId, status);
-						log.info("acceptOrUnacceptJob :: user {} accepted job {}", userId, jobId);
-						notificationService.createNotification(userId, job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
-					}
+					jobDao.acceptJob(userId, jobId, status);
+					log.info("acceptOrUnacceptJob :: user {} accepted job {}", userId, jobId);
+					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
 				}else if(UserJobStatusType.UNACCEPT == status){
 					jobDao.unAcceptJob(userId, jobId);
 					log.info("acceptOrUnacceptJob :: user {} unaccepted job {}", userId, jobId);
@@ -291,19 +287,19 @@ public class JobServiceImpl implements JobService{
 	}
 	
 	@Transactional
-	public Map<String, Object> completeJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request) {
-		log.info("completeJob :: called");
+	public Map<String, Object> completeUserJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request) {
+		log.info("completeUserJob :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		// if(Boolean.TRUE){
-			log.info("completeJob :: valid token");
+			log.info("completeUserJob :: valid token");
 			 Integer jobId = updateUserJobRequestDTO.getJobId();
 			 Integer userId = updateUserJobRequestDTO.getUserId();
 			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
 				Jobs job = jobDao.findById(jobId);
 				if(UserJobStatusType.COMPLETED == status){
-					jobDao.completeJob(userId, jobId, status);
-					log.info("completeJob :: user {} completed job {}", userId, jobId);
+					jobDao.completeUserJob(userId, jobId, status);
+					log.info("completeUserJob :: user {} completed job {}", userId, jobId);
 					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.CompleteJob, Boolean.FALSE, Boolean.FALSE, job.getId());
 				}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -313,5 +309,40 @@ public class JobServiceImpl implements JobService{
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
 		return result;
+	}
+	
+	@Transactional
+	public Map<String, Object> completeJob(UpdateJobRequestDTO updateJobRequestDTO, HttpServletRequest request) {
+		log.info("completeJob :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)){
+		// if(Boolean.TRUE){
+			log.info("completeJob :: valid token");
+			 Integer jobId = updateJobRequestDTO.getJobId();
+			 Integer userId = updateJobRequestDTO.getUserId();
+			 JobStatusType status = JobStatusType.valueOf(updateJobRequestDTO.getStatus());
+				if(JobStatusType.Completed == status){
+					jobDao.completeJob(jobId, status);
+					log.info("completeJob :: user {} completed job {}", userId, jobId);
+					completeUserJobsAndSendNotifications(jobId, userId);
+				}
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+
+	private void completeUserJobsAndSendNotifications(Integer jobId, Integer userId) {
+		List<Object[]> resultList = jobDao.getUserJobsFromJobID(jobId);
+		for(Object[] object : CommonUtil.safe(resultList)){
+			UserJobStatus jobStatus = new UserJobStatus();
+			Integer jobID = (Integer)object[0];
+			Integer userID = (Integer)object[1];
+			jobDao.completeUserJob(userID, jobID, UserJobStatusType.COMPLETED);
+			notificationService.createNotification(userId, userID, NotificationType.CompleteJob, Boolean.FALSE, Boolean.FALSE, jobId);	
+		}
 	}
 }

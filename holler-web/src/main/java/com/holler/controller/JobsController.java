@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.holler.bean.SearchJobsByTagRequestDTO;
+import com.holler.bean.UpdateJobRequestDTO;
 import com.holler.bean.UpdateUserJobRequestDTO;
 import com.holler.bean.UserJobDTO;
 import com.holler.holler_service.JobService;
@@ -82,9 +83,15 @@ public class JobsController {
 		return jobService.getMyPostedAndPingedJobIds(request);
 	}
 	
+	@RequestMapping(value="/completeUserJob", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> completeUserJob(@RequestBody UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request){
+		Map<String, Object> result = jobService.completeUserJob(updateUserJobRequestDTO, request);
+		return result;
+	}
+	
 	@RequestMapping(value="/completeJob", method=RequestMethod.POST)
-	public @ResponseBody Map<String, Object> completeJob(@RequestBody UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request){
-		Map<String, Object> result = jobService.completeJob(updateUserJobRequestDTO, request);
+	public @ResponseBody Map<String, Object> completeJob(@RequestBody UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request){
+		Map<String, Object> result = jobService.completeJob(jobRequestDTO, request);
 		return result;
 	}
 }

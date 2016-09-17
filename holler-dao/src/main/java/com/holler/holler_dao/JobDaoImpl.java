@@ -134,7 +134,7 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 	}
 
 	public void grantOrUnGrantJob(int userId, int jobId, UserJobStatusType status) {
-		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB));
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_USER_JOB));
 		query.setParameter("userId", userId);
 		query.setParameter("jobId", jobId);
 		query.setParameter("status", status.toString());
@@ -148,8 +148,8 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 	
-	public void completeJob(int userId, int jobId, UserJobStatusType status) {
-		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB));
+	public void completeUserJob(int userId, int jobId, UserJobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_USER_JOB));
 		query.setParameter("userId", userId);
 		query.setParameter("jobId", jobId);
 		query.setParameter("status", status.toString());
@@ -181,4 +181,20 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return false;
 	}
 
+	public void completeJob(int jobId, JobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB_STATUS));
+		query.setParameter("jobId", jobId);
+		query.setParameter("status", status.toString());
+		query.executeUpdate();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> getUserJobsFromJobID(int jobId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_USER_JOBS_FROM_JOB_ID);
+		Query queryObject = entityManager.createNativeQuery(sql)
+				.setParameter("jobId", jobId);
+		List<Object[]> resultList = queryObject.getResultList();
+		return resultList;
+	}
+	
 }

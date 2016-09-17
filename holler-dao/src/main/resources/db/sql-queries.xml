@@ -63,7 +63,7 @@
 						DELETE FROM user_job WHERE userId = :userId AND jobId = :jobId
 					</value>
 				</entry>
-				<entry key="UPDATE_JOB" >
+				<entry key="UPDATE_USER_JOB" >
 					<value>
 						UPDATE user_job SET status = :status WHERE userId = :userId AND jobId = :jobId
 					</value>
@@ -177,6 +177,16 @@
 				<entry key="DOES_USER_HAS_INCOMPLETE_JOB">
 					<value>
 						SELECT * FROM user_job WHERE userid = :userId AND status IN (:userJobStatus) ;
+					</value>
+				</entry>
+				<entry key="UPDATE_JOB_STATUS" >
+					<value>
+						UPDATE jobs SET status = :status WHERE id = :jobId
+					</value>
+				</entry>
+				<entry key="GET_USER_JOBS_FROM_JOB_ID" >
+					<value>
+						SELECT * FROM user_job where jobid = :jobId 
 					</value>
 				</entry>
 			</map>
