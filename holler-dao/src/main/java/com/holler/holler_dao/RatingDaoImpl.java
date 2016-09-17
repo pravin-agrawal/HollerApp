@@ -34,8 +34,7 @@ public class RatingDaoImpl extends BaseDaoImpl<Rating> implements RatingDao {
         String sql = queryDao.getQueryString(SQLQueryIds.GET_USER_FOR_RATING_SCREEN);
         Query queryObject = entityManager.createNativeQuery(sql)
                 .setParameter("userId", userId)
-                .setParameter("jobStatus", JobStatusType.Completed.name())
-                .setParameter("userJobStatus", UserJobStatusType.GRANTED.name())
+                .setParameter("userJobStatus", UserJobStatusType.COMPLETED.name())
                 .setParameter("ratingFlag",Boolean.FALSE);
         List<Object[]> resultList = queryObject.getResultList();
         return resultList;

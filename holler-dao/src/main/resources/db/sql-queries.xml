@@ -154,15 +154,14 @@
 							JOIN user_job uj ON (j.id = uj.jobid AND uj.status=:userJobStatus)
 							JOIN user usr ON (uj.userid = usr.id)
 							WHERE j.userId = :userId
-							AND j.status=:jobStatus
 							AND uj.provider_rating_flag=:ratingFlag
 
 						UNION
 
 							SELECT usr.* , "ACCEPTER" as jobDesignation from
 							user_job uj
-							JOIN jobs j ON (uj.jobid = j.id AND uj.accepter_rating_flag= :ratingFlag)
-							JOIN user usr ON (j.userId = usr.id AND j.status=:jobStatus )
+							JOIN jobs j ON (uj.jobid = j.id AND uj.accepter_rating_flag= :ratingFlag AND uj.status=:userJobStatus)
+							JOIN user usr ON (j.userId = usr.id)
 							WHERE uj.userid = :userId
 						) result;
 					</value>
