@@ -323,7 +323,7 @@ public class JobServiceImpl implements JobService{
 			log.info("completeJob :: valid token");
 			 Integer jobId = updateJobRequestDTO.getJobId();
 			 Integer userId = updateJobRequestDTO.getUserId();
-				if(JobStatusType.Completed.name().equals(updateJobRequestDTO.getStatus())){
+				if(JobStatusType.COMPLETED.name().equals(updateJobRequestDTO.getStatus())){
 					JobStatusType status = JobStatusType.valueOf(updateJobRequestDTO.getStatus());
 					jobDao.completeJob(jobId, status);
 					log.info("completeJob :: user {} completed job {}", userId, jobId);
