@@ -71,6 +71,12 @@ public class User extends BaseEntity{
 
 	@Column(name = "is_user_verified")
 	private boolean userVerified;
+	
+	@Column(name = "source_platform")
+	private String sourcePlatform;
+	
+	@Column(name = "gender")
+	private String gender;
 
 	public int getId() {
 		return id;
@@ -206,15 +212,43 @@ public class User extends BaseEntity{
 		this.rating = rating;
 	}
 
-	public static User constructUserForSignUp(String name, String email, String phoneNumber) {
+	public String getSourcePlatform() {
+		return sourcePlatform;
+	}
+
+	public void setSourcePlatform(String sourcePlatform) {
+		this.sourcePlatform = sourcePlatform;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public static User constructUserForSignUp(String name, String email, String phoneNumber, String platform) {
 		User user = new User();
 		user.setName(name);
 		user.setEmail(email);
 		user.setPhoneNumber(phoneNumber);
+		user.setSourcePlatform(platform);
 		user.setStatus(UserStatusType.ACTIVE);
 		return user;
 	}
 
+	public static User constructUserForSocialPlatformSignUp(String name, String email, String gender, String profilePic, String platform) {
+		User user = new User();
+		user.setName(name);
+		user.setEmail(email);
+		user.setGender(gender);
+		user.setPic(profilePic);
+		user.setSourcePlatform(platform);
+		user.setStatus(UserStatusType.ACTIVE);
+		return user;
+	}
+	
 	public Double[] getLatLongFromCurrentLocation() {
 		Double[] latLong = new Double[2];
 		String[] latLongString = this.currentLocation.split(",");

@@ -34,4 +34,5 @@ public class HollerConstants {
 	public static final String OTP = "otp";
 	
 	public static final String INCOMPLETE_JOB_EXISTS = "Incomplete job exists";
+	public static final String PLATFORM_HOLLER = "Holler";
 }

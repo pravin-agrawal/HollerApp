@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.holler.bean.LoginDTO;
+import com.holler.bean.LoginWithSocialPlatformDTO;
 import com.holler.bean.SignUpDTO;
 import com.holler.bean.SignUpResponseDTO;
 import com.holler.bean.TagDTO;
@@ -106,13 +107,13 @@ public class UserServiceImpl implements UserService{
 			return result;
 		}
 		try {
-			if(isUserPresent(signUpDTO.getEmail(), signUpDTO.getPhoneNumber())){
+			if(isUserPresent(signUpDTO.getEmail())){
 				log.info("signUpUser :: user already present");
 				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 				result.put(HollerConstants.MESSAGE, HollerConstants.DUPLICATE_USER);
 			}else{
 				log.info("signUpUser :: creating new user with name " + signUpDTO.getName() + " and email " + signUpDTO.getEmail() + " and phoneNumber " + signUpDTO.getPhoneNumber());
-				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPhoneNumber());
+				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPhoneNumber(), HollerConstants.PLATFORM_HOLLER);
 				userDao.save(user);
 				
 				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail());
@@ -122,6 +123,34 @@ public class UserServiceImpl implements UserService{
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 				result.put(HollerConstants.RESULT, signUpResponseDTO);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.SIGNUP_FAILURE);
+		}
+		return result;
+	}
+	
+	public Map<String, Object> loginWithSocialPlatform(LoginWithSocialPlatformDTO loginWithSocialPlatformDTO, HttpServletRequest request) {
+		log.info("loginWithSocialPlatform :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			User user = null;
+			SignUpResponseDTO signUpResponseDTO = null;
+			if(isUserPresent(loginWithSocialPlatformDTO.getEmail())){
+				log.info("signUpUser :: user already present");
+				user = userDao.getByEmail(loginWithSocialPlatformDTO.getEmail());
+			}else{
+				log.info("signUpUser :: creating new user with name " + loginWithSocialPlatformDTO.getName() + " and email " + loginWithSocialPlatformDTO.getEmail() + " on platform " + loginWithSocialPlatformDTO.getPlatform());
+				user = User.constructUserForSocialPlatformSignUp(loginWithSocialPlatformDTO.getName(), loginWithSocialPlatformDTO.getEmail(), 
+						loginWithSocialPlatformDTO.getGender(), loginWithSocialPlatformDTO.getProfilePic(), loginWithSocialPlatformDTO.getPlatform());
+				userDao.save(user);
+			}
+			Map<String, Object> tokenResult = tokenService.generateToken(loginWithSocialPlatformDTO.getEmail());
+			signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
+					user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic(), user.getRating(),user.isUserVerified());
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, signUpResponseDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
@@ -181,6 +210,12 @@ public class UserServiceImpl implements UserService{
 	public boolean isUserPresent(String email, String phoneNumber) {
 		log.info("isUserPresent :: valid token");
 		boolean isUserPresent = userDao.checkIfUserExists(email, phoneNumber);
+		log.info("isUserPresent :: is user present {}", isUserPresent);
+		return isUserPresent;
+	}
+	
+	public boolean isUserPresent(String email) {
+		boolean isUserPresent = userDao.checkIfUserExists(email);
 		log.info("isUserPresent :: is user present {}", isUserPresent);
 		return isUserPresent;
 	}

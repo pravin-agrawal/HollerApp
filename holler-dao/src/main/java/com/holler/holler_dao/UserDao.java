@@ -22,4 +22,8 @@ public interface UserDao extends BaseDao<User> {
 	public User findByIdWithTags(int userId);
 	
 	public Set<Integer> getUserIdsByTagIds(Set<Integer> tagIds);
+	
+	boolean checkIfUserExists(String email);
+	
+	public User getByEmail(String email);
 }

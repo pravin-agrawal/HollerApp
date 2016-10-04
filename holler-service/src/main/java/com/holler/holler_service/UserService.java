@@ -38,4 +38,5 @@ public interface UserService {
 
 	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request);
 
+	public Map<String, Object> loginWithSocialPlatform(LoginWithSocialPlatformDTO loginWithSocialPlatform, HttpServletRequest request);
 }

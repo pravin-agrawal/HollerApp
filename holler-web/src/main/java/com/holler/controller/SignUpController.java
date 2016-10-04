@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.holler.bean.LoginWithSocialPlatformDTO;
 import com.holler.bean.SignUpDTO;
 import com.holler.holler_service.UserService;
 
@@ -29,5 +30,10 @@ public class SignUpController {
 		return result;
 	}
 
+	@RequestMapping(value="/loginWithSocialPlatform", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> loginWithSocialPlatform(@RequestBody LoginWithSocialPlatformDTO loginWithSocialPlatformDTO, HttpServletRequest request){
+		Map<String, Object> result = userService.loginWithSocialPlatform(loginWithSocialPlatformDTO, request);
+		return result;
+	}
 	
 }
