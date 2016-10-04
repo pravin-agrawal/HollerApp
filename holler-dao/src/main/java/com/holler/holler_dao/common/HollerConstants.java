@@ -35,4 +35,5 @@ public class HollerConstants {
 	
 	public static final String INCOMPLETE_JOB_EXISTS = "Incomplete job exists";
 	public static final String PLATFORM_HOLLER = "Holler";
+	public static final String INCORRECT_JOB_STATUS = "Incorrect job status";
 }
