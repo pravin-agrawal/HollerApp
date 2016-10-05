@@ -34,6 +34,7 @@ public class UserJobDTO {
 	private String specialrequirement;
 	private int genderRequirement;
 	private Date jobdate;	//date on which job should be done
+	private Date jobAcceptedDate; //date on which job was accepted
 	private String jobAddress;
 	private String lat;
 	private String lng;
@@ -109,7 +110,15 @@ public class UserJobDTO {
 	public void setJobdate(Date jobdate) {
 		this.jobdate = jobdate;
 	}
-	
+
+	public Date getJobAcceptedDate() {
+		return jobAcceptedDate;
+	}
+
+	public void setJobAcceptedDate(Date jobAcceptedDate) {
+		this.jobAcceptedDate = jobAcceptedDate;
+	}
+
 	public String getJobAddress() {
 		return jobAddress;
 	}
@@ -261,6 +270,23 @@ public class UserJobDTO {
 			userJobDTO.setJobDescription(job.getDescription());
 			userJobDTO.setStatus(job.getStatus().name());
 			jobDTOs.add(userJobDTO);
+		}
+		return jobDTOs;
+	}
+
+	public static List<UserJobDTO> getPingedJobDtosList(List<Object[]> jobs){
+		log.info("getJobDtosToViewJobList :: called");
+		List<UserJobDTO> jobDTOs = new ArrayList<UserJobDTO>();
+		for (Object[] object : jobs) {
+			if(object != null) {
+				UserJobDTO userJobDTO = new UserJobDTO();
+				userJobDTO.setJobId((Integer) object[0]);
+				userJobDTO.setTitle((String) object[1]);
+				userJobDTO.setJobDescription((String) object[2]);
+				userJobDTO.setCompensation((Integer) object[3]);
+				userJobDTO.setJobAcceptedDate((Date) object[4]);
+				jobDTOs.add(userJobDTO);
+			}
 		}
 		return jobDTOs;
 	}

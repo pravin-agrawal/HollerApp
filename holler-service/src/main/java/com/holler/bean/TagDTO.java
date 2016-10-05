@@ -42,6 +42,7 @@ public class TagDTO {
 			TagDTO tagDTO = new TagDTO();
 			tagDTO.setTagId(tag.getId());
 			tagDTO.setTagName(tag.getTagName());
+			tagDTO.setTagImage(tag.getTagImageUrl());
 			tagDTOs.add(tagDTO);
 		}
 		return tagDTOs;

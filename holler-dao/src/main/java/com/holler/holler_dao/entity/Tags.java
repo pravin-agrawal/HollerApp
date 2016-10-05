@@ -23,6 +23,9 @@ public class Tags extends BaseEntity{
 	@Column(name = "tag_name")
 	private String tagName;
 
+	@Column(name = "tag_image_url")
+	private String tagImageUrl;
+
 	@ManyToMany(mappedBy = "tags")
 	private Set<Jobs> jobs;
 	
@@ -59,9 +62,13 @@ public class Tags extends BaseEntity{
 	public void setUser(Set<User> user) {
 		this.user = user;
 	}
-	
 
-	
+	public String getTagImageUrl() {
+		return tagImageUrl;
+	}
 
-
+	public void setTagImageUrl(String tagImageUrl) {
+		this.tagImageUrl = tagImageUrl;
+	}
 }
+

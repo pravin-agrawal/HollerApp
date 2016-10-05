@@ -9,6 +9,7 @@ import com.holler.holler_dao.util.CommonUtil;
 public class ParentTagsResponseDTO {
 	private int id;
 	private String parentTagName;
+	private String parentTagImageUrl;
 	private List<TagDTO> childTags;
 	
 	public int getId() {
@@ -23,6 +24,15 @@ public class ParentTagsResponseDTO {
 	public void setParentTagName(String parentTagName) {
 		this.parentTagName = parentTagName;
 	}
+
+	public void setParentTagImageUrl(String parentTagImageUrl) {
+		this.parentTagImageUrl = parentTagImageUrl;
+	}
+
+	public String getParentTagImageUrl() {
+		return parentTagImageUrl;
+	}
+
 	public List<TagDTO> getChildTags() {
 		return childTags;
 	}
@@ -36,6 +46,7 @@ public class ParentTagsResponseDTO {
 			ParentTagsResponseDTO tagDTO = new ParentTagsResponseDTO();
 			tagDTO.setId(parentTag.getId());
 			tagDTO.setParentTagName(parentTag.getParentTagName());
+			tagDTO.setParentTagImageUrl(parentTag.getParentTagImageUrl());
 			tagDTO.setChildTags(TagDTO.getTagDTOsFromTags(parentTag.getChildTags()));
 			parentTagsResponseDTOs.add(tagDTO);
 		}

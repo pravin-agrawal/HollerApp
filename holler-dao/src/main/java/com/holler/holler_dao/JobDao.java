@@ -13,7 +13,7 @@ public interface JobDao extends BaseDao<Jobs> {
 
     public List<Jobs> findAllByUserId(final Integer userId);
 
-    public List<Jobs> getMyPingedJobs(final Integer userId);
+    public List<Object[]> getMyPingedJobs(final Integer userId);
 
     public List<Integer> getMyPostedAndPingedJobIds(final Integer userId);
 

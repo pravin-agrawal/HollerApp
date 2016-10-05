@@ -27,6 +27,9 @@ public class ParentTags extends BaseEntity{
 	@Column(name = "parent_tag_name")
 	private String parentTagName;
 
+	@Column(name = "tag_image_url")
+	private String parentTagImageUrl;
+
 	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = "parent_child_tag_join",
 		joinColumns = @JoinColumn(name = "parent_tag_id"),
@@ -55,6 +58,14 @@ public class ParentTags extends BaseEntity{
 
 	public void setChildTags(List<Tags> childTags) {
 		this.childTags = childTags;
+	}
+
+	public String getParentTagImageUrl() {
+		return parentTagImageUrl;
+	}
+
+	public void setParentTagImageUrl(String parentTagImageUrl) {
+		this.parentTagImageUrl = parentTagImageUrl;
 	}
 
 	public static long getSerialversionuid() {

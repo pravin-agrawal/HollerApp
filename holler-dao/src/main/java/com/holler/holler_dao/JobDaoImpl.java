@@ -1,5 +1,6 @@
 package com.holler.holler_dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -83,10 +84,10 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 				.getResultList();
 	}
 
-	public List<Jobs> getMyPingedJobs(Integer userId) {
+	public List<Object[]> getMyPingedJobs(Integer userId) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_MY_PINGED_JOBS);
-		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class).setParameter("userId", userId);
-		List<Jobs> resultList = queryObject.getResultList();
+		Query queryObject = entityManager.createNativeQuery(sql).setParameter("userId", userId);
+		List<Object[]> resultList = queryObject.getResultList();
 		return resultList;
 	}
 
@@ -123,6 +124,7 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		query.setParameter("userId", userId);
 		query.setParameter("jobId", jobId);
 		query.setParameter("status", status.toString());
+		query.setParameter("acceptedDate", new Date());
 		query.executeUpdate();
 	}
 
