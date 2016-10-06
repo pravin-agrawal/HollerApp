@@ -22,6 +22,7 @@ import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.UserDocument;
 import com.holler.holler_dao.entity.enums.DocumentType;
+import com.holler.holler_dao.entity.enums.TagType;
 import com.holler.holler_dao.util.CommonUtil;
 import com.holler.holler_dao.util.HollerProperties;
 
@@ -38,6 +39,9 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 	
 	@Autowired
 	TokenService tokenService;
+	
+	@Autowired
+	TagsService tagsService;
 	
 	@Transactional
 	public Map<String, Object> saveDocument(MultipartFile uploadedFile, DocumentType uploadedFileType, Integer userId, HttpServletRequest request) {
@@ -74,6 +78,28 @@ public class AttachmentsServiceImpl implements AttachmentsService{
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
 		 return result;
+	}
+
+	@Transactional
+	public Map<String, Object> uploadTagImage(MultipartFile uploadedFile, TagType tagType, Integer tagId){
+		log.info("uploadTagImage :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		String tagUrl = saveDocument(uploadedFile, HollerProperties.getInstance().getValue("holler.file.fileUploadPath") + HollerProperties.getInstance().getValue("holler.file.folderSeparator") + HollerProperties.getInstance().getValue("holler.file.tagsImageFolder"));
+		switch(tagType){
+		case PARENT:
+			log.info("uploadTagImage :: parent tag");
+			tagsService.saveParentTagImageUrl(tagId, tagUrl);
+			break;
+		case CHILD:
+			log.info("uploadTagImage :: child tag");
+			tagsService.saveChildTagImageUrl(tagId, tagUrl);
+			break;
+		default:
+				break;
+		}
+		result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+		result.put(HollerConstants.RESULT, tagUrl);
+		return result;
 	}
 
 	private String saveDocument(MultipartFile uploadedFile, String folder) {

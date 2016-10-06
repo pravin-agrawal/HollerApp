@@ -60,5 +60,8 @@ public class ParentTags extends BaseEntity{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
+	
+	public void addChildTag(Tags tag){
+		childTags.add(tag);
+	}
 }

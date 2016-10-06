@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.holler.holler_dao.entity.enums.DocumentType;
+import com.holler.holler_dao.entity.enums.TagType;
 import com.holler.holler_service.AttachmentsService;
 
 @Controller
@@ -29,6 +30,14 @@ public class AttachmentsController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		return attachmentsService.saveDocument(uploadedFile, uploadedFileType, userId, request);
+	}
+	
+	@RequestMapping(value = "/uploadTagImage", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public @ResponseBody Map<String, Object> uploadTagImage(@RequestParam("uploadedFile") MultipartFile uploadedFile,
+			@RequestParam("tagType") TagType tagType, @RequestParam("tagId") Integer tagId,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		return attachmentsService.uploadTagImage(uploadedFile, tagType, tagId);
 	}
 
 }

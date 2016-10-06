@@ -188,6 +188,16 @@
 						SELECT * FROM user_job where jobid = :jobId 
 					</value>
 				</entry>
+				<entry key="SET_PARENT_TAG_IMAGE_URL" >
+					<value>
+						UPDATE parent_tags SET tag_image_url = :tagUrl WHERE id = :tagId
+					</value>
+				</entry>
+				<entry key="SET_CHILD_TAG_IMAGE_URL" >
+					<value>
+						UPDATE tags SET tag_image_url = :tagUrl WHERE id = :tagId
+					</value>
+				</entry>
 			</map>
 		</property>
 	</bean>

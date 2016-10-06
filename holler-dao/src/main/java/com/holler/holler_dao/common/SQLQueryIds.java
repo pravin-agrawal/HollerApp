@@ -25,4 +25,6 @@ public class SQLQueryIds {
 	public static final String UPDATE_JOB_ACCEPTER_RATING_FLAG = "UPDATE_JOB_ACCEPTER_RATING_FLAG";
 	public static final String DOES_USER_HAS_INCOMPLETE_JOB = "DOES_USER_HAS_INCOMPLETE_JOB";
 	public static final String GET_USER_JOBS_FROM_JOB_ID = "GET_USER_JOBS_FROM_JOB_ID";
+	public static final String SET_PARENT_TAG_IMAGE_URL = "SET_PARENT_TAG_IMAGE_URL";
+	public static final String SET_CHILD_TAG_IMAGE_URL = "SET_CHILD_TAG_IMAGE_URL";
 }
