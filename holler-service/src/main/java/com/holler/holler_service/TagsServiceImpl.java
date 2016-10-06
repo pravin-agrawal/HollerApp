@@ -35,8 +35,8 @@ public class TagsServiceImpl implements TagsService{
 	public Map<String, Object> getAllParentTagsWithChildTags(HttpServletRequest request) {
 		log.info("getAllParentTagsWithChildTags :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
-		if(tokenService.isValidToken(request)){
-		// if(Boolean.TRUE){
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
 			log.info("getAllParentTagsWithChildTags :: valid token");
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, ParentTagsResponseDTO.getParentTagsDTOsFromParentTags(parentTagsDao.findAll()));
