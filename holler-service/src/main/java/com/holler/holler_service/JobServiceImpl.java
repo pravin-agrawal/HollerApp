@@ -145,8 +145,8 @@ public class JobServiceImpl implements JobService{
 		 //if(Boolean.TRUE){
 			log.info("getMyPingedJobs :: valid token");
 			log.info("getMyPingedJobs :: for user id {}", request.getHeader("userId"));
-			List<Jobs> job = jobDao.getMyPingedJobs(Integer.valueOf(request.getHeader("userId")));
-			List<UserJobDTO> jobDTO = UserJobDTO.getJobDtosToViewJobList(job);
+			List<Object[]> pingedJobs = jobDao.getMyPingedJobs(Integer.valueOf(request.getHeader("userId")));
+			List<UserJobDTO> jobDTO = UserJobDTO.getPingedJobDtosList(pingedJobs);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, jobDTO);
 		 }else{

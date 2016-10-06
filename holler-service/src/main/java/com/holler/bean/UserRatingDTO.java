@@ -22,6 +22,7 @@ public class UserRatingDTO {
 	private int rating;
 	private String feedback;
 	private int jobId;
+	private String jobTitle;
 	private String jobDesignation;
 
 	public Integer getToUserId() {
@@ -97,6 +98,14 @@ public class UserRatingDTO {
 		this.jobId = jobId;
 	}
 
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
 	public String getJobDesignation() {
 		return jobDesignation;
 	}
@@ -114,7 +123,9 @@ public class UserRatingDTO {
 					userRatingDTO.setToUserId((Integer) object[0]);
 					userRatingDTO.setToUserName((String) object[1]);
 					userRatingDTO.setToUserProfilePic((String) object[2]);
-					userRatingDTO.setJobDesignation((String) object[3]);
+					userRatingDTO.setJobId((Integer) object[3]);
+					userRatingDTO.setJobTitle((String) object[4]);
+					userRatingDTO.setJobDesignation((String) object[5]);
 					userRatingDTOs.add(userRatingDTO);
 				}
 			}
