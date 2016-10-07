@@ -1,12 +1,16 @@
 package com.holler.holler_service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.holler.bean.FaqsDTO;
+import com.holler.holler_dao.EmailSubjectsDao;
 import com.holler.holler_dao.FaqDao;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import org.springframework.stereotype.Service;
 import com.holler.bean.CompensationDTO;
 import com.holler.holler_dao.CompensationDao;
 import com.holler.holler_dao.common.HollerConstants;
+import com.holler.holler_dao.entity.EmailSubjects;
+import com.holler.holler_dao.util.CommonUtil;
 
 @Service
 public class HollerServiceImpl implements HollerService{
@@ -24,6 +30,9 @@ public class HollerServiceImpl implements HollerService{
 
 	@Autowired
 	FaqDao faqDao;
+	
+	@Autowired
+	EmailSubjectsDao emailSubjectsDao; 
 
 	@Autowired
 	TokenService tokenService;
@@ -52,4 +61,17 @@ public class HollerServiceImpl implements HollerService{
 		return result;
 	}
 
+	public Map<String, Object> getEmailSubjects() {
+		log.info("getEmailSubjects :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+		List<EmailSubjects> emailSubjects = emailSubjectsDao.findAll();
+		List<String> subjectList = new ArrayList<String>();
+		for(EmailSubjects subjects : CommonUtil.safe(emailSubjects)){
+			subjectList.add(subjects.getSubject());
+		}
+		result.put(HollerConstants.RESULT, subjectList);
+		return result;
+	}
+	
 }
