@@ -77,6 +77,9 @@ public class User extends BaseEntity{
 	
 	@Column(name = "gender")
 	private String gender;
+	
+	@Column(name = "hashed_device")
+	private String hashedDevice;
 
 	public int getId() {
 		return id;
@@ -226,6 +229,14 @@ public class User extends BaseEntity{
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+	
+	public String getHashedDevice() {
+		return hashedDevice;
+	}
+
+	public void setHashedDevice(String hashedDevice) {
+		this.hashedDevice = hashedDevice;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber, String platform) {

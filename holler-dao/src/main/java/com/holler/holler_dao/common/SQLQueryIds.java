@@ -27,4 +27,5 @@ public class SQLQueryIds {
 	public static final String GET_USER_JOBS_FROM_JOB_ID = "GET_USER_JOBS_FROM_JOB_ID";
 	public static final String SET_PARENT_TAG_IMAGE_URL = "SET_PARENT_TAG_IMAGE_URL";
 	public static final String SET_CHILD_TAG_IMAGE_URL = "SET_CHILD_TAG_IMAGE_URL";
+	public static final String GET_PARTICULAR_NOTIFICATIONS_FOR_USER = "GET_PARTICULAR_NOTIFICATIONS_FOR_USER";
 }

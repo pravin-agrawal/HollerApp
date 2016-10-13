@@ -39,4 +39,6 @@ public interface UserService {
 	public Map<String, Object> loginUser(LoginDTO loginDTO, HttpServletRequest request);
 
 	public Map<String, Object> loginWithSocialPlatform(LoginWithSocialPlatformDTO loginWithSocialPlatform, HttpServletRequest request);
+	
+	Map<String,Object> updateUserDeviceInfo(UserDeviceInfoDTO deviceInfoDTO, HttpServletRequest request);
 }

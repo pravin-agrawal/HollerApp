@@ -1,10 +1,12 @@
 package com.holler.holler_service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +23,12 @@ import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.Notification;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.NotificationType;
+import com.holler.holler_dao.util.CommonUtil;
+import com.holler.holler_dao.util.HollerProperties;
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Sender;
+
 
 @Service
 public class NotificationServiceImpl implements NotificationService{
@@ -63,7 +71,36 @@ public class NotificationServiceImpl implements NotificationService{
 		notification.setSent(isSent);
 		notification.setObjectId(objectId);
 		notificationDao.save(notification);
+		pushNotification(toUser, notification);
 		return true;
+	}
+
+	public void pushNotification(User toUser, Notification notification) {
+		String registeredDevice = toUser.getHashedDevice();
+		List<String> androidTargets = new ArrayList<String>();
+		androidTargets.add(registeredDevice);
+		List<String> notificationList = fetchNotification(toUser.getId(), notification.getId());
+		Sender sender = new Sender(HollerProperties.getInstance().getValue("gcm.browser.key"));
+		Message message = new Message.Builder()
+		.collapseKey(UUID.randomUUID().toString())
+		.timeToLive(30)
+		.delayWhileIdle(true)
+		.addData("message", notificationList.get(0))
+		.build();
+		try {
+			MulticastResult result = sender.send(message, androidTargets, 1);
+			if (result.getResults() != null) {
+				int canonicalRegId = result.getCanonicalIds();
+				if (canonicalRegId != 0) {
+					log.info("pushNotification :: notification pushed successfully");
+				}
+			} else {
+				int error = result.getFailure();
+				log.info("pushNotification :: notification push failed with error - {}", error);
+			}
+		} catch (Exception e) {
+			log.error("pushNotification expection is {}", e);
+		}
 	}
 
 	public boolean createJobUpdateNotification(Set<Integer> tags, int fromUserId, int objectId) {
@@ -134,5 +171,17 @@ public class NotificationServiceImpl implements NotificationService{
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
 		return result;
+	}
+	
+	@Transactional
+	public List<String> fetchNotification(int userId, int notificationId) {
+		log.info("fetchNotification :: called with userId {} and notificationId {}", userId, notificationId);
+		List<Object[]> resultList = notificationDao.findByUserIdAndNotificationId(userId, notificationId);
+		List<NotificationDTO> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);
+		List<String> notificationList = new ArrayList<String>();
+		for(NotificationDTO notificationDTO : CommonUtil.safe(notificationTemplates)){
+			notificationList.add(notificationDTO.getNotificationTemplate());
+		}
+		return notificationList;
 	}
 }

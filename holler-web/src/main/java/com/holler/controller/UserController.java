@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.holler.bean.UserDTO;
+import com.holler.bean.UserDeviceInfoDTO;
 import com.holler.bean.UserLocationDTO;
 import com.holler.bean.UserSettingDTO;
 import com.holler.holler_service.UserService;
@@ -56,6 +57,12 @@ public class UserController {
     @RequestMapping(value = "/updateUserSettings", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> updateUserSettings(@RequestBody UserSettingDTO userSettingRequestDTO, HttpServletRequest request) {
         Map<String, Object> result = userService.updateUserSetting(userSettingRequestDTO, request);
+        return result;
+    }
+    
+    @RequestMapping(value = "/updateUserDeviceInfo", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> updateUserDeviceInfo(@RequestBody UserDeviceInfoDTO deviceInfoDTO, HttpServletRequest request) {
+        Map<String, Object> result = userService.updateUserDeviceInfo(deviceInfoDTO, request);
         return result;
     }
 }

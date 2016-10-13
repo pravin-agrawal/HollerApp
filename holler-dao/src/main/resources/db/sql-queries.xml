@@ -123,7 +123,20 @@
 						LEFT JOIN user usr ON (nt.from_user  = usr.id)
 						where nt.to_user = :userId order by nt.created desc;
 					</value>
-
+				</entry>
+				
+				<entry key="GET_PARTICULAR_NOTIFICATIONS_FOR_USER">
+					<value>
+						SELECT nt.id, nt.from_user, nt.to_user, ntt.type, nt.object_id, usr.name, jb.job_title, temp.note, nt.is_read
+						FROM 
+						(SELECT * FROM notification WHERE id = :notificationId) nt
+						LEFT JOIN notification_type ntt on (nt.notification_type = ntt.type)
+						LEFT JOIN template_notification_type_map tnm ON (ntt.id = tnm.notification_type_id)
+						LEFT JOIN template temp ON (tnm.temp_id = temp.id)
+						LEFT JOIN jobs jb ON (nt.object_id = jb.id)
+						LEFT JOIN user usr ON (nt.from_user  = usr.id)
+						where nt.to_user = :userId order by nt.created desc;
+					</value>
 				</entry>
 				<entry key="MARK_ALL_NOTIFICATION_AS_READ" >
 					<value>

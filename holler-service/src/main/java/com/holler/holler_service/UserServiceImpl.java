@@ -20,6 +20,7 @@ import com.holler.bean.SignUpDTO;
 import com.holler.bean.SignUpResponseDTO;
 import com.holler.bean.TagDTO;
 import com.holler.bean.UserDTO;
+import com.holler.bean.UserDeviceInfoDTO;
 import com.holler.bean.UserJobDTO;
 import com.holler.bean.UserLocationDTO;
 import com.holler.bean.UserSettingDTO;
@@ -297,6 +298,7 @@ public class UserServiceImpl implements UserService{
 		Map<String, Object> result = new HashMap<String, Object>();
 		boolean isValidOtp = otpService.validateOtp(loginDTO.getPhoneNumber(), loginDTO.getOtp());
 		if(!isValidOtp){
+		//if(!Boolean.TRUE){
 			log.info("loginUser :: otp entered is invalid");
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_SIGNUP_FAILURE);
@@ -304,8 +306,8 @@ public class UserServiceImpl implements UserService{
 		}
 		try {
 			log.info("loginUser :: otp entered is valid");
-			log.info("loginUser :: try to login user with phone number {}", loginDTO.getPhoneNumber());
-			User user = userDao.getByPhoneNumber(loginDTO.getPhoneNumber());
+			log.info("loginUser :: try to login user with email {}", loginDTO.getEmail());
+			User user = userDao.getByEmail(loginDTO.getEmail());
 			if(user != null){
 				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail());
 				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
@@ -313,14 +315,33 @@ public class UserServiceImpl implements UserService{
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 				result.put(HollerConstants.RESULT, signUpResponseDTO);
 			}else{
-				log.info("loginUser :: user with phone number {} not found", loginDTO.getPhoneNumber());
+				log.info("loginUser :: user with email {} not found", loginDTO.getEmail());
 				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 				result.put(HollerConstants.MESSAGE, HollerConstants.USER_NOT_FOUND);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error in login user", e);
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.LOGIN_FAILURE);
+		}
+		return result;
+	}
+	
+	public Map<String, Object> updateUserDeviceInfo(UserDeviceInfoDTO deviceInfoDTO, HttpServletRequest request) {
+		log.info("updateUserDeviceInfo :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)){
+		//if(Boolean.TRUE){
+			log.info("updateUserDeviceInfo :: valid token");
+			log.info("updateUserDeviceInfo :: for user {}", deviceInfoDTO.getUserId());
+			User user = userDao.findById(deviceInfoDTO.getUserId());
+			user.setHashedDevice(deviceInfoDTO.getHashedDeviceId());
+			userDao.update(user);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
 		}
 		return result;
 	}

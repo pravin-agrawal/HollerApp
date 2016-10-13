@@ -54,7 +54,7 @@ public class JobServiceImpl implements JobService{
 	public Map<String, Object> postJob(UserJobDTO userJobDTO, HttpServletRequest request) {
 		log.info("postJob :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
-		   if(tokenService.isValidToken(request)){
+		 if(tokenService.isValidToken(request)){
 		 //if(Boolean.TRUE){
 			log.info("postJob :: valid token");
 			Jobs job = UserJobDTO.constructJobToPost(userJobDTO);

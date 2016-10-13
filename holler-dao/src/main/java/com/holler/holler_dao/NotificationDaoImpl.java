@@ -112,4 +112,12 @@ public class NotificationDaoImpl extends BaseDaoImpl<Notification> implements No
 		query.executeUpdate();
 	}
 
+	public List<Object[]> findByUserIdAndNotificationId(int userId,  int notificationId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_PARTICULAR_NOTIFICATIONS_FOR_USER);
+		Query queryObject = entityManager.createNativeQuery(sql)
+				.setParameter("userId", userId)
+				.setParameter("notificationId", notificationId);
+		List<Object[]> resultList = queryObject.getResultList();
+		return resultList;
+	}
 }
