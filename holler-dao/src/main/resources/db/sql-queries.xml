@@ -114,7 +114,7 @@
 				</entry>
 				<entry key="GET_NOTIFICATION_TEMPLATE">
 					<value>
-						SELECT nt.id, nt.from_user, nt.to_user, ntt.type, nt.object_id, usr.name, jb.job_title, temp.note, nt.is_read
+						SELECT nt.id, nt.from_user, usr.name, usr.pic, nt.to_user, ntt.type, nt.object_id, usr.name, jb.job_title, temp.note, nt.is_read, nt.created
 						FROM notification nt
 						LEFT JOIN notification_type ntt on (nt.notification_type = ntt.type)
 						LEFT JOIN template_notification_type_map tnm ON (ntt.id = tnm.notification_type_id)
