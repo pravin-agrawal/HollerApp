@@ -8,9 +8,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.holler.bean.FaqsDTO;
+import com.holler.holler_dao.EmailDao;
 import com.holler.holler_dao.EmailSubjectsDao;
 import com.holler.holler_dao.FaqDao;
 
+import com.holler.holler_dao.entity.Emails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,10 @@ public class HollerServiceImpl implements HollerService{
 	FaqDao faqDao;
 	
 	@Autowired
-	EmailSubjectsDao emailSubjectsDao; 
+	EmailSubjectsDao emailSubjectsDao;
+
+	@Autowired
+	EmailDao emailDao;
 
 	@Autowired
 	TokenService tokenService;
@@ -73,5 +78,21 @@ public class HollerServiceImpl implements HollerService{
 		result.put(HollerConstants.RESULT, subjectList);
 		return result;
 	}
-	
+
+	public Map<String, Object> saveEmailIds(String emailId) {
+		log.info("saveEmailIds :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+		Emails emails = new Emails();
+		emails.setEmaiId(emailId);
+		emailDao.save(emails);
+		if(CommonUtil.isNotNull(emails.getId())){
+			result.put(HollerConstants.RESULT, Boolean.TRUE);
+		}else{
+			result.put(HollerConstants.RESULT, HollerConstants.FAILURE);
+		}
+		log.info("saveEmailIds :: exit");
+		return result;
+	}
+
 }
