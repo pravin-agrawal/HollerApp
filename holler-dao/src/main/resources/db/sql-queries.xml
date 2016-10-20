@@ -127,7 +127,7 @@
 				
 				<entry key="GET_PARTICULAR_NOTIFICATIONS_FOR_USER">
 					<value>
-						SELECT nt.id, nt.from_user, nt.to_user, ntt.type, nt.object_id, usr.name, jb.job_title, temp.note, nt.is_read
+						SELECT nt.id, nt.from_user, usr.name, usr.pic, nt.to_user, ntt.type, nt.object_id, usr.name, jb.job_title, temp.note, nt.is_read, nt.created
 						FROM 
 						(SELECT * FROM notification WHERE id = :notificationId) nt
 						LEFT JOIN notification_type ntt on (nt.notification_type = ntt.type)
