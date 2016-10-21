@@ -17,12 +17,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.holler.bean.NotificationDTO;
+import com.holler.bean.UserJobDTO;
+import com.holler.holler_dao.JobDao;
 import com.holler.holler_dao.NotificationDao;
 import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.common.HollerConstants;
+import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Notification;
 import com.holler.holler_dao.entity.User;
 import com.holler.holler_dao.entity.enums.NotificationType;
+import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
 import com.holler.holler_dao.util.HollerProperties;
 import com.google.android.gcm.server.Message;
@@ -43,6 +47,9 @@ public class NotificationServiceImpl implements NotificationService{
 
 	@Autowired
 	TokenService tokenService;
+	
+	@Autowired
+	JobDao jobDao;
 
 	public boolean createNotification(NotificationDTO notificationDTO) {
 		Notification notification = new Notification();
@@ -71,7 +78,9 @@ public class NotificationServiceImpl implements NotificationService{
 		notification.setSent(isSent);
 		notification.setObjectId(objectId);
 		notificationDao.save(notification);
-		pushNotification(toUser, notification);
+		if(toUser.getPushNotification().intValue() == 1){
+			pushNotification(toUser, notification);	
+		}
 		return true;
 	}
 
@@ -107,9 +116,19 @@ public class NotificationServiceImpl implements NotificationService{
 		log.info("createNotification :: about to create job update notification from source user " + fromUserId + " for tags " + tags);
 		Set<Integer> userIds = userDao.getUserIdsByTagIds(tags);
 		log.info("createNotification :: about to create job update notification from source user " + fromUserId + " for tags " + tags + " for users " + userIds);
+		Jobs job = jobDao.findById(objectId);
+		Double[] jobLatLong = job.getLatLongFromJobLocation();
 		for (Integer toUserId : userIds) {
 			if(toUserId != fromUserId){
-				createNotification(fromUserId, toUserId, NotificationType.UpdateJob, Boolean.FALSE, Boolean.FALSE, objectId);	
+				User user = userDao.findById(toUserId);
+				int jobDiscoveryLimit = user.getJobDiscoveryLimit();
+				Double[] userLatLong = user.getLatLongFromCurrentLocation();
+				Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
+				log.info("userAndJobDistance : "+userAndJobDistance);
+				if (userAndJobDistance <= jobDiscoveryLimit) {
+					log.info("user Job Distance is less than the discovery limit.");
+					createNotification(fromUserId, toUserId, NotificationType.UpdateJob, Boolean.FALSE, Boolean.FALSE, objectId);	
+				}
 			}
 		}
 		return true;
@@ -119,9 +138,19 @@ public class NotificationServiceImpl implements NotificationService{
 		log.info("createNotification :: about to create job post notification from source user " + fromUserId + " for tags " + tags);
 		Set<Integer> userIds = userDao.getUserIdsByTagIds(tags);
 		log.info("createNotification :: about to create job post notification from source user " + fromUserId + " for tags " + tags + " for users " + userIds);
+		Jobs job = jobDao.findById(objectId);
+		Double[] jobLatLong = job.getLatLongFromJobLocation();
 		for (Integer toUserId : userIds) {
 			if(toUserId != fromUserId){
-				createNotification(fromUserId, toUserId, NotificationType.PostJob, Boolean.FALSE, Boolean.FALSE, objectId);	
+				User user = userDao.findById(toUserId);
+				int jobDiscoveryLimit = user.getJobDiscoveryLimit();
+				Double[] userLatLong = user.getLatLongFromCurrentLocation();
+				Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
+				log.info("userAndJobDistance : "+userAndJobDistance);
+				if (userAndJobDistance <= jobDiscoveryLimit) {
+					log.info("user Job Distance is less than the discovery limit.");
+					createNotification(fromUserId, toUserId, NotificationType.PostJob, Boolean.FALSE, Boolean.FALSE, objectId);		
+				}
 			}
 		}
 		return true;
