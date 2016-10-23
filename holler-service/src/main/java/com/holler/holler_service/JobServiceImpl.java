@@ -237,17 +237,17 @@ public class JobServiceImpl implements JobService{
 		// if(Boolean.TRUE){
 			log.info("acceptOrUnacceptJob :: valid token");
 			 Integer jobId = updateUserJobRequestDTO.getJobId();
-			 Integer userId = updateUserJobRequestDTO.getUserId();
+			 Integer fromUserId = updateUserJobRequestDTO.getUserId();
 			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
 				Jobs job = jobDao.findById(jobId);
 				if(UserJobStatusType.ACCEPTED == status){
-					jobDao.acceptJob(userId, jobId, status);
-					log.info("acceptOrUnacceptJob :: user {} accepted job {}", userId, jobId);
-					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
+					jobDao.acceptJob(fromUserId, jobId, status);
+					log.info("acceptOrUnacceptJob :: user {} accepted job {}", fromUserId, jobId);
+					notificationService.createNotification(fromUserId, job.getUser().getId(), NotificationType.AcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
 				}else if(UserJobStatusType.UNACCEPT == status){
-					jobDao.unAcceptJob(userId, jobId);
-					log.info("acceptOrUnacceptJob :: user {} unaccepted job {}", userId, jobId);
-					notificationService.createNotification(userId, job.getUser().getId(), NotificationType.UnAcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
+					jobDao.unAcceptJob(fromUserId, jobId);
+					log.info("acceptOrUnacceptJob :: user {} unaccepted job {}", fromUserId, jobId);
+					notificationService.createNotification(fromUserId, job.getUser().getId(), NotificationType.UnAcceptJob, Boolean.FALSE, Boolean.FALSE, job.getId());
 				}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, Boolean.TRUE);
@@ -265,17 +265,19 @@ public class JobServiceImpl implements JobService{
 		if(tokenService.isValidToken(request)){
 		// if(Boolean.TRUE){
 			log.info("grantOrUnGrantJob :: valid token");
-			 Integer jobId = updateUserJobRequestDTO.getJobId();
-			 Integer userId = updateUserJobRequestDTO.getUserId();
+			Integer jobId = updateUserJobRequestDTO.getJobId();
+			Integer toUserId = updateUserJobRequestDTO.getUserId();
+			Jobs job = jobDao.findById(jobId);
+			Integer fromUserId = job.getUser().getId();
 			 UserJobStatusType status = UserJobStatusType.valueOf(updateUserJobRequestDTO.getStatus());
 			if(UserJobStatusType.GRANTED == status){
-				jobDao.grantOrUnGrantJob(userId, jobId, status);
-				log.info("grantOrUnGrantJob :: user {} granted job {}", userId, jobId);
-				notificationService.createNotification(userId, userId, NotificationType.GrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
+				jobDao.grantOrUnGrantJob(toUserId, jobId, status);
+				log.info("grantOrUnGrantJob :: user {} granted job {}", toUserId, jobId);
+				notificationService.createNotification(fromUserId, toUserId, NotificationType.GrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
 			}else if(UserJobStatusType.UNGRANT == status){
-				jobDao.grantOrUnGrantJob(userId, jobId, UserJobStatusType.ACCEPTED);
-				log.info("grantOrUnGrantJob :: user {} ungranted job {}", userId, jobId);
-				notificationService.createNotification(userId, userId, NotificationType.UnGrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
+				jobDao.grantOrUnGrantJob(toUserId, jobId, UserJobStatusType.ACCEPTED);
+				log.info("grantOrUnGrantJob :: user {} ungranted job {}", toUserId, jobId);
+				notificationService.createNotification(fromUserId, toUserId, NotificationType.UnGrantJob, Boolean.FALSE, Boolean.FALSE, jobId);
 			}
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, Boolean.TRUE);
