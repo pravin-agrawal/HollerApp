@@ -341,14 +341,49 @@ public class JobServiceImpl implements JobService{
 		return result;
 	}
 
+	@Transactional
+	public Map<String, Object> cancelJob(UpdateJobRequestDTO updateJobRequestDTO, HttpServletRequest request) {
+		log.info("cancelJob :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
+			log.info("cancelJob :: valid token");
+			 Integer jobId = updateJobRequestDTO.getJobId();
+			 Integer userId = updateJobRequestDTO.getUserId();
+				if(JobStatusType.CANCEL.name().equals(updateJobRequestDTO.getStatus())){
+					JobStatusType status = JobStatusType.valueOf(updateJobRequestDTO.getStatus());
+					jobDao.cancelJob(jobId, status);
+					log.info("cancelJob :: user {} cancelJob job {}", userId, jobId);
+					cancelUserJobsAndSendNotifications(jobId, userId);
+					result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+					result.put(HollerConstants.RESULT, Boolean.TRUE);
+				}else{
+					result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+					result.put(HollerConstants.MESSAGE, HollerConstants.INCORRECT_JOB_STATUS);
+				}
+		 }else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
 	private void completeUserJobsAndSendNotifications(Integer jobId, Integer userId) {
 		List<Object[]> resultList = jobDao.getUserJobsFromJobID(jobId);
 		for(Object[] object : CommonUtil.safe(resultList)){
-			UserJobStatus jobStatus = new UserJobStatus();
 			Integer jobID = (Integer)object[0];
 			Integer userID = (Integer)object[1];
 			jobDao.completeUserJob(userID, jobID, UserJobStatusType.COMPLETED);
 			notificationService.createNotification(userId, userID, NotificationType.CompleteJob, Boolean.FALSE, Boolean.FALSE, jobId);	
+		}
+	}
+	
+	private void cancelUserJobsAndSendNotifications(Integer jobId, Integer userId) {
+		List<Object[]> resultList = jobDao.getUserJobsFromJobID(jobId);
+		for(Object[] object : CommonUtil.safe(resultList)){
+			Integer jobID = (Integer)object[0];
+			Integer userID = (Integer)object[1];
+			jobDao.cancelUserJob(userID, jobID, UserJobStatusType.CANCELLED);
+			notificationService.createNotification(userId, userID, NotificationType.CancelJob, Boolean.FALSE, Boolean.FALSE, jobId);	
 		}
 	}
 }

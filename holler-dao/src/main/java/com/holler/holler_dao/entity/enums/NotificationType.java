@@ -11,5 +11,6 @@ public enum NotificationType {
 	UnGrantJob,
 	UpdateJob,
 	CompleteJob,
-	DeleteJob
+	DeleteJob,
+	CancelJob
 }

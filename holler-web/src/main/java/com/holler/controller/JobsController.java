@@ -95,4 +95,10 @@ public class JobsController {
 		Map<String, Object> result = jobService.completeJob(jobRequestDTO, request);
 		return result;
 	}
+	
+	@RequestMapping(value="/cancelJob", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> cancelJob(@RequestBody UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request){
+		Map<String, Object> result = jobService.cancelJob(jobRequestDTO, request);
+		return result;
+	}
 }

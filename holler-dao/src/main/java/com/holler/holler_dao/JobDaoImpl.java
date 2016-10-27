@@ -157,6 +157,14 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		query.setParameter("status", status.toString());
 		query.executeUpdate();
 	}
+	
+	public void cancelUserJob(int userId, int jobId, UserJobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_USER_JOB));
+		query.setParameter("userId", userId);
+		query.setParameter("jobId", jobId);
+		query.setParameter("status", status.toString());
+		query.executeUpdate();
+	}
 
 	public void setUserJobRatingFlag(int userId, int jobId, String jobDesignation) {
 		String sql = null;
@@ -184,6 +192,13 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 	}
 
 	public void completeJob(int jobId, JobStatusType status) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB_STATUS));
+		query.setParameter("jobId", jobId);
+		query.setParameter("status", status.toString());
+		query.executeUpdate();
+	}
+	
+	public void cancelJob(int jobId, JobStatusType status) {
 		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.UPDATE_JOB_STATUS));
 		query.setParameter("jobId", jobId);
 		query.setParameter("status", status.toString());

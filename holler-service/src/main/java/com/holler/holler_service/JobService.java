@@ -26,4 +26,5 @@ public interface JobService {
 	public Map<String, Object> viewJobNew(HttpServletRequest request);
 	Map<String,Object> completeUserJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
 	Map<String,Object> completeJob(UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request);
+	Map<String,Object> cancelJob(UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request);
 }

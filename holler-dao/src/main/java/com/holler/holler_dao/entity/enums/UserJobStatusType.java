@@ -14,7 +14,8 @@ public enum UserJobStatusType {
     COMPLETED,
     UNGRANT,
     ACCEPTER,
-    PROVIDER;
+    PROVIDER,
+    CANCELLED;
 
     public static List<String> getUsersAcceptedJobStatus() {
         List<String> list = new ArrayList<String>();

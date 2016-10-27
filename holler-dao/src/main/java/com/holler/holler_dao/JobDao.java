@@ -38,4 +38,8 @@ public interface JobDao extends BaseDao<Jobs> {
     boolean doesUserHasInCompleteJob(int userId);
     
     public List<Object[]> getUserJobsFromJobID(int jobId);
+    
+    void cancelJob(int jobId, JobStatusType status);
+    
+    public void cancelUserJob(int userId, int jobId, UserJobStatusType status);
 }
