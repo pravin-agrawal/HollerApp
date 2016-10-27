@@ -42,7 +42,7 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 	
 	public boolean authenticateUserWithEmail(String email){
 		String sql = queryDao.getQueryString(SQLQueryIds.AUTHENTICATE_USER_WITH_EMAIL);
-		List<User> userList = jdbcTemplate.query(sql, new String[]{email}, new UserMapper());
+		List<User> userList = jdbcTemplate.query(sql, new String[]{email,UserStatusType.ACTIVE.name()}, new UserMapper());
 		return (null != userList && userList.size() == 1);
 	}
 	
