@@ -26,7 +26,7 @@
 						SELECT j.* FROM
 						jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status))
 						JOIN tags AS t ON (jt.tag_id = t.id AND t.tag_name LIKE (:searchedTag))
-						GROUP BY j.id
+						GROUP BY j.id ORDER BY j.lastModified DESC
 					</value>
 				</entry>
 				<entry key="GET_ACCEPTED_USERS_BY_JOB_ID" >
@@ -37,7 +37,7 @@
 						And uj.jobId=:jobId and uj.status IN (:userJobStatus);
 					</value>
 				</entry>
-				<entry key="GET_JOBS_BY_TAG_IDS" >
+				<entry key="GET_JOBS_BY_TAG_IDS_OLD" >
 					<value>
 						SELECT *,
 							CASE WHEN X.tagIds = :tagIdsString THEN 0 ELSE 1 END AS jobOrder
@@ -51,6 +51,16 @@
 								GROUP BY j.id
 						) AS X
 						ORDER BY jobOrder ASC
+					</value>
+				</entry>
+				<entry key="GET_JOBS_BY_TAG_IDS" >
+					<value>
+						SELECT
+							j.*
+						FROM
+							jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status))
+							JOIN tags AS t ON (jt.tag_id = t.id AND t.id IN (:tagIds))
+							GROUP BY j.id ORDER BY j.lastModified DESC
 					</value>
 				</entry>
 				<entry key="ACCEPT_JOB" >

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.holler_dao.common.HollerConstants;
 import com.holler.twilioSms.SmsSender;
 import com.twilio.sdk.TwilioRestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,12 @@ public class OTPController {
 	@RequestMapping(value="/generateOTP", method=RequestMethod.POST, consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> generateOTP(HttpServletRequest request){
 		Map<String, Object> result = otpService.generateOtpAndSaveOnRedis(request);
-		try {
-			smsSender.sendSMS(result);
-		} catch (TwilioRestException e) {
-			e.printStackTrace();
+		if(!result.get(HollerConstants.STATUS).equals(HollerConstants.FAILURE)){
+			try {
+				smsSender.sendSMS(result);
+			} catch (TwilioRestException e) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}

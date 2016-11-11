@@ -109,9 +109,9 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 
 	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_IDS);
-		String tagIdsString = StringUtils.join(tagIds, ',');
+		//String tagIdsString = StringUtils.join(tagIds, ',');
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
-				.setParameter("tagIdsString", tagIdsString)
+				//.setParameter("tagIdsString", tagIdsString)
 				.setParameter("tagIds", tagIds)
 				.setParameter("appropriate", Boolean.FALSE)
 				.setParameter("status", JobStatusType.Active.name());;
