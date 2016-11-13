@@ -55,6 +55,27 @@ public class OTPServiceImpl implements OTPService{
 		}
 		return result;
 	}
+
+	public Map<String, Object> generateOtpAndSaveOnRedisForSignup(HttpServletRequest request) {
+		log.info("generateOtpAndSaveOnRedisForSignup :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			String phoneNumber = request.getHeader("phoneNumber");
+			String otp = redisDao.get("OTP_" + phoneNumber);
+			if(otp == null) {
+				otp = String.valueOf(OTP.getOtp());
+				redisDao.setex("OTP_" + phoneNumber, 120, otp);
+				log.info("generateOtpAndSaveOnRedisForSignup :: otp {} generated for phoneNumber {}", otp, phoneNumber);
+			}
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.PHONE_NUMBER, phoneNumber);
+			result.put(HollerConstants.OTP, otp);
+		} catch (Exception e) {
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_GENERATION_FAILURE);
+		}
+		return result;
+	}
 	
 	public boolean validateOtp(String phoneNumber, String otp) {
 		log.info("validateOtp :: called");

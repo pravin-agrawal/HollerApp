@@ -117,6 +117,11 @@
 						SELECT DISTINCT(user_id) FROM user_tag WHERE tag_id IN (:tagIds)
 					</value>
 				</entry>
+				<entry key="GET_ACCEPTED_USERS_IDS_BY_JOB_ID" >
+					<value>
+						SELECT DISTINCT(userId) FROM user_job WHERE jobId = :jobId ;
+					</value>
+				</entry>
 				<entry key="GET_USERS_UNREAD_NOTIFICATION_COUNT" >
 					<value>
 						SELECT count(*) from notification where to_user = :userId and is_read  = 0;
@@ -192,9 +197,9 @@
 				</entry>
 				<entry key="GET_USER_RATING_DATA">
 					<value>
-						SELECT usr.id, usr.name, usr.pic, ur.rating, ur.feedback from user_ratings ur
+						SELECT usr.id, usr.name, usr.pic, ur.rating, ur.feedback, ur.created from user_ratings ur
 						JOIN user usr ON (ur.from_user = usr.id)
-						WHERE ur.to_user= :userId ;
+						WHERE ur.to_user= :userId order by ur.created desc ;
 					</value>
 				</entry>
 				<entry key="DOES_USER_HAS_INCOMPLETE_JOB">

@@ -40,5 +40,18 @@ public class OTPController {
 		}
 		return result;
 	}
+
+	@RequestMapping(value="/generateOTPForSignup", method=RequestMethod.POST, consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Map<String, Object> generateOTPForSignup(HttpServletRequest request){
+		Map<String, Object> result = otpService.generateOtpAndSaveOnRedisForSignup(request);
+		if(!result.get(HollerConstants.STATUS).equals(HollerConstants.FAILURE)){
+			try {
+				smsSender.sendSMS(result);
+			} catch (TwilioRestException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 	
 }

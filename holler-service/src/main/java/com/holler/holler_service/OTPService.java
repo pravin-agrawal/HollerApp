@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 public interface OTPService {
 
 	Map<String, Object> generateOtpAndSaveOnRedis(HttpServletRequest request);
-	
+
+	Map<String, Object> generateOtpAndSaveOnRedisForSignup(HttpServletRequest request);
+
 	public boolean validateOtp(String phoneNumber, String otp);
 	
 }

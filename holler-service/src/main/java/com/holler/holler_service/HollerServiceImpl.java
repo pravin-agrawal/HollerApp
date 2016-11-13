@@ -73,7 +73,7 @@ public class HollerServiceImpl implements HollerService{
 		List<EmailSubjects> emailSubjects = emailSubjectsDao.findAll();
 		List<String> subjectList = new ArrayList<String>();
 		for(EmailSubjects subjects : CommonUtil.safe(emailSubjects)){
-			subjectList.add(subjects.getSubject());
+			subjectList.add(subjects.getSubject().trim());
 		}
 		result.put(HollerConstants.RESULT, subjectList);
 		return result;

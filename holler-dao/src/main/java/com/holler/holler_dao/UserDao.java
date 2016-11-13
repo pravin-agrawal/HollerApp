@@ -26,4 +26,6 @@ public interface UserDao extends BaseDao<User> {
 	boolean checkIfUserExists(String email);
 	
 	public User getByEmail(String email);
+
+	Set<Integer> getAcceptedUserListByJobId(int objectId);
 }

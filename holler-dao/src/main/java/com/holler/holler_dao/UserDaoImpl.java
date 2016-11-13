@@ -97,6 +97,19 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		return null;
 	}
 
+	@Override
+	public Set<Integer> getAcceptedUserListByJobId(int objectId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_ACCEPTED_USERS_IDS_BY_JOB_ID);
+		Query queryObject = entityManager.createNativeQuery(sql)
+				.setParameter("jobId", objectId);
+		List<Integer> resultList = queryObject.getResultList();
+		Set<Integer> userIds = new HashSet<Integer>();
+		if(resultList != null && !resultList.isEmpty()){
+			userIds.addAll(resultList);
+		}
+		return userIds;
+	}
+
 	public User findByIdWithTags(int userId) {
 		List<User> userList = entityManager.createQuery("from " + User.class.getName()
 				+ " where id = :userId AND status NOT IN (:status)", User.class)

@@ -108,16 +108,16 @@ public class UserServiceImpl implements UserService{
 			return result;
 		}
 		try {
-			if(isUserPresent(signUpDTO.getEmail())){
+			if(isUserPresent(signUpDTO.getEmail().toLowerCase().trim())){
 				log.info("signUpUser :: user already present");
 				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 				result.put(HollerConstants.MESSAGE, HollerConstants.DUPLICATE_USER);
 			}else{
-				log.info("signUpUser :: creating new user with name " + signUpDTO.getName() + " and email " + signUpDTO.getEmail() + " and phoneNumber " + signUpDTO.getPhoneNumber());
-				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail(), signUpDTO.getPhoneNumber(), HollerConstants.PLATFORM_HOLLER);
+				log.info("signUpUser :: creating new user with name " + signUpDTO.getName() + " and email " + signUpDTO.getEmail().toLowerCase() + " and phoneNumber " + signUpDTO.getPhoneNumber());
+				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail().toLowerCase().trim(), signUpDTO.getPhoneNumber(), HollerConstants.PLATFORM_HOLLER);
 				userDao.save(user);
 				
-				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail());
+				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail().toLowerCase().trim());
 				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
 						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic());
 				
@@ -138,16 +138,16 @@ public class UserServiceImpl implements UserService{
 		try {
 			User user = null;
 			SignUpResponseDTO signUpResponseDTO = null;
-			if(isUserPresent(loginWithSocialPlatformDTO.getEmail())){
+			if(isUserPresent(loginWithSocialPlatformDTO.getEmail().toLowerCase().trim())){
 				log.info("signUpUser :: user already present");
-				user = userDao.getByEmail(loginWithSocialPlatformDTO.getEmail());
+				user = userDao.getByEmail(loginWithSocialPlatformDTO.getEmail().toLowerCase().trim());
 			}else{
 				log.info("signUpUser :: creating new user with name " + loginWithSocialPlatformDTO.getName() + " and email " + loginWithSocialPlatformDTO.getEmail() + " on platform " + loginWithSocialPlatformDTO.getPlatform());
-				user = User.constructUserForSocialPlatformSignUp(loginWithSocialPlatformDTO.getName(), loginWithSocialPlatformDTO.getEmail(), 
+				user = User.constructUserForSocialPlatformSignUp(loginWithSocialPlatformDTO.getName(), loginWithSocialPlatformDTO.getEmail().toLowerCase().trim(),
 						loginWithSocialPlatformDTO.getGender(), loginWithSocialPlatformDTO.getProfilePic(), loginWithSocialPlatformDTO.getPlatform());
 				userDao.save(user);
 			}
-			Map<String, Object> tokenResult = tokenService.generateToken(loginWithSocialPlatformDTO.getEmail());
+			Map<String, Object> tokenResult = tokenService.generateToken(loginWithSocialPlatformDTO.getEmail().toLowerCase().trim());
 			signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
 					user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic(), user.getRating(),user.isUserVerified());
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -307,9 +307,9 @@ public class UserServiceImpl implements UserService{
 		try {
 			log.info("loginUser :: otp entered is valid");
 			log.info("loginUser :: try to login user with email {}", loginDTO.getEmail());
-			User user = userDao.getByEmail(loginDTO.getEmail());
+			User user = userDao.getByEmail(loginDTO.getEmail().toLowerCase().trim());
 			if(user != null){
-				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail());
+				Map<String, Object> tokenResult = tokenService.generateToken(loginDTO.getEmail().toLowerCase().trim());
 				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
 						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic(), user.getRating(),user.isUserVerified());
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);

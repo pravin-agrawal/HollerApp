@@ -114,7 +114,7 @@ public class NotificationServiceImpl implements NotificationService{
 
 	public boolean createJobUpdateNotification(Set<Integer> tags, int fromUserId, int objectId) {
 		log.info("createNotification :: about to create job update notification from source user " + fromUserId + " for tags " + tags);
-		Set<Integer> userIds = userDao.getUserIdsByTagIds(tags);
+		Set<Integer> userIds = userDao.getAcceptedUserListByJobId(objectId);
 		log.info("createNotification :: about to create job update notification from source user " + fromUserId + " for tags " + tags + " for users " + userIds);
 		Jobs job = jobDao.findById(objectId);
 		Double[] jobLatLong = job.getLatLongFromJobLocation();
