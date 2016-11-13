@@ -107,7 +107,7 @@
 				</entry>
 				<entry key="GET_MY_PINGED_JOBS" >
 					<value>
-						SELECT j.id, j.job_title,j.job_description, j.compensation, uj.job_accepted_date FROM jobs j JOIN user_job uj ON
+						SELECT j.id, j.job_title,j.job_description, j.compensation, uj.job_accepted_date, uj.status FROM jobs j JOIN user_job uj ON
 							j.id = uj.jobId AND uj.userId = :userId
 							order by uj.job_accepted_date desc
 					</value>
