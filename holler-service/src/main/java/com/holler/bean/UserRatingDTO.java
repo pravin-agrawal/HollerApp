@@ -24,6 +24,7 @@ public class UserRatingDTO {
 	private int jobId;
 	private String jobTitle;
 	private String jobDesignation;
+	private Date ratingDate;
 
 	public Integer getToUserId() {
 		return toUserId;
@@ -114,6 +115,14 @@ public class UserRatingDTO {
 		this.jobDesignation = jobDesignation;
 	}
 
+	public Date getRatingDate() {
+		return ratingDate;
+	}
+
+	public void setRatingDate(Date ratingDate) {
+		this.ratingDate = ratingDate;
+	}
+
 	public static List<UserRatingDTO> constructUserDTOForRatingScreen(List<Object[]> resultList) {
 		List<UserRatingDTO> userRatingDTOs = new ArrayList<UserRatingDTO>();
 		if(resultList != null && !resultList.isEmpty()){
@@ -144,6 +153,7 @@ public class UserRatingDTO {
 					userRatingDTO.setFromUserProfilePic((String) object[2]);
 					userRatingDTO.setRating((Integer) object[3]);
 					userRatingDTO.setFeedback((String) object[4]);
+					userRatingDTO.setRatingDate((Date)object[5]);
 					userJobDTOs.add(userRatingDTO);
 				}
 			}
