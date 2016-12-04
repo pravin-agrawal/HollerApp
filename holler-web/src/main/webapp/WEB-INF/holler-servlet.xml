@@ -23,12 +23,29 @@
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp">
 	</bean>
 
+	<!--<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:db/holler.properties</value>
+		</property>
+	</bean>-->
+
+	<!--<context:property-placeholder location="classpath:holler.properties" />-->
+
 	<import resource="classpath:db/sql-queries.xml" />
 
-	<bean id="dataSource"
+	<!--<bean id="hollerProperty" class="com.holler.holler_dao.util.HollerProperties">
+	</bean>-->
+
+	<!--<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost/holler"
-		p:username="root" p:password="root">
+		p:driverClassName="${mysql.database.driver.className}" p:url="jdbc:mysql://${mysql.database.host}:${mysql.database.port}/${mysql.database.hollerDBName}"
+		p:username="${mysql.database.user}" p:password="#{mysql.database.password}">
+	</bean>-->
+
+	<bean id="dataSource"
+		  class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		  p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost/hollerindia"
+		  p:username="root" p:password="root">
 	</bean>
 
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"
