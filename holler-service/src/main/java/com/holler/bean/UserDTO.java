@@ -136,7 +136,8 @@ public class UserDTO {
 	}
 
 	public static User setUserDataToUpdate(UserDTO userDTO, User user) {
-		user.setName(userDTO.getName());
+		String name = userDTO.getName().substring(0,1).toLowerCase() + userDTO.getName().substring(1);
+		user.setName(name);
 		user.setEmail(userDTO.getEmailId());
 		user.setPhoneNumber(userDTO.getPhoneNumber());
 		user.setAbout(userDTO.getAbout());

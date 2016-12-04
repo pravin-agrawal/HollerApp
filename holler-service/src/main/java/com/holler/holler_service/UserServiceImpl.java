@@ -114,7 +114,8 @@ public class UserServiceImpl implements UserService{
 				result.put(HollerConstants.MESSAGE, HollerConstants.DUPLICATE_USER);
 			}else{
 				log.info("signUpUser :: creating new user with name " + signUpDTO.getName() + " and email " + signUpDTO.getEmail().toLowerCase() + " and phoneNumber " + signUpDTO.getPhoneNumber());
-				User user = User.constructUserForSignUp(signUpDTO.getName(), signUpDTO.getEmail().toLowerCase().trim(), signUpDTO.getPhoneNumber(), HollerConstants.PLATFORM_HOLLER);
+				String name = signUpDTO.getName().substring(0,1).toUpperCase() + signUpDTO.getName().substring(1);
+				User user = User.constructUserForSignUp(name, signUpDTO.getEmail().toLowerCase().trim(), signUpDTO.getPhoneNumber(), HollerConstants.PLATFORM_HOLLER);
 				userDao.save(user);
 				
 				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail().toLowerCase().trim());

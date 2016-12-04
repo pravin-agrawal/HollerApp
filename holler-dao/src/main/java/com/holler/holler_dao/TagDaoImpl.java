@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import com.holler.holler_dao.common.SQLQueryIds;
 import com.holler.holler_dao.entity.Jobs;
 
+import com.holler.holler_dao.entity.ParentTags;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -59,6 +60,19 @@ public class TagDaoImpl extends BaseDaoImpl<Tags> implements TagDao {
 		query.setParameter("tagId", tagId);
 		query.setParameter("tagUrl", tagUrl);
 		query.executeUpdate();
+	}
+
+	public List<Tags> getAllChildTags(){
+		Query query = entityManager.createNativeQuery("SELECT * FROM tags ORDER BY tag_name",Tags.class);
+		List<Tags> resultList = query.getResultList();
+		return resultList;
+	}
+
+	@Override
+	public List<ParentTags> fetchAllParentTagWithChildTags() {
+		Query query = entityManager.createNativeQuery("SELECT * FROM parent_tags ORDER BY parent_tag_name",ParentTags.class);
+		List<ParentTags> resultList = query.getResultList();
+		return resultList;
 	}
 
 

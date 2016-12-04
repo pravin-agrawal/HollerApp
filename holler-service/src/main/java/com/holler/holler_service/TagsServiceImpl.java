@@ -59,7 +59,7 @@ public class TagsServiceImpl implements TagsService{
 		//if(Boolean.TRUE){
 			log.info("getAllChildTags :: valid token");
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
-			result.put(HollerConstants.RESULT, TagDTO.getTagDTOsFromTags(tagDao.findAll()));
+			result.put(HollerConstants.RESULT, TagDTO.getTagDTOsFromTags(tagDao.getAllChildTags()));
 		}else{
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);

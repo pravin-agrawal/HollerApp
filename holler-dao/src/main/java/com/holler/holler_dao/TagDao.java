@@ -3,6 +3,7 @@ package com.holler.holler_dao;
 import java.util.List;
 import java.util.Set;
 
+import com.holler.holler_dao.entity.ParentTags;
 import com.holler.holler_dao.entity.Tags;
 
 public interface TagDao extends BaseDao<Tags> {
@@ -14,5 +15,9 @@ public interface TagDao extends BaseDao<Tags> {
 	void saveParentTagImageUrl(Integer tagId, String tagUrl);
 	
 	void saveChildTagImageUrl(Integer tagId, String tagUrl);
+
+	List<Tags> getAllChildTags();
+
+	List<ParentTags> fetchAllParentTagWithChildTags();
 
 }
