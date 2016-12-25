@@ -97,7 +97,7 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		return null;
 	}
 
-	@Override
+
 	public Set<Integer> getAcceptedUserListByJobId(int objectId) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_ACCEPTED_USERS_IDS_BY_JOB_ID);
 		Query queryObject = entityManager.createNativeQuery(sql)
@@ -108,6 +108,17 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 			userIds.addAll(resultList);
 		}
 		return userIds;
+	}
+
+	public User findByEmail(String email) {
+		List<User> userList = entityManager.createQuery("from " + User.class.getName()
+				+ " where email = :email AND status NOT IN (:status)", User.class)
+				.setParameter("email", email)
+				.setParameter("status", UserStatusType.DELETED).getResultList();
+		if(CommonUtil.notNullAndEmpty(userList)) {
+			return userList.get(0);
+		}
+		return null;
 	}
 
 	public User findByIdWithTags(int userId) {

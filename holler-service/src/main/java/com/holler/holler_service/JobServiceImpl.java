@@ -200,7 +200,9 @@ public class JobServiceImpl implements JobService{
 			log.info("searchJobsByTag :: valid token");
 			log.info("searchJobsByTag :: tag names are {}", request.getHeader("tag"));
 			List<Jobs> jobs = jobDao.searchJobsByTag(request.getHeader("tag"));
-			List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosToViewJobList(jobs);
+			User loggedInUser = userDao.findByEmail(request.getHeader("email"));
+			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
+			//List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosToViewJobList(jobs);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, jobDTOs);
 		 }else{
