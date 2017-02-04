@@ -57,18 +57,6 @@ public class User extends BaseEntity{
 	@Column(name = "current_address")
 	private String currentAddress;
 
-	@Column(name = "job_discovery_limit")
-	private Integer jobDiscoveryLimit = 10;
-	
-	@Column(name = "compensation_range_min")
-	private Integer compensationRangeMin = 0;
-
-	@Column(name = "compensation_range_max")
-	private Integer compensationRangeMax = 50000;
-
-	@Column(name = "push_notification")
-	private Integer pushNotification = 1;
-
 	@Column(name = "is_user_verified")
 	private boolean userVerified;
 	
@@ -80,6 +68,10 @@ public class User extends BaseEntity{
 	
 	@Column(name = "hashed_device")
 	private String hashedDevice;
+
+	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_details_id")
+	private UserDetails userDetails;
 
 	public int getId() {
 		return id;
@@ -167,38 +159,6 @@ public class User extends BaseEntity{
 		this.currentLocation = currentLocation;
 	}
 
-	public Integer getJobDiscoveryLimit() {
-		return jobDiscoveryLimit;
-	}
-
-	public void setJobDiscoveryLimit(Integer jobDiscoveryLimit) {
-		this.jobDiscoveryLimit = jobDiscoveryLimit;
-	}
-
-	public Integer getCompensationRangeMin() {
-		return compensationRangeMin;
-	}
-
-	public void setCompensationRangeMin(Integer compensationRangeMin) {
-		this.compensationRangeMin = compensationRangeMin;
-	}
-
-	public Integer getCompensationRangeMax() {
-		return compensationRangeMax;
-	}
-
-	public void setCompensationRangeMax(Integer compensationRangeMax) {
-		this.compensationRangeMax = compensationRangeMax;
-	}
-
-	public Integer getPushNotification() {
-		return pushNotification;
-	}
-
-	public void setPushNotification(Integer pushNotification) {
-		this.pushNotification = pushNotification;
-	}
-
 	public boolean isUserVerified() {
 		return userVerified;
 	}
@@ -237,6 +197,14 @@ public class User extends BaseEntity{
 
 	public void setHashedDevice(String hashedDevice) {
 		this.hashedDevice = hashedDevice;
+	}
+
+	public UserDetails getUserDetails() {
+		return userDetails;
+	}
+
+	public void setUserDetails(UserDetails userDetails) {
+		this.userDetails = userDetails;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber, String platform) {

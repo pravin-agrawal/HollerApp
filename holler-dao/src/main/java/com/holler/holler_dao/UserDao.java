@@ -28,4 +28,6 @@ public interface UserDao extends BaseDao<User> {
 	public User getByEmail(String email);
 
 	Set<Integer> getAcceptedUserListByJobId(int objectId);
+
+	User findByEmail(String email);
 }

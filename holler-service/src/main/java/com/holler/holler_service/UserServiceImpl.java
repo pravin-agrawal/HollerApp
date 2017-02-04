@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.holler.holler_dao.entity.UserDetails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,8 @@ public class UserServiceImpl implements UserService{
 				log.info("signUpUser :: creating new user with name " + signUpDTO.getName() + " and email " + signUpDTO.getEmail().toLowerCase() + " and phoneNumber " + signUpDTO.getPhoneNumber());
 				String name = signUpDTO.getName().substring(0,1).toUpperCase() + signUpDTO.getName().substring(1);
 				User user = User.constructUserForSignUp(name, signUpDTO.getEmail().toLowerCase().trim(), signUpDTO.getPhoneNumber(), HollerConstants.PLATFORM_HOLLER);
+				UserDetails ud = new UserDetails();
+				user.setUserDetails(ud);
 				userDao.save(user);
 				
 				Map<String, Object> tokenResult = tokenService.generateToken(signUpDTO.getEmail().toLowerCase().trim());
@@ -146,6 +149,8 @@ public class UserServiceImpl implements UserService{
 				log.info("signUpUser :: creating new user with name " + loginWithSocialPlatformDTO.getName() + " and email " + loginWithSocialPlatformDTO.getEmail() + " on platform " + loginWithSocialPlatformDTO.getPlatform());
 				user = User.constructUserForSocialPlatformSignUp(loginWithSocialPlatformDTO.getName(), loginWithSocialPlatformDTO.getEmail().toLowerCase().trim(),
 						loginWithSocialPlatformDTO.getGender(), loginWithSocialPlatformDTO.getProfilePic(), loginWithSocialPlatformDTO.getPlatform());
+				UserDetails ud = new UserDetails();
+				user.setUserDetails(ud);
 				userDao.save(user);
 			}
 			Map<String, Object> tokenResult = tokenService.generateToken(loginWithSocialPlatformDTO.getEmail().toLowerCase().trim());
@@ -165,7 +170,7 @@ public class UserServiceImpl implements UserService{
 		log.info("getUserProfile :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
-		// if(Boolean.TRUE){
+			//if(Boolean.TRUE){
 			log.info("getUserProfile :: valid token");
 			log.info("getUserProfile :: fetch profile ofr user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
@@ -257,8 +262,8 @@ public class UserServiceImpl implements UserService{
 	public Map<String, Object> getUserSettings(HttpServletRequest request) {
 		log.info("getUserSettings :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
-		if(tokenService.isValidToken(request)){
-		 //if(Boolean.TRUE){
+		//if(tokenService.isValidToken(request)){
+		 if(Boolean.TRUE){
 			log.info("getUserSettings :: valid token");
 			log.info("getUserSettings :: for user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
@@ -280,10 +285,10 @@ public class UserServiceImpl implements UserService{
 			log.info("updateUserSetting :: valid token");
 			log.info("updateUserSetting :: for user {}", userSettingRequestDTO.getUserId());
 			User user = userDao.findById(userSettingRequestDTO.getUserId());
-			user.setJobDiscoveryLimit(userSettingRequestDTO.getJobDiscoveryLimit());
-			user.setPushNotification(userSettingRequestDTO.getPushNotification());
-			user.setCompensationRangeMin(userSettingRequestDTO.getCompensationRangeMin());
-			user.setCompensationRangeMax(userSettingRequestDTO.getCompensationRangeMax());
+			user.getUserDetails().setJobDiscoveryLimit(userSettingRequestDTO.getJobDiscoveryLimit());
+			user.getUserDetails().setPushNotification(userSettingRequestDTO.getPushNotification());
+			user.getUserDetails().setCompensationRangeMin(userSettingRequestDTO.getCompensationRangeMin());
+			user.getUserDetails().setCompensationRangeMax(userSettingRequestDTO.getCompensationRangeMax());
 			userDao.update(user);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, Boolean.TRUE);

@@ -22,6 +22,10 @@ public class UserDTO {
 	private Map<Integer, String> tagsMap;
 	private Float avgRating;
 	private boolean userVerified;
+	private String facebookLink;
+	private String linkedinLink;
+	private String youtubeLink;
+	private String otherLink;
 	public int getUserId() {
 		return userId;
 	}
@@ -117,6 +121,38 @@ public class UserDTO {
 		return userVerified;
 	}
 
+	public String getFacebookLink() {
+		return facebookLink;
+	}
+
+	public void setFacebookLink(String facebookLink) {
+		this.facebookLink = facebookLink;
+	}
+
+	public String getLinkedinLink() {
+		return linkedinLink;
+	}
+
+	public void setLinkedinLink(String linkedinLink) {
+		this.linkedinLink = linkedinLink;
+	}
+
+	public String getYoutubeLink() {
+		return youtubeLink;
+	}
+
+	public void setYoutubeLink(String youtubeLink) {
+		this.youtubeLink = youtubeLink;
+	}
+
+	public String getOtherLink() {
+		return otherLink;
+	}
+
+	public void setOtherLink(String otherLink) {
+		this.otherLink = otherLink;
+	}
+
 	public static UserDTO getDtoForUserProfile(User user){
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUserId(user.getId());
@@ -127,6 +163,10 @@ public class UserDTO {
 		userDTO.setPic(user.getPic());
 		userDTO.setAvgRating(user.getRating());
 		userDTO.setIsUserVerified(user.isUserVerified());
+		userDTO.setFacebookLink(user.getUserDetails().getFacebookProfile());
+		userDTO.setLinkedinLink(user.getUserDetails().getLinkedinProfile());
+		userDTO.setYoutubeLink(user.getUserDetails().getYoutubeLink());
+		userDTO.setOtherLink(user.getUserDetails().getOtherLink());
 		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
 		for (Tags tag : CommonUtil.safe(user.getTags())) {
 			tagMaps.put(tag.getId(), tag.getTagName());
@@ -143,6 +183,10 @@ public class UserDTO {
 		user.setAbout(userDTO.getAbout());
 		user.setPic(userDTO.getPic());
 		user.setLastModified(new Date());
+		user.getUserDetails().setFacebookProfile(userDTO.getFacebookLink());
+		user.getUserDetails().setLinkedinProfile(userDTO.getLinkedinLink());
+		user.getUserDetails().setYoutubeLink(userDTO.getYoutubeLink());
+		user.getUserDetails().setOtherLink(userDTO.getOtherLink());
 		return user;
 	}
 

@@ -53,10 +53,10 @@ public class UserSettingDTO {
 	public static UserSettingDTO getDtoForUserSetting(User user) {
 		UserSettingDTO userSettingDTO = new UserSettingDTO();
 		userSettingDTO.setUserId(user.getId());
-		userSettingDTO.setCompensationRangeMin(user.getCompensationRangeMin());
-		userSettingDTO.setCompensationRangeMax(user.getCompensationRangeMax());
-		userSettingDTO.setPushNotification(user.getPushNotification());
-		userSettingDTO.setJobDiscoveryLimit(user.getJobDiscoveryLimit());
+		userSettingDTO.setCompensationRangeMin(user.getUserDetails().getCompensationRangeMin());
+		userSettingDTO.setCompensationRangeMax(user.getUserDetails().getCompensationRangeMax());
+		userSettingDTO.setPushNotification(user.getUserDetails().getPushNotification());
+		userSettingDTO.setJobDiscoveryLimit(user.getUserDetails().getJobDiscoveryLimit());
 		return userSettingDTO;
 	}
 	

@@ -78,7 +78,7 @@ public class NotificationServiceImpl implements NotificationService{
 		notification.setSent(isSent);
 		notification.setObjectId(objectId);
 		notificationDao.save(notification);
-		if(toUser.getPushNotification().intValue() == 1){
+		if(toUser.getUserDetails().getPushNotification().intValue() == 1){
 			pushNotification(toUser, notification);	
 		}
 		return true;
@@ -121,7 +121,7 @@ public class NotificationServiceImpl implements NotificationService{
 		for (Integer toUserId : userIds) {
 			if(toUserId != fromUserId){
 				User user = userDao.findById(toUserId);
-				int jobDiscoveryLimit = user.getJobDiscoveryLimit();
+				int jobDiscoveryLimit = user.getUserDetails().getJobDiscoveryLimit();
 				Double[] userLatLong = user.getLatLongFromCurrentLocation();
 				Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
 				log.info("userAndJobDistance : "+userAndJobDistance);
@@ -143,7 +143,7 @@ public class NotificationServiceImpl implements NotificationService{
 		for (Integer toUserId : userIds) {
 			if(toUserId != fromUserId){
 				User user = userDao.findById(toUserId);
-				int jobDiscoveryLimit = user.getJobDiscoveryLimit();
+				int jobDiscoveryLimit = user.getUserDetails().getJobDiscoveryLimit();
 				Double[] userLatLong = user.getLatLongFromCurrentLocation();
 				Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
 				log.info("userAndJobDistance : "+userAndJobDistance);
