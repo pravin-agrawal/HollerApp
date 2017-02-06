@@ -1,6 +1,7 @@
 package com.holler.holler_dao.entity;
 
 import com.holler.holler_dao.entity.enums.UserStatusType;
+import com.holler.holler_dao.entity.enums.UserType;
 
 import java.util.Set;
 
@@ -44,6 +45,10 @@ public class User extends BaseEntity{
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private UserStatusType status;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "user_type")
+	private UserType userType;
 	
 	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_tag",
@@ -205,6 +210,14 @@ public class User extends BaseEntity{
 
 	public void setUserDetails(UserDetails userDetails) {
 		this.userDetails = userDetails;
+	}
+
+	public UserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(UserType userType) {
+		this.userType = userType;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber, String platform) {

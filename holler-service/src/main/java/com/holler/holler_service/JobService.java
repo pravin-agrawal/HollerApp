@@ -5,9 +5,11 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.bean.SearchJobsByTagRequestDTO;
 import com.holler.bean.UpdateJobRequestDTO;
 import com.holler.bean.UpdateUserJobRequestDTO;
 import com.holler.bean.UserJobDTO;
+import com.holler.holler_dao.entity.enums.JobMedium;
 
 public interface JobService {
 
@@ -18,7 +20,7 @@ public interface JobService {
 	public Map<String, Object> getMyPostedAndPingedJobIds(HttpServletRequest request);
 	public Map<String, Object> getUsersAcceptedJob(HttpServletRequest request);
 	public Map<String, Object> searchJobsByTag(HttpServletRequest request);
-	public Map<String, Object> searchJobsByTagIds(Set<Integer> tagIds, Integer userId, HttpServletRequest request);
+	public Map<String, Object> searchJobsByTagIds(SearchJobsByTagRequestDTO tagDTO, HttpServletRequest request);
 
 	Map<String,Object> acceptOrUnacceptJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
 
@@ -27,4 +29,6 @@ public interface JobService {
 	Map<String,Object> completeUserJob(UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request);
 	Map<String,Object> completeJob(UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request);
 	Map<String,Object> cancelJob(UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request);
+
+	Map<String,Object> searchJobsByTagAndMedium(HttpServletRequest request, JobMedium medium);
 }

@@ -8,16 +8,14 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.bean.*;
+import com.holler.holler_dao.entity.enums.JobMedium;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.holler.bean.UpdateJobRequestDTO;
-import com.holler.bean.UpdateUserJobRequestDTO;
-import com.holler.bean.UserJobDTO;
-import com.holler.bean.UserJobStatus;
 import com.holler.holler_dao.JobDao;
 import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
@@ -212,15 +210,40 @@ public class JobServiceImpl implements JobService{
 		return result;
 	}
 
-	public Map<String, Object> searchJobsByTagIds(Set<Integer> tagIds, Integer userId, HttpServletRequest request) {
+	public Map<String, Object> searchJobsByTagAndMedium(HttpServletRequest request, JobMedium medium) {
+		log.info("searchJobsByTagAndMedium :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)){
+			//if(Boolean.TRUE){
+			log.info("searchJobsByTagAndMedium :: valid token");
+			log.info("searchJobsByTagAndMedium :: tag names are {}", request.getHeader("tag"));
+			log.info("searchJobsByTagAndMedium :: medium is {}", medium);
+			List<Jobs> jobs = jobDao.searchJobsByTagAndMedium(request.getHeader("tag"), medium);
+			User loggedInUser = userDao.findByEmail(request.getHeader("email"));
+			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
+			//List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosToViewJobList(jobs);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, jobDTOs);
+		}else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+
+	public Map<String, Object> searchJobsByTagIds(SearchJobsByTagRequestDTO tagDTO, HttpServletRequest request) {
 		log.info("searchJobsByTagIds :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)){
 		 //if(Boolean.TRUE){
 			log.info("searchJobsByTagIds :: valid token");
-			log.info("searchJobsByTagIds :: user {} searched for tags {}", userId, tagIds);
-			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagIds);
-			User loggedInUser = userDao.findById(userId);
+			log.info("searchJobsByTagIds :: user {} searched for tags {} ", tagDTO.getUserId(), tagDTO.getTagIds());
+			String jobMedium = null;
+			if(CommonUtil.isNotNull(tagDTO.getJobMedium())){
+				jobMedium = tagDTO.getJobMedium().name();
+			}
+			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagDTO.getTagIds(), jobMedium);
+			User loggedInUser = userDao.findById(tagDTO.getUserId());
 			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, jobDTOs);
@@ -371,6 +394,7 @@ public class JobServiceImpl implements JobService{
 		}
 		return result;
 	}
+
 	private void completeUserJobsAndSendNotifications(Integer jobId, Integer userId) {
 		List<Object[]> resultList = jobDao.getUserJobsFromJobID(jobId);
 		for(Object[] object : CommonUtil.safe(resultList)){

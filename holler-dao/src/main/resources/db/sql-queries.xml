@@ -29,6 +29,14 @@
 						GROUP BY j.id ORDER BY j.lastModified DESC
 					</value>
 				</entry>
+				<entry key="GET_JOBS_BY_TAG_AND_MEDIUM" >
+					<value>
+						SELECT j.* FROM
+						jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status) AND j.job_medium = :medium)
+						JOIN tags AS t ON (jt.tag_id = t.id AND t.tag_name LIKE (:searchedTag))
+						GROUP BY j.id ORDER BY j.lastModified DESC
+					</value>
+				</entry>
 				<entry key="GET_ACCEPTED_USERS_BY_JOB_ID" >
 					<value>
 						select usr.id, usr.name, usr.pic, uj.status,usr.avg_rating , usr.is_user_verified
@@ -58,7 +66,7 @@
 						SELECT
 							j.*
 						FROM
-							jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status))
+							jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status) AND (:mediumNotFiltered OR  j.job_medium = :medium ))
 							JOIN tags AS t ON (jt.tag_id = t.id AND t.id IN (:tagIds))
 							GROUP BY j.id ORDER BY j.lastModified DESC
 					</value>

@@ -9,7 +9,9 @@ import java.util.Set;
 import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Tags;
 import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.JobMedium;
 import com.holler.holler_dao.entity.enums.JobStatusType;
+import com.holler.holler_dao.entity.enums.JobType;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
@@ -41,6 +43,11 @@ public class UserJobDTO {
 	private List<UserJobStatus> userJobStatusList;
 	private float rating;
 	private boolean userVerified;
+	private JobMedium jobMedium;
+	private JobType jobType;
+	private Integer openPositions;
+	private Integer expertiseLevel;
+
 
 	public Integer getUserId() {
 		return userId;
@@ -181,6 +188,38 @@ public class UserJobDTO {
 		this.userVerified = userVerified;
 	}
 
+	public JobMedium getJobMedium() {
+		return jobMedium;
+	}
+
+	public void setJobMedium(JobMedium jobMedium) {
+		this.jobMedium = jobMedium;
+	}
+
+	public JobType getJobType() {
+		return jobType;
+	}
+
+	public void setJobType(JobType jobType) {
+		this.jobType = jobType;
+	}
+
+	public Integer getOpenPositions() {
+		return openPositions;
+	}
+
+	public void setOpenPositions(Integer openPositions) {
+		this.openPositions = openPositions;
+	}
+
+	public Integer getExpertiseLevel() {
+		return expertiseLevel;
+	}
+
+	public void setExpertiseLevel(Integer expertiseLevel) {
+		this.expertiseLevel = expertiseLevel;
+	}
+
 	public void addUserJobStatus(UserJobStatus jobStatus){
 		if(CommonUtil.isNull(userJobStatusList)){
 			userJobStatusList = new ArrayList<UserJobStatus>();
@@ -217,6 +256,10 @@ public class UserJobDTO {
 		job.setStatus(JobStatusType.Active);
 		job.setJobLocation(getLocationInCommaSeparatedString(userJobDTO));
 		job.setJobAddress(getAddressFromLocation(userJobDTO));
+		job.setJobMedium(userJobDTO.getJobMedium());
+		job.setOpenPositions(userJobDTO.getOpenPositions());
+		job.setJobType(userJobDTO.getJobType());
+		job.setExpertiseLevel(userJobDTO.getExpertiseLevel());
 		return job;
 	}
 
@@ -242,6 +285,10 @@ public class UserJobDTO {
 			tagIds.add(tag.getId());
 		}
 		jobDTO.tags = tagIds;
+		jobDTO.setJobMedium(job.getJobMedium());
+		jobDTO.setJobType(job.getJobType());
+		jobDTO.setExpertiseLevel(job.getExpertiseLevel());
+		jobDTO.setOpenPositions(job.getOpenPositions());
 		return jobDTO;
 	}
 
@@ -269,6 +316,7 @@ public class UserJobDTO {
 			userJobDTO.setJobTimeStamp(job.getCreated());
 			userJobDTO.setJobDescription(job.getDescription());
 			userJobDTO.setStatus(job.getStatus().name());
+			userJobDTO.setJobMedium(job.getJobMedium());
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;

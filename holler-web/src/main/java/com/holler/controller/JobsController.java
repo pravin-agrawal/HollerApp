@@ -7,12 +7,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.holler_dao.entity.enums.JobMedium;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.holler.bean.SearchJobsByTagRequestDTO;
 import com.holler.bean.UpdateJobRequestDTO;
@@ -57,9 +55,14 @@ public class JobsController {
 		return jobService.searchJobsByTag(request);
 	}
 
+	@RequestMapping(value="/searchJobsByTagNameAndMedium", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> searchJobsByTagNameAndMedium(@RequestParam("medium")JobMedium medium,HttpServletRequest request){
+		return jobService.searchJobsByTagAndMedium(request, medium);
+	}
+
 	@RequestMapping(value="/searchJobsByTagIds", method=RequestMethod.POST)
 	public @ResponseBody Map<String, Object> searchJobsByTagIds(@RequestBody SearchJobsByTagRequestDTO tagDTO, HttpServletRequest request){
-		return jobService.searchJobsByTagIds(tagDTO.getTagIds(), tagDTO.getUserId(), request);
+		return jobService.searchJobsByTagIds(tagDTO, request);
 	}
 
 	@RequestMapping(value="/acceptOrUnAcceptJob", method=RequestMethod.POST)

@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.holler.holler_dao.entity.Tags;
 import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.UserType;
 import com.holler.holler_dao.util.CommonUtil;
 
 public class UserDTO {
@@ -26,6 +27,7 @@ public class UserDTO {
 	private String linkedinLink;
 	private String youtubeLink;
 	private String otherLink;
+	private String userType;
 	public int getUserId() {
 		return userId;
 	}
@@ -153,6 +155,14 @@ public class UserDTO {
 		this.otherLink = otherLink;
 	}
 
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
 	public static UserDTO getDtoForUserProfile(User user){
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUserId(user.getId());
@@ -167,6 +177,7 @@ public class UserDTO {
 		userDTO.setLinkedinLink(user.getUserDetails().getLinkedinProfile());
 		userDTO.setYoutubeLink(user.getUserDetails().getYoutubeLink());
 		userDTO.setOtherLink(user.getUserDetails().getOtherLink());
+		userDTO.setUserType(user.getUserType().name());
 		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
 		for (Tags tag : CommonUtil.safe(user.getTags())) {
 			tagMaps.put(tag.getId(), tag.getTagName());
@@ -187,6 +198,11 @@ public class UserDTO {
 		user.getUserDetails().setLinkedinProfile(userDTO.getLinkedinLink());
 		user.getUserDetails().setYoutubeLink(userDTO.getYoutubeLink());
 		user.getUserDetails().setOtherLink(userDTO.getOtherLink());
+		if(userDTO.getUserType().equals(UserType.SELF.name())){
+			user.setUserType(UserType.SELF);
+		}else{
+			user.setUserType(UserType.COMPANY);
+		}
 		return user;
 	}
 

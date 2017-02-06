@@ -8,10 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.holler.holler_dao.entity.enums.JobMedium;
 import com.holler.holler_dao.entity.enums.JobStatusType;
-import com.holler.holler_dao.entity.enums.UserStatusType;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -107,14 +106,21 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 
-	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds) {
+	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds, String jobMedium) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_IDS);
 		//String tagIdsString = StringUtils.join(tagIds, ',');
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
 				//.setParameter("tagIdsString", tagIdsString)
 				.setParameter("tagIds", tagIds)
 				.setParameter("appropriate", Boolean.FALSE)
-				.setParameter("status", JobStatusType.Active.name());;
+				.setParameter("status", JobStatusType.Active.name());
+		if(CommonUtil.isNotNull(jobMedium)){
+			queryObject.setParameter("mediumNotFiltered",Boolean.FALSE)
+					.setParameter("medium",jobMedium);
+		}else{
+			queryObject.setParameter("mediumNotFiltered",Boolean.TRUE)
+					.setParameter("medium",null);
+		}
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}
@@ -164,6 +170,17 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		query.setParameter("jobId", jobId);
 		query.setParameter("status", status.toString());
 		query.executeUpdate();
+	}
+
+	public List<Jobs> searchJobsByTagAndMedium(String tag, JobMedium medium) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_AND_MEDIUM);
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
+				.setParameter("searchedTag", tag + "%")
+				.setParameter("appropriate", Boolean.FALSE)
+				.setParameter("status", JobStatusType.Active.name())
+				.setParameter("medium",medium.name());
+		List<Jobs> resultList = queryObject.getResultList();
+		return resultList;
 	}
 
 	public void setUserJobRatingFlag(int userId, int jobId, String jobDesignation) {
