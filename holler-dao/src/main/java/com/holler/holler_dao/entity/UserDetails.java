@@ -20,7 +20,7 @@ public class UserDetails extends BaseEntity{
 	private int id;
 
 	@Column(name = "job_discovery_limit")
-	private Integer jobDiscoveryLimit = 10;
+	private Integer jobDiscoveryLimit = 50;
 	
 	@Column(name = "compensation_range_min")
 	private Integer compensationRangeMin = 0;
