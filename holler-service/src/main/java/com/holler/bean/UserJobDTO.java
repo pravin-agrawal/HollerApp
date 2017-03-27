@@ -362,6 +362,7 @@ public class UserJobDTO {
 				userJobDTO.setJobdate(job.getJobDate());
 				userJobDTO.setJobTimeStamp(job.getCreated());
 				userJobDTO.setJobDescription(job.getDescription());
+				userJobDTO.setJobMedium(job.getJobMedium());
 				jobDTOs.add(userJobDTO);
 			}
 		}

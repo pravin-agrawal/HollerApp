@@ -49,6 +49,9 @@ public class User extends BaseEntity{
 	@Enumerated(EnumType.STRING)
 	@Column(name = "user_type")
 	private UserType userType;
+
+	@Column(name = "user_expertise_level")
+	private Integer expertiseLevel;
 	
 	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_tag",
@@ -218,6 +221,14 @@ public class User extends BaseEntity{
 
 	public void setUserType(UserType userType) {
 		this.userType = userType;
+	}
+
+	public Integer getExpertiseLevel() {
+		return expertiseLevel;
+	}
+
+	public void setExpertiseLevel(Integer expertiseLevel) {
+		this.expertiseLevel = expertiseLevel;
 	}
 
 	public static User constructUserForSignUp(String name, String email, String phoneNumber, String platform) {

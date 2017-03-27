@@ -10,9 +10,11 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.holler.holler_dao.entity.enums.JobMedium;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +67,7 @@ public class NotificationServiceImpl implements NotificationService{
 		return true;
 	}
 
+	@Async
 	public boolean createNotification(int fromUserId, int toUserId, NotificationType type, boolean isRead, boolean isSent, int objectId) {
 		log.info("createNotification :: called");
 		log.info("createNotification :: about to create notification from source user " + fromUserId + " to user " + toUserId + " of type " + type);
@@ -112,6 +115,7 @@ public class NotificationServiceImpl implements NotificationService{
 		}
 	}
 
+	@Async
 	public boolean createJobUpdateNotification(Set<Integer> tags, int fromUserId, int objectId) {
 		log.info("createNotification :: about to create job update notification from source user " + fromUserId + " for tags " + tags);
 		Set<Integer> userIds = userDao.getAcceptedUserListByJobId(objectId);
@@ -134,6 +138,7 @@ public class NotificationServiceImpl implements NotificationService{
 		return true;
 	}
 
+	@Async
 	public boolean createJobPostNotification(Set<Integer> tags, int fromUserId, int objectId) {
 		log.info("createNotification :: about to create job post notification from source user " + fromUserId + " for tags " + tags);
 		Set<Integer> userIds = userDao.getUserIdsByTagIds(tags);
@@ -142,14 +147,19 @@ public class NotificationServiceImpl implements NotificationService{
 		Double[] jobLatLong = job.getLatLongFromJobLocation();
 		for (Integer toUserId : userIds) {
 			if(toUserId != fromUserId){
-				User user = userDao.findById(toUserId);
-				int jobDiscoveryLimit = user.getUserDetails().getJobDiscoveryLimit();
-				Double[] userLatLong = user.getLatLongFromCurrentLocation();
-				Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
-				log.info("userAndJobDistance : "+userAndJobDistance);
-				if (userAndJobDistance <= jobDiscoveryLimit) {
-					log.info("user Job Distance is less than the discovery limit.");
-					createNotification(fromUserId, toUserId, NotificationType.PostJob, Boolean.FALSE, Boolean.FALSE, objectId);		
+				if(job.getJobMedium().equals(JobMedium.ONLINE)){
+					log.info("Posting notification got online job");
+					createNotification(fromUserId, toUserId, NotificationType.PostJob, Boolean.FALSE, Boolean.FALSE, objectId);
+				}else{
+					User user = userDao.findById(toUserId);
+					int jobDiscoveryLimit = user.getUserDetails().getJobDiscoveryLimit();
+					Double[] userLatLong = user.getLatLongFromCurrentLocation();
+					Double userAndJobDistance = AddressConverter.calculateDistanceUsingLatLong(userLatLong[0], userLatLong[1], jobLatLong[0], jobLatLong[1]);
+					log.info("userAndJobDistance : " + userAndJobDistance);
+					if (userAndJobDistance <= jobDiscoveryLimit) {
+						log.info("user Job Distance is less than the discovery limit.");
+						createNotification(fromUserId, toUserId, NotificationType.PostJob, Boolean.FALSE, Boolean.FALSE, objectId);
+					}
 				}
 			}
 		}
