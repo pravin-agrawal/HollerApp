@@ -27,7 +27,7 @@ public class UserDTO {
 	private String linkedinLink;
 	private String youtubeLink;
 	private String otherLink;
-	private String userType;
+	private UserType userType;
 	public int getUserId() {
 		return userId;
 	}
@@ -155,11 +155,11 @@ public class UserDTO {
 		this.otherLink = otherLink;
 	}
 
-	public String getUserType() {
+	public UserType getUserType() {
 		return userType;
 	}
 
-	public void setUserType(String userType) {
+	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
 
@@ -177,7 +177,7 @@ public class UserDTO {
 		userDTO.setLinkedinLink(user.getUserDetails().getLinkedinProfile());
 		userDTO.setYoutubeLink(user.getUserDetails().getYoutubeLink());
 		userDTO.setOtherLink(user.getUserDetails().getOtherLink());
-		userDTO.setUserType(user.getUserType().name());
+		userDTO.setUserType(user.getUserType());
 		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
 		for (Tags tag : CommonUtil.safe(user.getTags())) {
 			tagMaps.put(tag.getId(), tag.getTagName());
@@ -187,22 +187,42 @@ public class UserDTO {
 	}
 
 	public static User setUserDataToUpdate(UserDTO userDTO, User user) {
-		String name = userDTO.getName().substring(0,1).toLowerCase() + userDTO.getName().substring(1);
-		user.setName(name);
-		user.setEmail(userDTO.getEmailId());
-		user.setPhoneNumber(userDTO.getPhoneNumber());
-		user.setAbout(userDTO.getAbout());
-		user.setPic(userDTO.getPic());
-		user.setLastModified(new Date());
-		user.getUserDetails().setFacebookProfile(userDTO.getFacebookLink());
-		user.getUserDetails().setLinkedinProfile(userDTO.getLinkedinLink());
-		user.getUserDetails().setYoutubeLink(userDTO.getYoutubeLink());
-		user.getUserDetails().setOtherLink(userDTO.getOtherLink());
-		if(userDTO.getUserType().equals(UserType.SELF.name())){
-			user.setUserType(UserType.SELF);
-		}else{
-			user.setUserType(UserType.COMPANY);
+		if(CommonUtil.isNotNull(userDTO.getName())){
+			String name = userDTO.getName().substring(0,1).toLowerCase() + userDTO.getName().substring(1);
+			user.setName(name);
 		}
+		if(CommonUtil.isNotNull(userDTO.getEmailId())){
+			user.setEmail(userDTO.getEmailId());
+		}
+		if(CommonUtil.isNotNull(userDTO.getPhoneNumber())){
+			user.setPhoneNumber(userDTO.getPhoneNumber());
+		}
+		if(CommonUtil.isNotNull(userDTO.getAbout())){
+			user.setAbout(userDTO.getAbout());
+		}
+		if(CommonUtil.isNotNull(userDTO.getPic())){
+			user.setPic(userDTO.getPic());
+		}
+		if(CommonUtil.isNotNull(userDTO.getFacebookLink())){
+			user.getUserDetails().setFacebookProfile(userDTO.getFacebookLink());
+		}
+		if(CommonUtil.isNotNull(userDTO.getLinkedinLink())){
+			user.getUserDetails().setLinkedinProfile(userDTO.getLinkedinLink());
+		}
+		if(CommonUtil.isNotNull(userDTO.getYoutubeLink())){
+			user.getUserDetails().setYoutubeLink(userDTO.getYoutubeLink());
+		}
+		if(CommonUtil.isNotNull(userDTO.getOtherLink())){
+			user.getUserDetails().setOtherLink(userDTO.getOtherLink());
+		}
+		if(CommonUtil.isNotNull(userDTO.getUserType())){
+			if(userDTO.getUserType().equals(UserType.SELF)){
+				user.setUserType(UserType.SELF);
+			}else{
+				user.setUserType(UserType.COMPANY);
+			}
+		}
+		user.setLastModified(new Date());
 		return user;
 	}
 
