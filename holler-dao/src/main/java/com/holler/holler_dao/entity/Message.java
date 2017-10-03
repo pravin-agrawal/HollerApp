@@ -1,9 +1,13 @@
 package com.holler.holler_dao.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_msg")
+@Getter @Setter
 public class Message extends BaseEntity {
 
     /**
@@ -16,57 +20,16 @@ public class Message extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "from_user")
-    private User fromUser;
+    @Column(name = "is_read")
+    private boolean read;
 
-    @ManyToOne
-    @JoinColumn(name = "to_user")
-    private User toUser;
+    @Column(name = "from_user_id")
+    private int fromUser;
+
+    @Column(name = "to_user_id")
+    private int toUser;
 
     @Column(name = "message")
     private String message;
 
-    @Column(name = "sequence")
-    private String sequence;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User getFromUser() {
-        return fromUser;
-    }
-
-    public void setFromUser(User fromUser) {
-        this.fromUser = fromUser;
-    }
-
-    public User getToUser() {
-        return toUser;
-    }
-
-    public void setToUser(User toUser) {
-        this.toUser = toUser;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(String sequence) {
-        this.sequence = sequence;
-    }
 }

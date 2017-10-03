@@ -235,6 +235,23 @@
 						UPDATE tags SET tag_image_url = :tagUrl WHERE id = :tagId
 					</value>
 				</entry>
+				<entry key="GET_ALL_CONVERSATION_FOR_USER">
+					<value>
+						SELECT * FROM (
+						SELECT temp.*, usr.id as userId, usr.name, usr.pic FROM
+						(select * from user_msg where from_user_id = :userId or to_user_id = :userId order by created desc) temp
+						JOIN user usr ON ((usr.id = temp.to_user_id OR usr.id = temp.from_user_id) AND usr.id &lt;&gt; :userId ) group by to_user_id
+						)result order by created desc;
+					</value>
+				</entry>
+				<entry key="GET_CONVERSATION_FOR_USER">
+					<value>
+						SELECT * FROM user_msg WHERE from_user_id = :fromUserId AND to_user_id = :toUserId
+							UNION
+						SELECT * FROM user_msg WHERE from_user_id = :toUserId AND to_user_id = :fromUserId
+						order by created;
+					</value>
+				</entry>
 			</map>
 		</property>
 	</bean>

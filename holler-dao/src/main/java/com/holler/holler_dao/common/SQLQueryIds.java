@@ -4,6 +4,8 @@ public class SQLQueryIds {
 	public static final String AUTHENTICATE_USER = "AUTHENTICATE_USER";
 	public static final String AUTHENTICATE_USER_WITH_EMAIL = "AUTHENTICATE_USER_WITH_EMAIL";
 	public static final String GET_USER_JOBS = "GET_USER_JOBS";
+	public static final String GET_ALL_CONVERSATION_FOR_USER = "GET_ALL_CONVERSATION_FOR_USER";
+	public static final String GET_CONVERSATION_FOR_USER = "GET_CONVERSATION_FOR_USER";
 	public static final String GET_JOBS_BY_TAG = "GET_JOBS_BY_TAG";
 	public static final String GET_JOBS_BY_TAG_AND_MEDIUM = "GET_JOBS_BY_TAG_AND_MEDIUM";
 	public static final String GET_ACCEPTED_USERS_BY_JOB_ID = "GET_ACCEPTED_USERS_BY_JOB_ID";
