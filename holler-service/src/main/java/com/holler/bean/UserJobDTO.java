@@ -16,10 +16,12 @@ import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+@Getter @Setter
 public class UserJobDTO {
 	static final Logger log = LogManager.getLogger(UserJobDTO.class.getName());
 
@@ -43,182 +45,11 @@ public class UserJobDTO {
 	private List<UserJobStatus> userJobStatusList;
 	private float rating;
 	private boolean userVerified;
-	private JobMedium jobMedium;
-	private JobType jobType;
-	private Integer openPositions;
-	private Integer expertiseLevel;
+	private String jobMedium;
+	private String jobType;
 
 
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-	public Integer getJobId() {
-		return jobId;
-	}
-	public void setJobId(Integer jobId) {
-		this.jobId = jobId;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getJobDescription() {
-		return jobDescription;
-	}
-	public void setJobDescription(String jobDescription) {
-		this.jobDescription = jobDescription;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public Integer getCompensation() {
-		return compensation;
-	}
-	public void setCompensation(Integer compensation) {
-		this.compensation = compensation;
-	}
-	public Date getJobTimeStamp() {
-		return jobTimeStamp;
-	}
-	public void setJobTimeStamp(Date jobTimeStamp) {
-		this.jobTimeStamp = jobTimeStamp;
-	}
-	public String getSpecialrequirement() {
-		return specialrequirement;
-	}
-	public void setSpecialrequirement(String specialrequirement) {
-		this.specialrequirement = specialrequirement;
-	}
-	public int getGenderRequirement() {
-		return genderRequirement;
-	}
-	public void setGenderRequirement(int genderRequirement) {
-		this.genderRequirement = genderRequirement;
-	}
-	public Set<Integer> getTags() {
-		return tags;
-	}
-	public void setTags(Set<Integer> tags) {
-		this.tags = tags;
-	}
 
-	public Date getJobdate() {
-		return jobdate;
-	}
-
-	public void setJobdate(Date jobdate) {
-		this.jobdate = jobdate;
-	}
-
-	public Date getJobAcceptedDate() {
-		return jobAcceptedDate;
-	}
-
-	public void setJobAcceptedDate(Date jobAcceptedDate) {
-		this.jobAcceptedDate = jobAcceptedDate;
-	}
-
-	public String getJobAddress() {
-		return jobAddress;
-	}
-	public void setJobAddress(String jobAddress) {
-		this.jobAddress = jobAddress;
-	}
-	public String getLat() {
-		return lat;
-	}
-
-	public void setLat(String lat) {
-		this.lat = lat;
-	}
-
-	public String getLng() {
-		return lng;
-	}
-
-	public void setLng(String lng) {
-		this.lng = lng;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-	
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	
-	public String getUserProfilePic() {
-		return userProfilePic;
-	}
-	
-	public void setUserProfilePic(String userProfilePic) {
-		this.userProfilePic = userProfilePic;
-	}
-	
-	public void setUserJobStatusList(List<UserJobStatus> userJobStatusList) {
-		this.userJobStatusList = userJobStatusList;
-	}
-	
-	public List<UserJobStatus> getUserJobStatusList() {
-		return userJobStatusList;
-	}
-
-	public float getRating() {
-		return rating;
-	}
-
-	public void setRating(float rating) {
-		this.rating = rating;
-	}
-
-	public boolean isUserVerified() {
-		return userVerified;
-	}
-
-	public void setUserVerified(boolean userVerified) {
-		this.userVerified = userVerified;
-	}
-
-	public JobMedium getJobMedium() {
-		return jobMedium;
-	}
-
-	public void setJobMedium(JobMedium jobMedium) {
-		this.jobMedium = jobMedium;
-	}
-
-	public JobType getJobType() {
-		return jobType;
-	}
-
-	public void setJobType(JobType jobType) {
-		this.jobType = jobType;
-	}
-
-	public Integer getOpenPositions() {
-		return openPositions;
-	}
-
-	public void setOpenPositions(Integer openPositions) {
-		this.openPositions = openPositions;
-	}
-
-	public Integer getExpertiseLevel() {
-		return expertiseLevel;
-	}
-
-	public void setExpertiseLevel(Integer expertiseLevel) {
-		this.expertiseLevel = expertiseLevel;
-	}
 
 	public void addUserJobStatus(UserJobStatus jobStatus){
 		if(CommonUtil.isNull(userJobStatusList)){
@@ -256,10 +87,16 @@ public class UserJobDTO {
 		job.setStatus(JobStatusType.Active);
 		job.setJobLocation(getLocationInCommaSeparatedString(userJobDTO));
 		job.setJobAddress(getAddressFromLocation(userJobDTO));
-		job.setJobMedium(userJobDTO.getJobMedium());
-		job.setOpenPositions(userJobDTO.getOpenPositions());
-		job.setJobType(userJobDTO.getJobType());
-		job.setExpertiseLevel(userJobDTO.getExpertiseLevel());
+		if(userJobDTO.getJobMedium().equals(JobMedium.OFFLINE.name())){
+			job.setJobMedium(JobMedium.OFFLINE);
+		}else{
+			job.setJobMedium(JobMedium.ONLINE);
+		}
+		if(userJobDTO.getJobType().equals(JobType.PARTTIME.name())){
+			job.setJobType(JobType.PARTTIME);
+		}else{
+			job.setJobType(JobType.FULLTIME);
+		}
 		return job;
 	}
 
@@ -285,10 +122,8 @@ public class UserJobDTO {
 			tagIds.add(tag.getId());
 		}
 		jobDTO.tags = tagIds;
-		jobDTO.setJobMedium(job.getJobMedium());
-		jobDTO.setJobType(job.getJobType());
-		jobDTO.setExpertiseLevel(job.getExpertiseLevel());
-		jobDTO.setOpenPositions(job.getOpenPositions());
+		jobDTO.setJobMedium(job.getJobMedium().name());
+		jobDTO.setJobType(job.getJobType().name());
 		return jobDTO;
 	}
 
@@ -316,7 +151,7 @@ public class UserJobDTO {
 			userJobDTO.setJobTimeStamp(job.getCreated());
 			userJobDTO.setJobDescription(job.getDescription());
 			userJobDTO.setStatus(job.getStatus().name());
-			userJobDTO.setJobMedium(job.getJobMedium());
+			userJobDTO.setJobMedium(job.getJobMedium().name());
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;
@@ -362,7 +197,7 @@ public class UserJobDTO {
 				userJobDTO.setJobdate(job.getJobDate());
 				userJobDTO.setJobTimeStamp(job.getCreated());
 				userJobDTO.setJobDescription(job.getDescription());
-				userJobDTO.setJobMedium(job.getJobMedium());
+				userJobDTO.setJobMedium(job.getJobMedium().name());
 				jobDTOs.add(userJobDTO);
 			}
 		}

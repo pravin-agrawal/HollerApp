@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService{
 		if(tokenService.isValidToken(request)){
 			//if(Boolean.TRUE){
 			log.info("getUserProfile :: valid token");
-			log.info("getUserProfile :: fetch profile ofr user {}", request.getHeader("userId"));
+			log.info("getUserProfile :: fetch profile for user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
 			UserDTO userDTO = UserDTO.getDtoForUserProfile(user);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);

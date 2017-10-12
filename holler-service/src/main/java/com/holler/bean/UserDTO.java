@@ -177,7 +177,9 @@ public class UserDTO {
 		userDTO.setLinkedinLink(user.getUserDetails().getLinkedinProfile());
 		userDTO.setYoutubeLink(user.getUserDetails().getYoutubeLink());
 		userDTO.setOtherLink(user.getUserDetails().getOtherLink());
-		userDTO.setUserType(user.getUserType().name());
+		if(CommonUtil.isNotNull(user.getUserType())){
+			userDTO.setUserType(user.getUserType().name());
+		}
 		Map<Integer, String> tagMaps = new HashMap<Integer, String>();
 		for (Tags tag : CommonUtil.safe(user.getTags())) {
 			tagMaps.put(tag.getId(), tag.getTagName());

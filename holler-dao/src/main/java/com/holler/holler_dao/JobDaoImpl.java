@@ -106,7 +106,7 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 
-	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds, String jobMedium) {
+	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_IDS);
 		//String tagIdsString = StringUtils.join(tagIds, ',');
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
@@ -114,13 +114,13 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 				.setParameter("tagIds", tagIds)
 				.setParameter("appropriate", Boolean.FALSE)
 				.setParameter("status", JobStatusType.Active.name());
-		if(CommonUtil.isNotNull(jobMedium)){
+		/*if(CommonUtil.isNotNull(jobMedium)){
 			queryObject.setParameter("mediumNotFiltered",Boolean.FALSE)
 					.setParameter("medium",jobMedium);
 		}else{
 			queryObject.setParameter("mediumNotFiltered",Boolean.TRUE)
 					.setParameter("medium",null);
-		}
+		}*/
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}

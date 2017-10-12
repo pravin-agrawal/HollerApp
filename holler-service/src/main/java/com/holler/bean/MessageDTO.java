@@ -71,4 +71,14 @@ public class MessageDTO {
 		message.setRead(Boolean.FALSE);
 		return message;
 	}
+
+	public static MessageDTO constructMessageDTOToPush(Message message) {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setFromUserId(message.getFromUser());
+		messageDTO.setToUserId(message.getToUser());
+		messageDTO.setMessage(message.getMessage());
+		messageDTO.setLastConversationDate(message.getCreated());
+		messageDTO.setRead(message.isRead());
+		return messageDTO;
+	}
 }

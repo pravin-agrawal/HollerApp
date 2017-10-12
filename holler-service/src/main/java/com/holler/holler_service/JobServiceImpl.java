@@ -238,11 +238,7 @@ public class JobServiceImpl implements JobService{
 		 //if(Boolean.TRUE){
 			log.info("searchJobsByTagIds :: valid token");
 			log.info("searchJobsByTagIds :: user {} searched for tags {} ", tagDTO.getUserId(), tagDTO.getTagIds());
-			String jobMedium = null;
-			if(CommonUtil.isNotNull(tagDTO.getJobMedium())){
-				jobMedium = tagDTO.getJobMedium().name();
-			}
-			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagDTO.getTagIds(), jobMedium);
+			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagDTO.getTagIds());
 			User loggedInUser = userDao.findById(tagDTO.getUserId());
 			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);

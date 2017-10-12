@@ -11,11 +11,13 @@ import com.holler.holler_dao.util.HollerProperties;
 import com.holler.holler_dao.util.MessageDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -80,10 +82,11 @@ public class MessageServiceImpl implements MessageService {
             log.info("sendMessage :: valid token");
             Message message = MessageDTO.constructMessageToSave(messageDTO);
             messageDao.save(message);
+            messageDTO = MessageDTO.constructMessageDTOToPush(message);
             User toUser = userDao.findById(message.getToUser());
-            pushMessage(toUser, message.getMessage());
+            pushMessage(toUser, messageDTO);
             result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
-            result.put(HollerConstants.RESULT, message);
+            result.put(HollerConstants.RESULT, messageDTO);
             return result;
         } else {
             result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
@@ -92,8 +95,15 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
-    public void pushMessage(User toUser, String message) {
+    public void pushMessage(User toUser, MessageDTO messageDTO) {
         String registeredDevice = toUser.getHashedDevice();
+        ObjectMapper mapperObj = new ObjectMapper();
+        String jsonStr = null;
+        try {
+             jsonStr = mapperObj.writeValueAsString(messageDTO);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         List<String> androidTargets = new ArrayList<String>();
         androidTargets.add(registeredDevice);
         Sender sender = new Sender(HollerProperties.getInstance().getValue("gcm.browser.key"));
@@ -101,7 +111,7 @@ public class MessageServiceImpl implements MessageService {
                 .collapseKey(UUID.randomUUID().toString())
                 .timeToLive(30)
                 .delayWhileIdle(true)
-                .addData("message", message)
+                .addData("message", jsonStr)
                 .build();
         try {
             MulticastResult result = sender.send(pushMessage, androidTargets, 1);
