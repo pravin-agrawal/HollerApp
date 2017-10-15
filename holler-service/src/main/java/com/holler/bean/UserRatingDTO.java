@@ -4,12 +4,14 @@ import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Rating;
 import com.holler.holler_dao.entity.enums.JobStatusType;
 import com.holler.holler_dao.util.CommonUtil;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-
+@Getter@Setter
 public class UserRatingDTO {
 	static final Logger log = LogManager.getLogger(UserRatingDTO.class.getName());
 
@@ -25,103 +27,7 @@ public class UserRatingDTO {
 	private String jobTitle;
 	private String jobDesignation;
 	private Date ratingDate;
-
-	public Integer getToUserId() {
-		return toUserId;
-	}
-
-	public void setToUserId(Integer toUserId) {
-		this.toUserId = toUserId;
-	}
-
-	public Integer getFromUserId() {
-		return fromUserId;
-	}
-
-	public void setFromUserId(Integer fromUserId) {
-		this.fromUserId = fromUserId;
-	}
-
-	public String getFromUserName() {
-		return fromUserName;
-	}
-
-	public void setFromUserName(String fromUserName) {
-		this.fromUserName = fromUserName;
-	}
-
-	public String getToUserName() {
-		return toUserName;
-	}
-
-
-	public void setToUserName(String toUserName) {
-		this.toUserName = toUserName;
-	}
-
-	public void setToUserProfilePic(String toUserProfilePic) {
-		this.toUserProfilePic = toUserProfilePic;
-	}
-
-	public String getToUserProfilePic() {
-		return toUserProfilePic;
-	}
-
-	public void setFromUserProfilePic(String fromUserProfilePic) {
-		this.fromUserProfilePic = fromUserProfilePic;
-	}
-
-	public String getFromUserProfilePic() {
-		return fromUserProfilePic;
-	}
-
-	public int getRating() {
-		return rating;
-	}
-
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
-
-	public String getFeedback() {
-		return feedback;
-	}
-
-	public void setFeedback(String feedback) {
-		this.feedback = feedback;
-	}
-
-	public int getJobId() {
-		return jobId;
-	}
-
-	public void setJobId(int jobId) {
-		this.jobId = jobId;
-	}
-
-	public String getJobTitle() {
-		return jobTitle;
-	}
-
-	public void setJobTitle(String jobTitle) {
-		this.jobTitle = jobTitle;
-	}
-
-	public String getJobDesignation() {
-		return jobDesignation;
-	}
-
-	public void setJobDesignation(String jobDesignation) {
-		this.jobDesignation = jobDesignation;
-	}
-
-	public Date getRatingDate() {
-		return ratingDate;
-	}
-
-	public void setRatingDate(Date ratingDate) {
-		this.ratingDate = ratingDate;
-	}
+	private Integer compensation;
 
 	public static List<UserRatingDTO> constructUserDTOForRatingScreen(List<Object[]> resultList) {
 		List<UserRatingDTO> userRatingDTOs = new ArrayList<UserRatingDTO>();
@@ -154,6 +60,8 @@ public class UserRatingDTO {
 					userRatingDTO.setRating((Integer) object[3]);
 					userRatingDTO.setFeedback((String) object[4]);
 					userRatingDTO.setRatingDate((Date)object[5]);
+					userRatingDTO.setJobTitle((String) object[6]);
+					userRatingDTO.setCompensation((Integer) object[7]);
 					userJobDTOs.add(userRatingDTO);
 				}
 			}

@@ -106,8 +106,8 @@ public class NotificationDaoImpl extends BaseDaoImpl<Notification> implements No
 		return resultList;
 	}
 	
-	public void markAllNotificationsAsRead(int userId) {
-		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.MARK_ALL_NOTIFICATION_AS_READ));
+	public void markAllNotificationsAsSeen(int userId) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.MARK_ALL_NOTIFICATION_AS_SEEN));
 		query.setParameter("userId", userId);
 		query.executeUpdate();
 	}

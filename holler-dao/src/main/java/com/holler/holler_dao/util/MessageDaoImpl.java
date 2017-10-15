@@ -46,4 +46,10 @@ public class MessageDaoImpl extends BaseDaoImpl<Message> implements MessageDao {
         List<Message> resultList = queryObject.getResultList();
         return resultList;
     }
+
+    public void markAllMessagesAsSeen(int userId) {
+        Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.MARK_ALL_MESSAGES_AS_SEEN));
+        query.setParameter("userId", userId);
+        query.executeUpdate();
+    }
 }

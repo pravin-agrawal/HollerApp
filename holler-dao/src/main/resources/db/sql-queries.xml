@@ -37,6 +37,13 @@
 						GROUP BY j.id ORDER BY j.lastModified DESC
 					</value>
 				</entry>
+				<entry key="GET_JOBS_FOR_USER" >
+					<value>
+						SELECT j.* FROM
+						jobs AS j WHERE j.userId NOT IN (:userId) AND j.inappropriate_content = :appropriate AND j.status in (:status)
+						ORDER BY j.lastModified DESC
+					</value>
+				</entry>
 				<entry key="GET_ACCEPTED_USERS_BY_JOB_ID" >
 					<value>
 						select usr.id, usr.name, usr.pic, uj.status,usr.avg_rating , usr.is_user_verified
@@ -66,7 +73,7 @@
 						SELECT
 							j.*
 						FROM
-							jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status))
+							jobs AS j JOIN job_tag AS jt ON (j.id = jt.job_id AND j.inappropriate_content = :appropriate AND j.status in (:status) AND j.userId NOT IN (:userId))
 							JOIN tags AS t ON (jt.tag_id = t.id AND t.id IN (:tagIds))
 							GROUP BY j.id ORDER BY j.lastModified DESC
 					</value>
@@ -132,7 +139,14 @@
 				</entry>
 				<entry key="GET_USERS_UNREAD_NOTIFICATION_COUNT" >
 					<value>
-						SELECT count(*) from notification where to_user = :userId and is_read  = 0;
+						SELECT count(*) from notification where to_user = :userId and is_seen  = 0;
+					</value>
+				</entry>
+				<entry key="GET_USERS_UNSEEN_NOTIFICATION_AND_MESSAGES_COUNT" >
+					<value>
+						SELECT
+						(SELECT COUNT(*) FROM notification where to_user = :userId AND is_seen = false ) as notificationCount ,
+						(SELECT COUNT(*) FROM user_msg where to_user_id = :userId AND is_seen = false ) as messageCount
 					</value>
 				</entry>
 				<entry key="GET_NOTIFICATION_TEMPLATE">
@@ -161,9 +175,9 @@
 						where nt.to_user = :userId order by nt.created desc;
 					</value>
 				</entry>
-				<entry key="MARK_ALL_NOTIFICATION_AS_READ" >
+				<entry key="MARK_ALL_NOTIFICATION_AS_SEEN" >
 					<value>
-						UPDATE notification SET is_read = 1 WHERE to_user = :userId
+						UPDATE notification SET is_seen = 1 WHERE to_user = :userId
 					</value>
 				</entry>
 				<entry key="GET_USER_JOB_STATUS" >
@@ -205,8 +219,9 @@
 				</entry>
 				<entry key="GET_USER_RATING_DATA">
 					<value>
-						SELECT usr.id, usr.name, usr.pic, ur.rating, ur.feedback, ur.created from user_ratings ur
+						SELECT usr.id, usr.name, usr.pic, ur.rating, ur.feedback, ur.created, j.job_title as title, j.compensation from user_ratings ur
 						JOIN user usr ON (ur.from_user = usr.id)
+						JOIN jobs j ON (ur.object_id = j.id)
 						WHERE ur.to_user= :userId order by ur.created desc ;
 					</value>
 				</entry>
@@ -240,7 +255,7 @@
 						SELECT * FROM (
 						SELECT temp.*, usr.id as userId, usr.name, usr.pic FROM
 						(select * from user_msg where from_user_id = :userId or to_user_id = :userId order by created desc) temp
-						JOIN user usr ON ((usr.id = temp.to_user_id OR usr.id = temp.from_user_id) AND usr.id &lt;&gt; :userId ) group by to_user_id
+						JOIN user usr ON ((usr.id = temp.to_user_id OR usr.id = temp.from_user_id) AND usr.id &lt;&gt; :userId ) group by userId
 						)result order by created desc;
 					</value>
 				</entry>
@@ -250,6 +265,11 @@
 							UNION
 						SELECT * FROM user_msg WHERE from_user_id = :toUserId AND to_user_id = :fromUserId
 						order by created;
+					</value>
+				</entry>
+				<entry key="MARK_ALL_MESSAGES_AS_SEEN" >
+					<value>
+						UPDATE user_msg SET is_seen = 1 WHERE to_user_id = :userId
 					</value>
 				</entry>
 			</map>

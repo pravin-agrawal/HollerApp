@@ -26,7 +26,10 @@ public class HollerConstants {
 	public static final String STATUS = "status";
 	public static final String RESULT = "result";
 	public static final String MESSAGE = "message";
-	
+	public static final String NOTIFICATION = "notification";
+	public static final String TYPE = "type";
+	public static final String DATA = "data";
+
 	public static final String TOKEN_VALIDATION_FAILED = "Token validation failed";
 
 	public static final String USER_NOT_FOUND = "User does not exists";

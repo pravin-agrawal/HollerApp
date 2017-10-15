@@ -31,4 +31,6 @@ public interface JobService {
 	Map<String,Object> cancelJob(UpdateJobRequestDTO jobRequestDTO, HttpServletRequest request);
 
 	Map<String,Object> searchJobsByTagAndMedium(HttpServletRequest request, JobMedium medium);
+
+    Map<String,Object> searchJobsForUser(HttpServletRequest request);
 }

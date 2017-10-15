@@ -65,4 +65,9 @@ public class UserController {
         Map<String, Object> result = userService.updateUserDeviceInfo(deviceInfoDTO, request);
         return result;
     }
+
+    @RequestMapping(value = "/fetchUserHeader", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> fetchUserHeader(HttpServletRequest request) {
+        return userService.fetchUserHeader(request);
+    }
 }

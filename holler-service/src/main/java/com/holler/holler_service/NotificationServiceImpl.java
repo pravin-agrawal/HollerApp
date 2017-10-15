@@ -1,5 +1,6 @@
 package com.holler.holler_service;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,13 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import com.holler.holler_dao.entity.enums.JobMedium;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.holler.bean.NotificationDTO;
-import com.holler.bean.UserJobDTO;
 import com.holler.holler_dao.JobDao;
 import com.holler.holler_dao.NotificationDao;
 import com.holler.holler_dao.UserDao;
@@ -61,14 +62,14 @@ public class NotificationServiceImpl implements NotificationService{
 		notification.setToUser(toUser);
 		notification.setType(NotificationType.valueOf(notificationDTO.getNotificationType()));
 		notification.setRead(Boolean.FALSE);
-		notification.setSent(Boolean.FALSE);
+		notification.setSeen(Boolean.FALSE);
 		notification.setObjectId(notificationDTO.getObjectId());
 		notificationDao.save(notification);
 		return true;
 	}
 
 	@Async
-	public boolean createNotification(int fromUserId, int toUserId, NotificationType type, boolean isRead, boolean isSent, int objectId) {
+	public boolean createNotification(int fromUserId, int toUserId, NotificationType type, boolean isRead, boolean seen, int objectId) {
 		log.info("createNotification :: called");
 		log.info("createNotification :: about to create notification from source user " + fromUserId + " to user " + toUserId + " of type " + type);
 		Notification notification = new Notification();
@@ -78,7 +79,7 @@ public class NotificationServiceImpl implements NotificationService{
 		notification.setToUser(toUser);
 		notification.setType(type);
 		notification.setRead(isRead);
-		notification.setSent(isSent);
+		notification.setSeen(seen);
 		notification.setObjectId(objectId);
 		notificationDao.save(notification);
 		if(toUser.getUserDetails().getPushNotification().intValue() == 1){
@@ -91,13 +92,23 @@ public class NotificationServiceImpl implements NotificationService{
 		String registeredDevice = toUser.getHashedDevice();
 		List<String> androidTargets = new ArrayList<String>();
 		androidTargets.add(registeredDevice);
-		List<String> notificationList = fetchNotification(toUser.getId(), notification.getId());
+		List<NotificationDTO> notificationList = fetchNotification(toUser.getId(), notification.getId());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put(HollerConstants.TYPE, HollerConstants.NOTIFICATION);
+		resultMap.put(HollerConstants.DATA, notificationList.get(0));
+		ObjectMapper mapperObj = new ObjectMapper();
+		String jsonData = null;
+		try {
+			jsonData = mapperObj.writeValueAsString(resultMap);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Sender sender = new Sender(HollerProperties.getInstance().getValue("gcm.browser.key"));
 		Message message = new Message.Builder()
 		.collapseKey(UUID.randomUUID().toString())
 		.timeToLive(30)
 		.delayWhileIdle(true)
-		.addData("message", notificationList.get(0))
+		.addData("message", jsonData)
 		.build();
 		try {
 			MulticastResult result = sender.send(message, androidTargets, 1);
@@ -147,7 +158,7 @@ public class NotificationServiceImpl implements NotificationService{
 		Double[] jobLatLong = job.getLatLongFromJobLocation();
 		for (Integer toUserId : userIds) {
 			if(toUserId != fromUserId){
-				if(job.getJobMedium().equals(JobMedium.ONLINE)){
+				if(CommonUtil.isNotNull(job.getJobMedium()) && job.getJobMedium().equals(JobMedium.ONLINE)){
 					log.info("Posting notification got online job");
 					createNotification(fromUserId, toUserId, NotificationType.PostJob, Boolean.FALSE, Boolean.FALSE, objectId);
 				}else{
@@ -190,18 +201,18 @@ public class NotificationServiceImpl implements NotificationService{
 	}
 
 	@Transactional
-	public Map<String, Object> fetchNotification(HttpServletRequest request) {
-		log.info("fetchNotification :: called");
+	public Map<String, Object> fetchAllNotificationForUser(HttpServletRequest request) {
+		log.info("fetchAllNotificationForUser :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(tokenService.isValidToken(request)) {
 		//if(Boolean.TRUE){
-			log.info("fetchNotification :: valid token");
-			log.info("fetchNotification :: fetch notifications for user {}", request.getHeader("userId"));
+			log.info("fetchAllNotificationForUser :: valid token");
+			log.info("fetchAllNotificationForUser :: fetch notifications for user {}", request.getHeader("userId"));
 			User user = userDao.findById(Integer.valueOf(request.getHeader("userId")));
 			List<Object[]> resultList = notificationDao.findByUserId(user.getId());
 			List<NotificationDTO> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);
-			log.info("fetchNotification :: fetched {} notifications for user {}", notificationTemplates.size(), request.getHeader("userId"));
-			notificationDao.markAllNotificationsAsRead(user.getId());
+			log.info("fetchAllNotificationForUser :: fetched {} notifications for user {}", notificationTemplates.size(), request.getHeader("userId"));
+			notificationDao.markAllNotificationsAsSeen(user.getId());
 			log.info("Marking all notifications to read for user {}", user.getId());
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 			result.put(HollerConstants.RESULT, notificationTemplates);
@@ -213,14 +224,14 @@ public class NotificationServiceImpl implements NotificationService{
 	}
 	
 	@Transactional
-	public List<String> fetchNotification(int userId, int notificationId) {
-		log.info("fetchNotification :: called with userId {} and notificationId {}", userId, notificationId);
+	public List<NotificationDTO> fetchNotification(int userId, int notificationId) {
+		log.info("fetchAllNotificationForUser :: called with userId {} and notificationId {}", userId, notificationId);
 		List<Object[]> resultList = notificationDao.findByUserIdAndNotificationId(userId, notificationId);
 		List<NotificationDTO> notificationTemplates = NotificationDTO.constructNotificationTemplate(resultList);
-		List<String> notificationList = new ArrayList<String>();
+		/*List<String> notificationList = new ArrayList<String>();
 		for(NotificationDTO notificationDTO : CommonUtil.safe(notificationTemplates)){
 			notificationList.add(notificationDTO.getNotificationTemplate());
-		}
-		return notificationList;
+		}*/
+		return notificationTemplates;
 	}
 }

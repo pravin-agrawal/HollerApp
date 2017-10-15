@@ -178,7 +178,7 @@ public class JobServiceImpl implements JobService{
 		if(tokenService.isValidToken(request)){
 		//if(Boolean.TRUE){
 			log.info("getUsersAcceptedJob :: valid token");
-			log.info("getUsersAcceptedJob :: for job id {}", request.getHeader("userId"));
+			log.info("getUsersAcceptedJob :: for job id {}", request.getHeader("jobId"));
 			List<Object[]> users = jobDao.getUserAcceptedJobs(Integer.valueOf(request.getHeader("jobId")));
 			List<UserJobDTO> userDTOs = UserJobDTO.constructUserDTOsForAcceptedJObs(users);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -231,6 +231,25 @@ public class JobServiceImpl implements JobService{
 		return result;
 	}
 
+	public Map<String, Object> searchJobsForUser(HttpServletRequest request) {
+		log.info("searchJobsForUser :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)){
+			//if(Boolean.TRUE){
+			log.info("searchJobsForUser :: valid token");
+			User loggedInUser = userDao.findByEmail(request.getHeader("email"));
+			List<Jobs> jobs = jobDao.searchJobsForUser(loggedInUser.getId());
+			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
+			//List<UserJobDTO> jobDTOs = UserJobDTO.getJobDtosToViewJobList(jobs);
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, jobDTOs);
+		}else{
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+	}
+
 	public Map<String, Object> searchJobsByTagIds(SearchJobsByTagRequestDTO tagDTO, HttpServletRequest request) {
 		log.info("searchJobsByTagIds :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -238,7 +257,7 @@ public class JobServiceImpl implements JobService{
 		 //if(Boolean.TRUE){
 			log.info("searchJobsByTagIds :: valid token");
 			log.info("searchJobsByTagIds :: user {} searched for tags {} ", tagDTO.getUserId(), tagDTO.getTagIds());
-			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagDTO.getTagIds());
+			List<Jobs> jobs = jobDao.searchJobsByTagIds(tagDTO.getUserId(), tagDTO.getTagIds());
 			User loggedInUser = userDao.findById(tagDTO.getUserId());
 			List<UserJobDTO> jobDTOs = UserJobDTO.getJobIdAndTitleByDiscoveryPreference(jobs, loggedInUser);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);

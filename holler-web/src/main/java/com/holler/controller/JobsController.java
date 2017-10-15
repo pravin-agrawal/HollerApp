@@ -65,6 +65,11 @@ public class JobsController {
 		return jobService.searchJobsByTagIds(tagDTO, request);
 	}
 
+	@RequestMapping(value="/searchJobsForUser", method=RequestMethod.POST)
+	public @ResponseBody Map<String, Object> searchJobsForUser(HttpServletRequest request){
+		return jobService.searchJobsForUser(request);
+	}
+
 	@RequestMapping(value="/acceptOrUnAcceptJob", method=RequestMethod.POST)
 	public @ResponseBody Map<String, Object> acceptOrUnAcceptJob(@RequestBody UpdateUserJobRequestDTO updateUserJobRequestDTO, HttpServletRequest request){
 		Map<String, Object> result = jobService.acceptOrUnacceptJob(updateUserJobRequestDTO, request);

@@ -121,7 +121,15 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		return null;
 	}
 
-	public User findByIdWithTags(int userId) {
+    public Object[] fetchNotificationAndMessageCount(int userId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_USERS_UNSEEN_NOTIFICATION_AND_MESSAGES_COUNT);
+		Query queryObject = entityManager.createNativeQuery(sql)
+				.setParameter("userId", userId);
+		Object[] result = (Object[]) queryObject.getResultList().get(0);
+		return result;
+    }
+
+    public User findByIdWithTags(int userId) {
 		List<User> userList = entityManager.createQuery("from " + User.class.getName()
 				+ " where id = :userId AND status NOT IN (:status)", User.class)
 				.setParameter("userId", userId)

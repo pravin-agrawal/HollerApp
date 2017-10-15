@@ -20,7 +20,7 @@ public interface JobDao extends BaseDao<Jobs> {
 
     public List<Object[]> getUserAcceptedJobs(final Integer jobId);
 
-    public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds);
+    public List<Jobs> searchJobsByTagIds(Integer userId, Set<Integer> tagIds);
 
     void acceptJob(int userId, int jobId, UserJobStatusType accepted);
 
@@ -46,4 +46,5 @@ public interface JobDao extends BaseDao<Jobs> {
 
     List<Jobs> searchJobsByTagAndMedium(String tag, JobMedium medium);
 
+    List<Jobs> searchJobsForUser(Integer userId);
 }

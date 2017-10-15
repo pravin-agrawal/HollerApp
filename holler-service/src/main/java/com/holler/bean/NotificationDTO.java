@@ -1,8 +1,12 @@
 package com.holler.bean;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 
+@Getter @Setter
 public class NotificationDTO {
 	private int id;
 	private int fromUserId;
@@ -10,86 +14,11 @@ public class NotificationDTO {
 	private int toUserId;
 	private String notificationType;
 	private boolean isRead;
-	private boolean isSent;
+	private boolean seen;
 	private int objectId;
 	private String notificationTemplate;
 	private Date notificationDate;
 	private String userPic;
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getFromUserId() {
-		return fromUserId;
-	}
-	public void setFromUserId(int fromUserId) {
-		this.fromUserId = fromUserId;
-	}
-
-	public String getFromUserName() {
-		return fromUserName;
-	}
-
-	public void setFromUserName(String fromUserName) {
-		this.fromUserName = fromUserName;
-	}
-
-	public int getToUserId() {
-		return toUserId;
-	}
-	public void setToUserId(int toUserId) {
-		this.toUserId = toUserId;
-	}
-	public String getNotificationType() {
-		return notificationType;
-	}
-	public void setNotificationType(String notificationType) {
-		this.notificationType = notificationType;
-	}
-	public boolean isRead() {
-		return isRead;
-	}
-	public void setRead(boolean isRead) {
-		this.isRead = isRead;
-	}
-	public boolean isSent() {
-		return isSent;
-	}
-	public void setSent(boolean isSent) {
-		this.isSent = isSent;
-	}
-	public int getObjectId() {
-		return objectId;
-	}
-	public void setObjectId(int objectId) {
-		this.objectId = objectId;
-	}
-
-	public String getNotificationTemplate() {
-		return notificationTemplate;
-	}
-
-	public void setNotificationTemplate(String notificationTemplate) {
-		this.notificationTemplate = notificationTemplate;
-	}
-
-	public Date getNotificationDate() {
-		return notificationDate;
-	}
-
-	public void setNotificationDate(Date notificationDate) {
-		this.notificationDate = notificationDate;
-	}
-
-	public String getUserPic() {
-		return userPic;
-	}
-
-	public void setUserPic(String userPic) {
-		this.userPic = userPic;
-	}
 
 	public static List<NotificationDTO> constructNotificationTemplate(List<Object[]> notificationObj){
 		List<NotificationDTO> notificationDTOs = new ArrayList<NotificationDTO>();

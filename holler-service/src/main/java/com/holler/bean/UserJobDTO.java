@@ -151,7 +151,9 @@ public class UserJobDTO {
 			userJobDTO.setJobTimeStamp(job.getCreated());
 			userJobDTO.setJobDescription(job.getDescription());
 			userJobDTO.setStatus(job.getStatus().name());
-			userJobDTO.setJobMedium(job.getJobMedium().name());
+			if(CommonUtil.isNotNull(job.getJobMedium())){
+				userJobDTO.setJobMedium(job.getJobMedium().name());
+			}
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;
@@ -168,6 +170,7 @@ public class UserJobDTO {
 				userJobDTO.setJobDescription((String) object[2]);
 				userJobDTO.setCompensation((Integer) object[3]);
 				userJobDTO.setJobAcceptedDate((Date) object[4]);
+				userJobDTO.setStatus((String) object[5]);
 				jobDTOs.add(userJobDTO);
 			}
 		}
@@ -197,7 +200,18 @@ public class UserJobDTO {
 				userJobDTO.setJobdate(job.getJobDate());
 				userJobDTO.setJobTimeStamp(job.getCreated());
 				userJobDTO.setJobDescription(job.getDescription());
-				userJobDTO.setJobMedium(job.getJobMedium().name());
+				if(CommonUtil.isNotNull(job.getJobMedium())){
+					userJobDTO.setJobMedium(job.getJobMedium().name());
+				}
+				if(CommonUtil.isNotNull(job.getJobType())){
+					userJobDTO.setJobType(job.getJobType().name());
+				}
+				Set<Tags> tags = job.getTags();
+				Set<Integer> tagIds = new HashSet<Integer>();
+				for(Tags tag : CommonUtil.safe(tags)){
+					tagIds.add(tag.getId());
+				}
+				userJobDTO.tags = tagIds;
 				jobDTOs.add(userJobDTO);
 			}
 		}

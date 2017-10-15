@@ -37,6 +37,7 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     UserDao userDao;
 
+    @Transactional
     public Map<String, Object> fetchAllConversationForUser(HttpServletRequest request) {
         log.info("fetchAllConversationForUser :: called");
         Map<String, Object> result = new HashMap<String, Object>();
@@ -45,6 +46,7 @@ public class MessageServiceImpl implements MessageService {
             log.info("fetchAllConversationForUser :: valid token");
             List<Object[]> messages = messageDao.fetchAllConversationForUser(Integer.parseInt(request.getHeader("userId")));
             List<MessageDTO> messageDTOs = MessageDTO.constructMessageDTOs(messages);
+            messageDao.markAllMessagesAsSeen(Integer.parseInt(request.getHeader("userId")));
             result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
             result.put(HollerConstants.RESULT, messageDTOs);
             return result;
@@ -55,6 +57,7 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
+    @Transactional
     public Map<String, Object> fetchConversationWithUser(Integer toUserId, HttpServletRequest request) {
         log.info("fetchConversationWithUser :: called");
         Map<String, Object> result = new HashMap<String, Object>();
@@ -82,7 +85,7 @@ public class MessageServiceImpl implements MessageService {
             log.info("sendMessage :: valid token");
             Message message = MessageDTO.constructMessageToSave(messageDTO);
             messageDao.save(message);
-            messageDTO = MessageDTO.constructMessageDTOToPush(message);
+            messageDTO = MessageDTO.constructMessageDTOToPush(messageDTO);
             User toUser = userDao.findById(message.getToUser());
             pushMessage(toUser, messageDTO);
             result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -97,10 +100,13 @@ public class MessageServiceImpl implements MessageService {
 
     public void pushMessage(User toUser, MessageDTO messageDTO) {
         String registeredDevice = toUser.getHashedDevice();
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put(HollerConstants.TYPE, HollerConstants.MESSAGE);
+        resultMap.put(HollerConstants.DATA, messageDTO);
         ObjectMapper mapperObj = new ObjectMapper();
-        String jsonStr = null;
+        String jsonData = null;
         try {
-             jsonStr = mapperObj.writeValueAsString(messageDTO);
+            jsonData = mapperObj.writeValueAsString(resultMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,7 +117,7 @@ public class MessageServiceImpl implements MessageService {
                 .collapseKey(UUID.randomUUID().toString())
                 .timeToLive(30)
                 .delayWhileIdle(true)
-                .addData("message", jsonStr)
+                .addData("message", jsonData)
                 .build();
         try {
             MulticastResult result = sender.send(pushMessage, androidTargets, 1);

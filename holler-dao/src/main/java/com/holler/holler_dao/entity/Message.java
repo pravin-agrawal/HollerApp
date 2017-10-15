@@ -23,6 +23,9 @@ public class Message extends BaseEntity {
     @Column(name = "is_read")
     private boolean read;
 
+    @Column(name = "is_seen")
+    private boolean seen;
+
     @Column(name = "from_user_id")
     private int fromUser;
 

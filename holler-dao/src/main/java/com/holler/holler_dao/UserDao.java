@@ -30,4 +30,6 @@ public interface UserDao extends BaseDao<User> {
 	Set<Integer> getAcceptedUserListByJobId(int objectId);
 
 	User findByEmail(String email);
+
+    Object[] fetchNotificationAndMessageCount(int userId);
 }

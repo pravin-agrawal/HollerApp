@@ -12,4 +12,6 @@ public interface MessageDao extends BaseDao<Message> {
     public List<Object[]> fetchAllConversationForUser(Integer userId);
 
     List<Message> fetchConversationWithUser(Integer from_userId, Integer to_userId);
+
+    void markAllMessagesAsSeen(int userId);
 }

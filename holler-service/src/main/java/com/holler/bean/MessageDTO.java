@@ -38,11 +38,11 @@ public class MessageDTO {
 			if(message[1].equals(Boolean.TRUE)){
 				messageDTO.setRead(Boolean.TRUE);
 			}
-			messageDTO.setToUserId((Integer) message[7]);
-			messageDTO.setUserName((String) message[8]);
-			messageDTO.setUserProfilePic((String) message[9]);
-			messageDTO.setMessage((String) message[4]);
-			messageDTO.setLastConversationDate((Date) message[5]);
+			messageDTO.setToUserId((Integer) message[8]);
+			messageDTO.setUserName((String) message[9]);
+			messageDTO.setUserProfilePic((String) message[10]);
+			messageDTO.setMessage((String) message[5]);
+			messageDTO.setLastConversationDate((Date) message[6]);
 			messageDTOs.add(messageDTO);
 		}
 		return messageDTOs;
@@ -69,16 +69,17 @@ public class MessageDTO {
 		message.setCreated(new Date());
 		message.setLastModified(new Date());
 		message.setRead(Boolean.FALSE);
+		message.setSeen(Boolean.FALSE);
 		return message;
 	}
 
-	public static MessageDTO constructMessageDTOToPush(Message message) {
-		MessageDTO messageDTO = new MessageDTO();
-		messageDTO.setFromUserId(message.getFromUser());
-		messageDTO.setToUserId(message.getToUser());
-		messageDTO.setMessage(message.getMessage());
-		messageDTO.setLastConversationDate(message.getCreated());
-		messageDTO.setRead(message.isRead());
+	public static MessageDTO constructMessageDTOToPush(MessageDTO messageDTO) {
+		MessageDTO pushMessageDTO = new MessageDTO();
+		pushMessageDTO.setFromUserId(messageDTO.getFromUserId());
+		pushMessageDTO.setToUserId(messageDTO.getToUserId());
+		pushMessageDTO.setMessage(messageDTO.getMessage());
+		pushMessageDTO.setUserName(messageDTO.getUserName());
+		pushMessageDTO.setUserProfilePic(messageDTO.getUserProfilePic());
 		return messageDTO;
 	}
 }

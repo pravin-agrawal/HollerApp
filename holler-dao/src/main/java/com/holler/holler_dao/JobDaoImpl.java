@@ -106,13 +106,14 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 
-	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds) {
+	public List<Jobs> searchJobsByTagIds(Integer userId, Set<Integer> tagIds) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_IDS);
 		//String tagIdsString = StringUtils.join(tagIds, ',');
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
 				//.setParameter("tagIdsString", tagIdsString)
 				.setParameter("tagIds", tagIds)
 				.setParameter("appropriate", Boolean.FALSE)
+				.setParameter("userId",userId)
 				.setParameter("status", JobStatusType.Active.name());
 		/*if(CommonUtil.isNotNull(jobMedium)){
 			queryObject.setParameter("mediumNotFiltered",Boolean.FALSE)
@@ -183,7 +184,17 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 
-	public void setUserJobRatingFlag(int userId, int jobId, String jobDesignation) {
+    public List<Jobs> searchJobsForUser(Integer userId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_FOR_USER);
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
+				.setParameter("appropriate", Boolean.FALSE)
+				.setParameter("status", JobStatusType.Active.name())
+				.setParameter("userId",userId);
+		List<Jobs> resultList = queryObject.getResultList();
+		return resultList;
+    }
+
+    public void setUserJobRatingFlag(int userId, int jobId, String jobDesignation) {
 		String sql = null;
 		if(jobDesignation.equals(UserJobStatusType.ACCEPTER.name())){
 			sql = queryDao.getQueryString(SQLQueryIds.UPDATE_JOB_ACCEPTER_RATING_FLAG);
