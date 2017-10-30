@@ -133,8 +133,8 @@ public class NotificationServiceImpl implements NotificationService{
 		log.info("createNotification :: about to create job update notification from source user " + fromUserId + " for tags " + tags + " for users " + userIds);
 		Jobs job = jobDao.findById(objectId);
 		Double[] jobLatLong = job.getLatLongFromJobLocation();
-		for (Integer toUserId : userIds) {
-			if(toUserId != fromUserId){
+		for (Integer toUserId : CommonUtil.safe(userIds)) {
+			if(toUserId != fromUserId && CommonUtil.isNotNull(toUserId)){
 				User user = userDao.findById(toUserId);
 				int jobDiscoveryLimit = user.getUserDetails().getJobDiscoveryLimit();
 				Double[] userLatLong = user.getLatLongFromCurrentLocation();
@@ -156,8 +156,8 @@ public class NotificationServiceImpl implements NotificationService{
 		log.info("createNotification :: about to create job post notification from source user " + fromUserId + " for tags " + tags + " for users " + userIds);
 		Jobs job = jobDao.findById(objectId);
 		Double[] jobLatLong = job.getLatLongFromJobLocation();
-		for (Integer toUserId : userIds) {
-			if(toUserId != fromUserId){
+		for (Integer toUserId : CommonUtil.safe(userIds)) {
+			if(toUserId != fromUserId && CommonUtil.isNotNull(toUserId)){
 				if(CommonUtil.isNotNull(job.getJobMedium()) && job.getJobMedium().equals(JobMedium.ONLINE)){
 					log.info("Posting notification got online job");
 					createNotification(fromUserId, toUserId, NotificationType.PostJob, Boolean.FALSE, Boolean.FALSE, objectId);
@@ -222,7 +222,7 @@ public class NotificationServiceImpl implements NotificationService{
 		}
 		return result;
 	}
-	
+
 	@Transactional
 	public List<NotificationDTO> fetchNotification(int userId, int notificationId) {
 		log.info("fetchAllNotificationForUser :: called with userId {} and notificationId {}", userId, notificationId);

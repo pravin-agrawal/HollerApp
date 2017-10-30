@@ -146,7 +146,9 @@
 					<value>
 						SELECT
 						(SELECT COUNT(*) FROM notification where to_user = :userId AND is_seen = false ) as notificationCount ,
-						(SELECT COUNT(*) FROM user_msg where to_user_id = :userId AND is_seen = false ) as messageCount
+						(SELECT COUNT(*) FROM
+							(SELECT * FROM user_msg where to_user_id = :userId AND is_seen = false group by from_user_id) as messageCountTemp
+						) as messageCount
 					</value>
 				</entry>
 				<entry key="GET_NOTIFICATION_TEMPLATE">
@@ -270,6 +272,16 @@
 				<entry key="MARK_ALL_MESSAGES_AS_SEEN" >
 					<value>
 						UPDATE user_msg SET is_seen = 1 WHERE to_user_id = :userId
+					</value>
+				</entry>
+				<entry key="MARK_ALL_MESSAGES_AS_READ">
+					<value>
+						UPDATE user_msg SET is_read = 1 WHERE from_user_id = :toUserId AND to_user_id = :userId
+					</value>
+				</entry>
+				<entry key="MARK_NOTIFICATION_AS_READ">
+					<value>
+						UPDATE notification SET is_read = 1 WHERE id = :notificationId
 					</value>
 				</entry>
 			</map>

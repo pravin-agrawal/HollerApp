@@ -120,4 +120,10 @@ public class NotificationDaoImpl extends BaseDaoImpl<Notification> implements No
 		List<Object[]> resultList = queryObject.getResultList();
 		return resultList;
 	}
+
+    public void markNotificationAsRead(Integer notificationId) {
+		Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.MARK_NOTIFICATION_AS_READ));
+		query.setParameter("notificationId", notificationId);
+		query.executeUpdate();
+    }
 }

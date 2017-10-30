@@ -9,7 +9,10 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import com.holler.bean.*;
+import com.holler.holler_dao.NotificationDao;
 import com.holler.holler_dao.entity.enums.JobMedium;
+import com.holler.twilioSms.SmsSender;
+import com.twilio.sdk.TwilioRestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +47,15 @@ public class JobServiceImpl implements JobService{
 
 	@Autowired
 	NotificationService notificationService;
+
+	@Autowired
+	NotificationDao notificationDao;
 	
 	@Autowired
 	TokenService tokenService;
+
+	@Autowired
+	SmsSender smsSender;
 	
 	@Transactional
 	public Map<String, Object> postJob(UserJobDTO userJobDTO, HttpServletRequest request) {
@@ -68,10 +77,15 @@ public class JobServiceImpl implements JobService{
 				log.info("postJob :: user {} posts new job with job id {}", userJobDTO.getUserId(), job.getId());
 				jobDao.save(job);
 				notificationService.createJobPostNotification(userJobDTO.getTags(), userJobDTO.getUserId(), job.getId());
-				userJobDTO.setJobId(job.getId());
 			}
-			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
-			result.put(HollerConstants.RESULT, userJobDTO);
+			 userJobDTO.setJobId(job.getId());
+			 result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			 result.put(HollerConstants.RESULT, userJobDTO);
+			 try {
+				 smsSender.sendJobPostedSMS(userJobDTO.getTitle(), userJobDTO.getJobDescription());
+			 } catch (TwilioRestException e) {
+				 e.printStackTrace();
+			 }
 		}else{
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
@@ -96,7 +110,8 @@ public class JobServiceImpl implements JobService{
 		}
 		return result;
 	}
-	
+
+	@Transactional
 	public Map<String, Object> viewJobNew(HttpServletRequest request){
 		log.info("viewJob :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -105,6 +120,9 @@ public class JobServiceImpl implements JobService{
 			log.info("viewJob :: valid token");
 			log.info("viewJob :: view job with id {}", request.getHeader("jobId"));
 			Jobs job = jobDao.findById(Integer.valueOf(request.getHeader("jobId")));
+			if(CommonUtil.notNullAndEmpty(request.getHeader("notificationId"))){
+				notificationDao.markNotificationAsRead(Integer.valueOf(request.getHeader("notificationId")));
+			}
 			UserJobDTO jobDTO = UserJobDTO.getJobDtoFromJob(job);
 			List<Object[]> resultList = jobDao.getUserJobStatus(job.getId());
 			List<UserJobStatus> userJobStatusList = UserJobDTO.getUserJobStatusList(resultList);

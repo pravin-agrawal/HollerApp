@@ -47,6 +47,7 @@ public class UserJobDTO {
 	private boolean userVerified;
 	private String jobMedium;
 	private String jobType;
+	private boolean inappropriateContent = false;
 
 
 
@@ -86,6 +87,7 @@ public class UserJobDTO {
 		job.setJobDate(userJobDTO.getJobdate());
 		job.setStatus(JobStatusType.Active);
 		job.setJobLocation(getLocationInCommaSeparatedString(userJobDTO));
+		//job.setInappropriateContent(Boolean.TRUE);
 		job.setJobAddress(getAddressFromLocation(userJobDTO));
 		if(userJobDTO.getJobMedium().equals(JobMedium.OFFLINE.name())){
 			job.setJobMedium(JobMedium.OFFLINE);
@@ -105,6 +107,7 @@ public class UserJobDTO {
 		jobDTO.setUserId(job.getUser().getId());
 		jobDTO.setUserName(job.getUser().getName());
 		jobDTO.setUserProfilePic(job.getUser().getPic());
+		jobDTO.setRating(job.getUser().getRating());
 		jobDTO.setJobId(job.getId());
 		jobDTO.setTitle(job.getTitle());
 		jobDTO.setJobDescription(job.getDescription());
@@ -116,6 +119,7 @@ public class UserJobDTO {
 		jobDTO.setStatus(job.getStatus().name());
 		jobDTO.setLat(job.getJobLocation().split(",")[0]);
 		jobDTO.setLng(job.getJobLocation().split(",")[1]);
+		jobDTO.setInappropriateContent(job.isInappropriateContent());
 		Set<Tags> tags = job.getTags();
 		Set<Integer> tagIds = new HashSet<Integer>();
 		for(Tags tag : CommonUtil.safe(tags)){
@@ -147,6 +151,7 @@ public class UserJobDTO {
 			userJobDTO.setUserId(job.getUser().getId());
 			userJobDTO.setTitle(job.getTitle());
 			userJobDTO.setCompensation(job.getCompensation());
+			userJobDTO.setInappropriateContent(job.isInappropriateContent());
 			userJobDTO.setJobdate(job.getJobDate());
 			userJobDTO.setJobTimeStamp(job.getCreated());
 			userJobDTO.setJobDescription(job.getDescription());

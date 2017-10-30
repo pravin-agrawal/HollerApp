@@ -26,4 +26,6 @@ public interface NotificationDao extends BaseDao<Notification> {
 	public void markAllNotificationsAsSeen(int userId);
 	
 	public List<Object[]> findByUserIdAndNotificationId(int userId,  int notificationId);
+
+    void markNotificationAsRead(Integer notificationId);
 }

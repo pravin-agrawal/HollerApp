@@ -24,6 +24,8 @@ public class SQLQueryIds {
 	public static final String GET_NOTIFICATION_TEMPLATE = "GET_NOTIFICATION_TEMPLATE";
 	public static final String MARK_ALL_NOTIFICATION_AS_SEEN = "MARK_ALL_NOTIFICATION_AS_SEEN";
 	public static final String MARK_ALL_MESSAGES_AS_SEEN = "MARK_ALL_MESSAGES_AS_SEEN";
+	public static final String MARK_NOTIFICATION_AS_READ = "MARK_NOTIFICATION_AS_READ";
+	public static final String MARK_ALL_MESSAGES_AS_READ = "MARK_ALL_MESSAGES_AS_READ";
 	public static final String GET_USER_JOB_STATUS = "GET_USER_JOB_STATUS";
 	public static final String GET_USER_FOR_RATING_SCREEN = "GET_USER_FOR_RATING_SCREEN";
 	public static final String GET_USER_RATING_DATA = "GET_USER_RATING_DATA";

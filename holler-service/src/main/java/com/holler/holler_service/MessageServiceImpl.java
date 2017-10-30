@@ -64,7 +64,9 @@ public class MessageServiceImpl implements MessageService {
         if(tokenService.isValidToken(request)){
         //if (Boolean.TRUE) {
             log.info("fetchConversationWithUser :: valid token");
-            List<Message> messages = messageDao.fetchConversationWithUser(Integer.parseInt(request.getHeader("userId")), toUserId);
+            Integer userId = Integer.parseInt(request.getHeader("userId"));
+            messageDao.updateMessageReadFlag(userId, toUserId);
+            List<Message> messages = messageDao.fetchConversationWithUser(userId, toUserId);
             List<MessageDTO> messageDTOs = MessageDTO.constructMessageDTOForSingleUser(messages);
             result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
             result.put(HollerConstants.RESULT, messageDTOs);

@@ -52,4 +52,11 @@ public class MessageDaoImpl extends BaseDaoImpl<Message> implements MessageDao {
         query.setParameter("userId", userId);
         query.executeUpdate();
     }
+
+    public void updateMessageReadFlag(Integer userId, Integer toUserId) {
+        Query query = entityManager.createNativeQuery(queryDao.getQueryString(SQLQueryIds.MARK_ALL_MESSAGES_AS_READ));
+        query.setParameter("userId", userId);
+        query.setParameter("toUserId", toUserId);
+        query.executeUpdate();
+    }
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import com.holler.bean.*;
 import com.holler.holler_dao.entity.UserDetails;
+import com.holler.twilioSms.SmsSender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	TokenService tokenService;
+
+	@Autowired
+	SmsSender smsSender;
 	
 	public boolean authenticateUser(String email, String password){
 		log.info("authenticateUser :: called");
@@ -119,6 +123,7 @@ public class UserServiceImpl implements UserService{
 				
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 				result.put(HollerConstants.RESULT, signUpResponseDTO);
+				smsSender.sendWelcomeMsgSMS(signUpDTO.getPhoneNumber(), signUpDTO.getName());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

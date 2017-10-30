@@ -77,9 +77,8 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 	@Transactional(readOnly = true)
 	public List<Jobs> findAllByUserId(final Integer userId) {
 		return entityManager.createQuery("from " + Jobs.class.getName() + " jobs where jobs.user.id in (:userId) "
-				 + " and jobs.inappropriateContent in (:appropriate) order by jobs.created desc", Jobs.class)
+				 + " order by jobs.created desc", Jobs.class)
 				.setParameter("userId", userId)
-				.setParameter("appropriate", Boolean.FALSE)
 				.getResultList();
 	}
 
