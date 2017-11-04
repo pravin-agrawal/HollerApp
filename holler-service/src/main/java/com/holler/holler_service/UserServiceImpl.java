@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService{
 				
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 				result.put(HollerConstants.RESULT, signUpResponseDTO);
-				smsSender.sendWelcomeMsgSMS(signUpDTO.getPhoneNumber(), signUpDTO.getName());
+				smsSender.sendWelcomeMsgSMS(signUpDTO.getPhoneNumber(), name);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

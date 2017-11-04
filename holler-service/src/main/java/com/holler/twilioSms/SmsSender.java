@@ -115,7 +115,8 @@ public class SmsSender {
 
     public void sendWelcomeMsgSMS(String phoneNumber, String name) throws TwilioRestException {
         log.info("sendWelcomeMsgSMS :: called");
-        String msg =  "Dear " + name + ", Thank - You for joining Holler.\n" +
+        String msg =  "Dear " + name + ",\n" +
+                "Thank - You for joining Holler.\n" +
                 "\n" +
                 "Our goal is to help you connect with right people around, to get your work done.\n" +
                 "In parallel, it gives opportunities to job seekers around you.\n" +
