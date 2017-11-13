@@ -12,5 +12,6 @@ public enum NotificationType {
 	UpdateJob,
 	CompleteJob,
 	DeleteJob,
-	CancelJob
+	CancelJob,
+	UpdateProfile
 }

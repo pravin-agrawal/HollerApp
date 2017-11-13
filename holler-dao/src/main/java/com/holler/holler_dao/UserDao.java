@@ -32,4 +32,6 @@ public interface UserDao extends BaseDao<User> {
 	User findByEmail(String email);
 
     Object[] fetchNotificationAndMessageCount(int userId);
+
+	List<Integer> getUsersWithoutProfileTags();
 }

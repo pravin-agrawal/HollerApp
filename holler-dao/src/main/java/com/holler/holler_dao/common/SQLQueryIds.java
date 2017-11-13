@@ -37,4 +37,8 @@ public class SQLQueryIds {
 	public static final String SET_CHILD_TAG_IMAGE_URL = "SET_CHILD_TAG_IMAGE_URL";
 	public static final String GET_PARTICULAR_NOTIFICATIONS_FOR_USER = "GET_PARTICULAR_NOTIFICATIONS_FOR_USER";
 	public static final String GET_ACCEPTED_USERS_IDS_BY_JOB_ID = "GET_ACCEPTED_USERS_IDS_BY_JOB_ID";
+
+	//schedulers
+	public static final String GET_USERS_WITHOUT_PROFILE_TAGS = "GET_USERS_WITHOUT_PROFILE_TAGS";
+
 }

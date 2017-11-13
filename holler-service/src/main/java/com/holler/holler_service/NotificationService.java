@@ -23,4 +23,6 @@ public interface NotificationService {
 	public Map<String, Object> getUnreadNotificationCount(HttpServletRequest request);
 
 	public Map<String, Object> fetchAllNotificationForUser(HttpServletRequest request);
+
+	public boolean createUpdateProfileNotification(int userId);
 }

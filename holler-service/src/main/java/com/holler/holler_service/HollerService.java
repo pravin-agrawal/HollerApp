@@ -13,4 +13,7 @@ public interface HollerService {
 	Map<String,Object> getEmailSubjects();
 
 	Map<String,Object> saveEmailIds(String emailId);
+
+	Map<String,Object> getLatestVersion();
+
 }

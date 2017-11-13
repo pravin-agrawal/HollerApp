@@ -239,7 +239,7 @@
 				</entry>
 				<entry key="GET_USER_JOBS_FROM_JOB_ID" >
 					<value>
-						SELECT * FROM user_job where jobid = :jobId 
+						SELECT * FROM user_job where jobid = :jobId status=:userJobStatus
 					</value>
 				</entry>
 				<entry key="SET_PARENT_TAG_IMAGE_URL" >
@@ -282,6 +282,17 @@
 				<entry key="MARK_NOTIFICATION_AS_READ">
 					<value>
 						UPDATE notification SET is_read = 1 WHERE id = :notificationId
+					</value>
+				</entry>
+				<entry key="GET_USERS_WITHOUT_PROFILE_TAGS">
+					<value>
+						SELECT user.id FROM user
+						WHERE user.id NOT IN
+						(
+							SELECT usr.id  FROM user usr
+							JOIN user_tag usrTag ON (usr.id = usrTag.user_id)
+							GROUP BY usr.id
+						)
 					</value>
 				</entry>
 			</map>

@@ -129,7 +129,17 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		return result;
     }
 
-    public User findByIdWithTags(int userId) {
+	public List<Integer> getUsersWithoutProfileTags() {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_USERS_WITHOUT_PROFILE_TAGS);
+			Query queryObject = entityManager.createNativeQuery(sql);
+			List<Integer> resultList = queryObject.getResultList();
+			if(CommonUtil.notNullAndEmpty(resultList)){
+					return resultList;
+				}
+			return null;
+	}
+
+	public User findByIdWithTags(int userId) {
 		List<User> userList = entityManager.createQuery("from " + User.class.getName()
 				+ " where id = :userId AND status NOT IN (:status)", User.class)
 				.setParameter("userId", userId)

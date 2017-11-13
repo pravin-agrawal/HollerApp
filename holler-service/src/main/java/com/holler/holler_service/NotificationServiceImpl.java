@@ -223,6 +223,23 @@ public class NotificationServiceImpl implements NotificationService{
 		return result;
 	}
 
+	@Async
+	public boolean createUpdateProfileNotification(int userId) {
+		log.info("createUpdateProfileNotification :: called");
+		Notification notification = new Notification();
+		User toUser = userDao.findById(userId);
+		notification.setFromUser(toUser);
+		notification.setToUser(toUser);
+		notification.setType( NotificationType.UpdateProfile);
+		notification.setRead(Boolean.FALSE);
+		notification.setSeen(Boolean.FALSE);
+		notificationDao.save(notification);
+		if(toUser.getUserDetails().getPushNotification().intValue() == 1){
+			pushNotification(toUser, notification);
+		}
+		return true;
+	}
+
 	@Transactional
 	public List<NotificationDTO> fetchNotification(int userId, int notificationId) {
 		log.info("fetchAllNotificationForUser :: called with userId {} and notificationId {}", userId, notificationId);
