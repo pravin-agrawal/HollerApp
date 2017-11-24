@@ -239,7 +239,7 @@
 				</entry>
 				<entry key="GET_USER_JOBS_FROM_JOB_ID" >
 					<value>
-						SELECT * FROM user_job where jobid = :jobId status=:userJobStatus
+						SELECT * FROM user_job where jobid = :jobId AND status=:userJobStatus
 					</value>
 				</entry>
 				<entry key="SET_PARENT_TAG_IMAGE_URL" >
