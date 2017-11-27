@@ -30,7 +30,8 @@ public class LoginLogoutController {
 
 	@RequestMapping(value="/loginUser", method=RequestMethod.POST)
 	public @ResponseBody Map<String, Object> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request){
-		Map<String, Object> result = userService.loginUser(loginDTO, request);
+		//Map<String, Object> result = userService.loginUser(loginDTO, request);
+		Map<String, Object> result = userService.loginUserWithPhoneNumber(loginDTO, request);
 		return result;
 	}
 	

@@ -18,6 +18,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.holler.holler_dao.util.HollerProperties;
@@ -77,6 +78,7 @@ public class SmsSender {
         log.info("sendSMS :: phoneNumber {} will be sent msg {}", phoneNumber, msg);
     }
 
+    @Async
     public void sendJobPostedSMS(String jobTitle, String jobDescription) throws TwilioRestException {
         log.info("sendJobPostedSMS :: called");
         StringBuilder msg =  new StringBuilder("New job had been posted with title: ").append(jobTitle).append(" and description: ").append(jobDescription);
@@ -113,6 +115,7 @@ public class SmsSender {
         }
     }
 
+    @Async
     public void sendWelcomeMsgSMS(String phoneNumber, String name) throws TwilioRestException {
         log.info("sendWelcomeMsgSMS :: called");
         String msg =  "Dear " + name + ",\n" +

@@ -3,6 +3,7 @@ package com.holler.holler_dao.common;
 public class SQLQueryIds {
 	public static final String AUTHENTICATE_USER = "AUTHENTICATE_USER";
 	public static final String AUTHENTICATE_USER_WITH_EMAIL = "AUTHENTICATE_USER_WITH_EMAIL";
+	public static final String AUTHENTICATE_USER_WITH_PHONE_NUMBER = "AUTHENTICATE_USER_WITH_PHONE_NUMBER";
 	public static final String GET_USER_JOBS = "GET_USER_JOBS";
 	public static final String GET_ALL_CONVERSATION_FOR_USER = "GET_ALL_CONVERSATION_FOR_USER";
 	public static final String GET_CONVERSATION_FOR_USER = "GET_CONVERSATION_FOR_USER";

@@ -8,4 +8,9 @@ public class TokenGenerator {
 		String token = email + "-" +UUID.randomUUID().toString(); 
 		 return token;
 	}
+
+	public static String generateTokenWithPhoneNumber(String phoneNumber) {
+		String token = phoneNumber + "-" +UUID.randomUUID().toString();
+		return token;
+	}
 }

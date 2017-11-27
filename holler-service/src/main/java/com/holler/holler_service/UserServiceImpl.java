@@ -56,6 +56,13 @@ public class UserServiceImpl implements UserService{
 		log.info("authenticateUser :: is user authentic {}", isAuthenticatedUser);
 		return isAuthenticatedUser;
 	}
+
+	public boolean authenticateUserWithPhoneNumber(String phoneNumber){
+		log.info("authenticateUserWithEmail :: called");
+		boolean isAuthenticatedUser = userDao.authenticateUserWithPhoneNumber(phoneNumber);
+		log.info("authenticateUser :: is user authentic {}", isAuthenticatedUser);
+		return isAuthenticatedUser;
+	}
 	
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId){
 		log.info("getUserJobs :: called");
@@ -224,6 +231,12 @@ public class UserServiceImpl implements UserService{
 		return isUserPresent;
 	}
 
+	public boolean isUserPresentWithPhoneNumber(String phoneNumber) {
+		boolean isUserPresent = userDao.checkIfUserExistsWithPhoneNumber(phoneNumber);
+		log.info("isUserPresent :: is user present {}", isUserPresent);
+		return isUserPresent;
+	}
+
 	public List<TagDTO> fetchTagsForUserHomePage(Integer userId) {
 		log.info("fetchTagsForUserHomePage :: called");
 		log.info("fetchTagsForUserHomePage :: for user {}", userId);
@@ -322,6 +335,59 @@ public class UserServiceImpl implements UserService{
 				result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 				result.put(HollerConstants.MESSAGE, HollerConstants.USER_NOT_FOUND);
 			}
+		} catch (Exception e) {
+			log.error("Error in login user", e);
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.LOGIN_FAILURE);
+		}
+		return result;
+	}
+
+	public Map<String, Object> loginUserWithPhoneNumber(LoginDTO loginDTO, HttpServletRequest request) {
+		log.info("loginUser :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean isValidOtp = otpService.validateOtp(loginDTO.getPhoneNumber(), loginDTO.getOtp());
+		if(!isValidOtp){
+			//if(!Boolean.TRUE){
+			log.info("loginUser :: otp entered is invalid");
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_SIGNUP_FAILURE);
+			return result;
+		}
+		try {
+			log.info("loginUser :: otp entered is valid");
+			log.info("loginUser :: try to login user with phoneNumber {}", loginDTO.getPhoneNumber());
+			if(isUserPresentWithPhoneNumber(loginDTO.getPhoneNumber())){
+				User user = userDao.getByPhoneNumber(loginDTO.getPhoneNumber());
+				if(user != null){
+					Map<String, Object> tokenResult = tokenService.generateTokenWithPhoneNumber(loginDTO.getPhoneNumber());
+					SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
+							user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic(), user.getRating(),user.isUserVerified());
+					result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+					result.put(HollerConstants.RESULT, signUpResponseDTO);
+				}else{
+					log.info("loginUser :: user with phoneNumber {} not found", loginDTO.getPhoneNumber());
+					result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+					result.put(HollerConstants.MESSAGE, HollerConstants.USER_NOT_FOUND);
+				}
+			}else{
+				log.info("signUpUser :: creating new user with name " + loginDTO.getName() + " and phoneNumber " + loginDTO.getPhoneNumber());
+				String name = loginDTO.getName().substring(0,1).toUpperCase() + loginDTO.getName().substring(1);
+				User user = User.constructUserForSignUp(name, null, loginDTO.getPhoneNumber(), HollerConstants.PLATFORM_HOLLER);
+				UserDetails ud = new UserDetails();
+				user.setUserDetails(ud);
+				userDao.save(user);
+
+				Map<String, Object> tokenResult = tokenService.generateTokenWithPhoneNumber(loginDTO.getPhoneNumber());
+				SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO((String)tokenResult.get("token"),
+						user.getId(),user.getEmail(), user.getPhoneNumber(), user.getName(), user.getPic());
+
+				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+				result.put(HollerConstants.RESULT, signUpResponseDTO);
+				smsSender.sendWelcomeMsgSMS(loginDTO.getPhoneNumber(), name);
+			}
+
+
 		} catch (Exception e) {
 			log.error("Error in login user", e);
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);

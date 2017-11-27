@@ -14,6 +14,8 @@ public interface UserService {
 	
 	public boolean authenticateUserWithEmail(String email);
 
+	public boolean authenticateUserWithPhoneNumber(String phoneNumber);
+
 	public UserJobDTO getUserJobs(User loggedInUser, int requestUserId);
 	
 	public Map<String, Object> signInUser(String phoneNumber, HttpServletRequest request);
@@ -43,4 +45,6 @@ public interface UserService {
 	Map<String,Object> updateUserDeviceInfo(UserDeviceInfoDTO deviceInfoDTO, HttpServletRequest request);
 
     Map<String,Object> fetchUserHeader(HttpServletRequest request);
+
+	Map<String,Object> loginUserWithPhoneNumber(LoginDTO loginDTO, HttpServletRequest request);
 }

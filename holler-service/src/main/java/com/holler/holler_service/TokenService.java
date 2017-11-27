@@ -9,6 +9,8 @@ public interface TokenService {
 	public Map<String, Object> validateToken(HttpServletRequest request);
 	
 	public Map<String, Object> generateToken(String email);
-	
+
+	public Map<String, Object> generateTokenWithPhoneNumber(String phoneNumber);
+
 	public Boolean isValidToken(HttpServletRequest request);
 }

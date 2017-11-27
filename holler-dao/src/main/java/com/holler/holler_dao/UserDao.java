@@ -24,7 +24,9 @@ public interface UserDao extends BaseDao<User> {
 	public Set<Integer> getUserIdsByTagIds(Set<Integer> tagIds);
 	
 	boolean checkIfUserExists(String email);
-	
+
+	boolean checkIfUserExistsWithPhoneNumber(String phoneNumber);
+
 	public User getByEmail(String email);
 
 	Set<Integer> getAcceptedUserListByJobId(int objectId);
@@ -34,4 +36,6 @@ public interface UserDao extends BaseDao<User> {
     Object[] fetchNotificationAndMessageCount(int userId);
 
 	List<Integer> getUsersWithoutProfileTags();
+
+	boolean authenticateUserWithPhoneNumber(String phoneNumber);
 }

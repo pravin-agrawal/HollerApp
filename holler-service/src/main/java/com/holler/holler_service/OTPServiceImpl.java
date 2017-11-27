@@ -28,7 +28,7 @@ public class OTPServiceImpl implements OTPService{
 	@Autowired
 	UserDao userDao;
 
-	public Map<String, Object> generateOtpAndSaveOnRedis(HttpServletRequest request) {
+	/*public Map<String, Object> generateOtpAndSaveOnRedis(HttpServletRequest request) {
 		log.info("generateOtpAndSaveOnRedis :: called");
 		Map<String, Object> result = new HashMap<String, Object>();
 		User user = userDao.getByEmail(request.getHeader("emailId"));
@@ -52,6 +52,27 @@ public class OTPServiceImpl implements OTPService{
 			log.info("User with email {} not found", request.getHeader("emailId"));
 			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
 			result.put(HollerConstants.MESSAGE, HollerConstants.USER_NOT_FOUND);
+		}
+		return result;
+	}*/
+
+	public Map<String, Object> generateOtpAndSaveOnRedis(HttpServletRequest request) {
+		log.info("generateOtpAndSaveOnRedis :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			String phoneNumber = request.getHeader("phoneNumber");
+			String otp = redisDao.get("OTP_" + phoneNumber);
+			if(otp == null) {
+				otp = String.valueOf(OTP.getOtp());
+				redisDao.setex("OTP_" + phoneNumber, 120, otp);
+				log.info("generateOtpAndSaveOnRedis :: otp {} generated for phoneNumber {}", otp, phoneNumber);
+			}
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.PHONE_NUMBER, phoneNumber);
+			result.put(HollerConstants.OTP, otp);
+		} catch (Exception e) {
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.OTP_GENERATION_FAILURE);
 		}
 		return result;
 	}

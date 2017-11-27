@@ -14,6 +14,12 @@
 				<entry key="AUTHENTICATE_USER_WITH_EMAIL" value="SELECT * FROM user where email = ? AND status= ? ">
 				</entry>
 
+				<entry key="AUTHENTICATE_USER_WITH_PHONE_NUMBER">
+					<value>
+						SELECT * FROM user where phone_number = ? AND status= ?
+					</value>
+				</entry>
+
 				<entry key="GET_USER_JOBS" >
 					<value>
 						SELECT jobs.* FROM jobs jobs

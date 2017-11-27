@@ -139,6 +139,12 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 			return null;
 	}
 
+	public boolean authenticateUserWithPhoneNumber(String phoneNumber) {
+		String sql = queryDao.getQueryString(SQLQueryIds.AUTHENTICATE_USER_WITH_EMAIL);
+		List<User> userList = jdbcTemplate.query(sql, new String[]{phoneNumber, UserStatusType.ACTIVE.name()}, new UserMapper());
+		return (null != userList && userList.size() == 1);
+	}
+
 	public User findByIdWithTags(int userId) {
 		List<User> userList = entityManager.createQuery("from " + User.class.getName()
 				+ " where id = :userId AND status NOT IN (:status)", User.class)
@@ -166,6 +172,17 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 		List<User> userList = entityManager.createQuery("from " + User.class.getName()
 				+ " where (email = :email) AND status NOT IN (:status)", User.class)
 				.setParameter("email", email)
+				.setParameter("status", UserStatusType.DELETED).getResultList();
+		if(CommonUtil.notNullAndEmpty(userList)){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean checkIfUserExistsWithPhoneNumber(String phoneNumber) {
+		List<User> userList = entityManager.createQuery("from " + User.class.getName()
+				+ " where (phoneNumber = :phoneNumber) AND status NOT IN (:status)", User.class)
+				.setParameter("phoneNumber", phoneNumber)
 				.setParameter("status", UserStatusType.DELETED).getResultList();
 		if(CommonUtil.notNullAndEmpty(userList)){
 			return true;
