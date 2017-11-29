@@ -140,7 +140,7 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 	}
 
 	public boolean authenticateUserWithPhoneNumber(String phoneNumber) {
-		String sql = queryDao.getQueryString(SQLQueryIds.AUTHENTICATE_USER_WITH_EMAIL);
+		String sql = queryDao.getQueryString(SQLQueryIds.AUTHENTICATE_USER_WITH_PHONE_NUMBER);
 		List<User> userList = jdbcTemplate.query(sql, new String[]{phoneNumber, UserStatusType.ACTIVE.name()}, new UserMapper());
 		return (null != userList && userList.size() == 1);
 	}
