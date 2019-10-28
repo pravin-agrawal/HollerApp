@@ -9,15 +9,19 @@ import java.util.Set;
 import com.holler.holler_dao.entity.Jobs;
 import com.holler.holler_dao.entity.Tags;
 import com.holler.holler_dao.entity.User;
+import com.holler.holler_dao.entity.enums.JobMedium;
 import com.holler.holler_dao.entity.enums.JobStatusType;
+import com.holler.holler_dao.entity.enums.JobType;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 import com.holler.holler_dao.util.AddressConverter;
 import com.holler.holler_dao.util.CommonUtil;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+@Getter @Setter
 public class UserJobDTO {
 	static final Logger log = LogManager.getLogger(UserJobDTO.class.getName());
 
@@ -41,145 +45,12 @@ public class UserJobDTO {
 	private List<UserJobStatus> userJobStatusList;
 	private float rating;
 	private boolean userVerified;
+	private String jobMedium;
+	private String jobType;
+	private boolean inappropriateContent = false;
 
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-	public Integer getJobId() {
-		return jobId;
-	}
-	public void setJobId(Integer jobId) {
-		this.jobId = jobId;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getJobDescription() {
-		return jobDescription;
-	}
-	public void setJobDescription(String jobDescription) {
-		this.jobDescription = jobDescription;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public Integer getCompensation() {
-		return compensation;
-	}
-	public void setCompensation(Integer compensation) {
-		this.compensation = compensation;
-	}
-	public Date getJobTimeStamp() {
-		return jobTimeStamp;
-	}
-	public void setJobTimeStamp(Date jobTimeStamp) {
-		this.jobTimeStamp = jobTimeStamp;
-	}
-	public String getSpecialrequirement() {
-		return specialrequirement;
-	}
-	public void setSpecialrequirement(String specialrequirement) {
-		this.specialrequirement = specialrequirement;
-	}
-	public int getGenderRequirement() {
-		return genderRequirement;
-	}
-	public void setGenderRequirement(int genderRequirement) {
-		this.genderRequirement = genderRequirement;
-	}
-	public Set<Integer> getTags() {
-		return tags;
-	}
-	public void setTags(Set<Integer> tags) {
-		this.tags = tags;
-	}
 
-	public Date getJobdate() {
-		return jobdate;
-	}
 
-	public void setJobdate(Date jobdate) {
-		this.jobdate = jobdate;
-	}
-
-	public Date getJobAcceptedDate() {
-		return jobAcceptedDate;
-	}
-
-	public void setJobAcceptedDate(Date jobAcceptedDate) {
-		this.jobAcceptedDate = jobAcceptedDate;
-	}
-
-	public String getJobAddress() {
-		return jobAddress;
-	}
-	public void setJobAddress(String jobAddress) {
-		this.jobAddress = jobAddress;
-	}
-	public String getLat() {
-		return lat;
-	}
-
-	public void setLat(String lat) {
-		this.lat = lat;
-	}
-
-	public String getLng() {
-		return lng;
-	}
-
-	public void setLng(String lng) {
-		this.lng = lng;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-	
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	
-	public String getUserProfilePic() {
-		return userProfilePic;
-	}
-	
-	public void setUserProfilePic(String userProfilePic) {
-		this.userProfilePic = userProfilePic;
-	}
-	
-	public void setUserJobStatusList(List<UserJobStatus> userJobStatusList) {
-		this.userJobStatusList = userJobStatusList;
-	}
-	
-	public List<UserJobStatus> getUserJobStatusList() {
-		return userJobStatusList;
-	}
-
-	public float getRating() {
-		return rating;
-	}
-
-	public void setRating(float rating) {
-		this.rating = rating;
-	}
-
-	public boolean isUserVerified() {
-		return userVerified;
-	}
-
-	public void setUserVerified(boolean userVerified) {
-		this.userVerified = userVerified;
-	}
 
 	public void addUserJobStatus(UserJobStatus jobStatus){
 		if(CommonUtil.isNull(userJobStatusList)){
@@ -216,7 +87,18 @@ public class UserJobDTO {
 		job.setJobDate(userJobDTO.getJobdate());
 		job.setStatus(JobStatusType.Active);
 		job.setJobLocation(getLocationInCommaSeparatedString(userJobDTO));
+		//job.setInappropriateContent(Boolean.TRUE);
 		job.setJobAddress(getAddressFromLocation(userJobDTO));
+		if(userJobDTO.getJobMedium().equals(JobMedium.OFFLINE.name())){
+			job.setJobMedium(JobMedium.OFFLINE);
+		}else{
+			job.setJobMedium(JobMedium.ONLINE);
+		}
+		if(userJobDTO.getJobType().equals(JobType.PARTTIME.name())){
+			job.setJobType(JobType.PARTTIME);
+		}else{
+			job.setJobType(JobType.FULLTIME);
+		}
 		return job;
 	}
 
@@ -225,6 +107,7 @@ public class UserJobDTO {
 		jobDTO.setUserId(job.getUser().getId());
 		jobDTO.setUserName(job.getUser().getName());
 		jobDTO.setUserProfilePic(job.getUser().getPic());
+		jobDTO.setRating(job.getUser().getRating());
 		jobDTO.setJobId(job.getId());
 		jobDTO.setTitle(job.getTitle());
 		jobDTO.setJobDescription(job.getDescription());
@@ -236,12 +119,15 @@ public class UserJobDTO {
 		jobDTO.setStatus(job.getStatus().name());
 		jobDTO.setLat(job.getJobLocation().split(",")[0]);
 		jobDTO.setLng(job.getJobLocation().split(",")[1]);
+		jobDTO.setInappropriateContent(job.isInappropriateContent());
 		Set<Tags> tags = job.getTags();
 		Set<Integer> tagIds = new HashSet<Integer>();
 		for(Tags tag : CommonUtil.safe(tags)){
 			tagIds.add(tag.getId());
 		}
 		jobDTO.tags = tagIds;
+		jobDTO.setJobMedium(job.getJobMedium().name());
+		jobDTO.setJobType(job.getJobType().name());
 		return jobDTO;
 	}
 
@@ -265,10 +151,14 @@ public class UserJobDTO {
 			userJobDTO.setUserId(job.getUser().getId());
 			userJobDTO.setTitle(job.getTitle());
 			userJobDTO.setCompensation(job.getCompensation());
+			userJobDTO.setInappropriateContent(job.isInappropriateContent());
 			userJobDTO.setJobdate(job.getJobDate());
 			userJobDTO.setJobTimeStamp(job.getCreated());
 			userJobDTO.setJobDescription(job.getDescription());
 			userJobDTO.setStatus(job.getStatus().name());
+			if(CommonUtil.isNotNull(job.getJobMedium())){
+				userJobDTO.setJobMedium(job.getJobMedium().name());
+			}
 			jobDTOs.add(userJobDTO);
 		}
 		return jobDTOs;
@@ -285,6 +175,7 @@ public class UserJobDTO {
 				userJobDTO.setJobDescription((String) object[2]);
 				userJobDTO.setCompensation((Integer) object[3]);
 				userJobDTO.setJobAcceptedDate((Date) object[4]);
+				userJobDTO.setStatus((String) object[5]);
 				jobDTOs.add(userJobDTO);
 			}
 		}
@@ -314,6 +205,18 @@ public class UserJobDTO {
 				userJobDTO.setJobdate(job.getJobDate());
 				userJobDTO.setJobTimeStamp(job.getCreated());
 				userJobDTO.setJobDescription(job.getDescription());
+				if(CommonUtil.isNotNull(job.getJobMedium())){
+					userJobDTO.setJobMedium(job.getJobMedium().name());
+				}
+				if(CommonUtil.isNotNull(job.getJobType())){
+					userJobDTO.setJobType(job.getJobType().name());
+				}
+				Set<Tags> tags = job.getTags();
+				Set<Integer> tagIds = new HashSet<Integer>();
+				for(Tags tag : CommonUtil.safe(tags)){
+					tagIds.add(tag.getId());
+				}
+				userJobDTO.tags = tagIds;
 				jobDTOs.add(userJobDTO);
 			}
 		}

@@ -14,7 +14,7 @@ public interface NotificationService {
 	
 	public boolean createNotification(NotificationDTO notificationDTO);
 	
-	public boolean createNotification(int fromUserId, int toUserId, NotificationType type, boolean isRead, boolean isSent, int objectId);
+	public boolean createNotification(int fromUserId, int toUserId, NotificationType type, boolean isRead, boolean seen, int objectId);
 	
 	public boolean createJobUpdateNotification(Set<Integer> tags, int fromUserId, int objectId);
 	
@@ -22,5 +22,7 @@ public interface NotificationService {
 
 	public Map<String, Object> getUnreadNotificationCount(HttpServletRequest request);
 
-	public Map<String, Object> fetchNotification(HttpServletRequest request);
+	public Map<String, Object> fetchAllNotificationForUser(HttpServletRequest request);
+
+	public boolean createUpdateProfileNotification(int userId);
 }

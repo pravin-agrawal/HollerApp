@@ -8,10 +8,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.holler.bean.FaqsDTO;
-import com.holler.holler_dao.EmailDao;
-import com.holler.holler_dao.EmailSubjectsDao;
-import com.holler.holler_dao.FaqDao;
+import com.holler.holler_dao.*;
 
+import com.holler.holler_dao.entity.AppVersion;
 import com.holler.holler_dao.entity.Emails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.holler.bean.CompensationDTO;
-import com.holler.holler_dao.CompensationDao;
 import com.holler.holler_dao.common.HollerConstants;
 import com.holler.holler_dao.entity.EmailSubjects;
 import com.holler.holler_dao.util.CommonUtil;
@@ -32,6 +30,9 @@ public class HollerServiceImpl implements HollerService{
 
 	@Autowired
 	FaqDao faqDao;
+
+	@Autowired
+	AppVersionDao appVersionDao;
 	
 	@Autowired
 	EmailSubjectsDao emailSubjectsDao;
@@ -92,6 +93,14 @@ public class HollerServiceImpl implements HollerService{
 			result.put(HollerConstants.RESULT, HollerConstants.FAILURE);
 		}
 		log.info("saveEmailIds :: exit");
+		return result;
+	}
+
+	public Map<String, Object> getLatestVersion() {
+		log.info("getLatestVersion :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+		result.put(HollerConstants.RESULT, appVersionDao.getLatestVersion());
 		return result;
 	}
 

@@ -12,9 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.holler.holler_dao.entity.enums.NotificationType;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "notification")
+@Getter @Setter
 public class Notification extends BaseEntity{
 
 	/**
@@ -42,66 +45,10 @@ public class Notification extends BaseEntity{
 	@Column(name = "is_read")
 	boolean isRead = false;
 
-	@Column(name = "is_sent")
-	boolean isSent = false;
+	@Column(name = "is_seen")
+	boolean isSeen = false;
 	
 	@Column(name = "object_id")
 	private int objectId;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public User getFromUser() {
-		return fromUser;
-	}
-
-	public void setFromUser(User fromUser) {
-		this.fromUser = fromUser;
-	}
-
-	public User getToUser() {
-		return toUser;
-	}
-
-	public void setToUser(User toUser) {
-		this.toUser = toUser;
-	}
-
-	public NotificationType getType() {
-		return type;
-	}
-
-	public void setType(NotificationType type) {
-		this.type = type;
-	}
-
-	public boolean isRead() {
-		return isRead;
-	}
-
-	public void setRead(boolean isRead) {
-		this.isRead = isRead;
-	}
-
-	public boolean isSent() {
-		return isSent;
-	}
-
-	public void setSent(boolean isSent) {
-		this.isSent = isSent;
-	}
-
-	public int getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(int objectId) {
-		this.objectId = objectId;
-	}
 
 }

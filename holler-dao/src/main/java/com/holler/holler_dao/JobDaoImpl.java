@@ -8,10 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.holler.holler_dao.entity.enums.JobMedium;
 import com.holler.holler_dao.entity.enums.JobStatusType;
-import com.holler.holler_dao.entity.enums.UserStatusType;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -78,9 +77,8 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 	@Transactional(readOnly = true)
 	public List<Jobs> findAllByUserId(final Integer userId) {
 		return entityManager.createQuery("from " + Jobs.class.getName() + " jobs where jobs.user.id in (:userId) "
-				 + " and jobs.inappropriateContent in (:appropriate) order by jobs.created desc", Jobs.class)
+				 + " order by jobs.created desc", Jobs.class)
 				.setParameter("userId", userId)
-				.setParameter("appropriate", Boolean.FALSE)
 				.getResultList();
 	}
 
@@ -107,14 +105,22 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		return resultList;
 	}
 
-	public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds) {
+	public List<Jobs> searchJobsByTagIds(Integer userId, Set<Integer> tagIds) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_IDS);
 		//String tagIdsString = StringUtils.join(tagIds, ',');
 		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
 				//.setParameter("tagIdsString", tagIdsString)
 				.setParameter("tagIds", tagIds)
 				.setParameter("appropriate", Boolean.FALSE)
-				.setParameter("status", JobStatusType.Active.name());;
+				.setParameter("userId",userId)
+				.setParameter("status", JobStatusType.Active.name());
+		/*if(CommonUtil.isNotNull(jobMedium)){
+			queryObject.setParameter("mediumNotFiltered",Boolean.FALSE)
+					.setParameter("medium",jobMedium);
+		}else{
+			queryObject.setParameter("mediumNotFiltered",Boolean.TRUE)
+					.setParameter("medium",null);
+		}*/
 		List<Jobs> resultList = queryObject.getResultList();
 		return resultList;
 	}
@@ -166,7 +172,28 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 		query.executeUpdate();
 	}
 
-	public void setUserJobRatingFlag(int userId, int jobId, String jobDesignation) {
+	public List<Jobs> searchJobsByTagAndMedium(String tag, JobMedium medium) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_BY_TAG_AND_MEDIUM);
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
+				.setParameter("searchedTag", tag + "%")
+				.setParameter("appropriate", Boolean.FALSE)
+				.setParameter("status", JobStatusType.Active.name())
+				.setParameter("medium",medium.name());
+		List<Jobs> resultList = queryObject.getResultList();
+		return resultList;
+	}
+
+    public List<Jobs> searchJobsForUser(Integer userId) {
+		String sql = queryDao.getQueryString(SQLQueryIds.GET_JOBS_FOR_USER);
+		Query queryObject = entityManager.createNativeQuery(sql, Jobs.class)
+				.setParameter("appropriate", Boolean.FALSE)
+				.setParameter("status", JobStatusType.Active.name())
+				.setParameter("userId",userId);
+		List<Jobs> resultList = queryObject.getResultList();
+		return resultList;
+    }
+
+    public void setUserJobRatingFlag(int userId, int jobId, String jobDesignation) {
 		String sql = null;
 		if(jobDesignation.equals(UserJobStatusType.ACCEPTER.name())){
 			sql = queryDao.getQueryString(SQLQueryIds.UPDATE_JOB_ACCEPTER_RATING_FLAG);
@@ -209,7 +236,8 @@ public class JobDaoImpl extends BaseDaoImpl<Jobs> implements JobDao {
 	public List<Object[]> getUserJobsFromJobID(int jobId) {
 		String sql = queryDao.getQueryString(SQLQueryIds.GET_USER_JOBS_FROM_JOB_ID);
 		Query queryObject = entityManager.createNativeQuery(sql)
-				.setParameter("jobId", jobId);
+				.setParameter("jobId", jobId)
+				.setParameter("userJobStatus", UserJobStatusType.GRANTED.name());
 		List<Object[]> resultList = queryObject.getResultList();
 		return resultList;
 	}

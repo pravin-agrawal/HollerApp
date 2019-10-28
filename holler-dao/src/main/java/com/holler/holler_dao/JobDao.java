@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.holler.holler_dao.entity.Jobs;
+import com.holler.holler_dao.entity.enums.JobMedium;
 import com.holler.holler_dao.entity.enums.JobStatusType;
 import com.holler.holler_dao.entity.enums.UserJobStatusType;
 
@@ -19,7 +20,7 @@ public interface JobDao extends BaseDao<Jobs> {
 
     public List<Object[]> getUserAcceptedJobs(final Integer jobId);
 
-    public List<Jobs> searchJobsByTagIds(Set<Integer> tagIds);
+    public List<Jobs> searchJobsByTagIds(Integer userId, Set<Integer> tagIds);
 
     void acceptJob(int userId, int jobId, UserJobStatusType accepted);
 
@@ -42,4 +43,8 @@ public interface JobDao extends BaseDao<Jobs> {
     void cancelJob(int jobId, JobStatusType status);
     
     public void cancelUserJob(int userId, int jobId, UserJobStatusType status);
+
+    List<Jobs> searchJobsByTagAndMedium(String tag, JobMedium medium);
+
+    List<Jobs> searchJobsForUser(Integer userId);
 }

@@ -31,6 +31,6 @@ public class NotificationController {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> getNotificationTemplatesForUser( HttpServletRequest request) throws Exception {
-        return notificationService.fetchNotification(request);
+        return notificationService.fetchAllNotificationForUser(request);
     }
 }

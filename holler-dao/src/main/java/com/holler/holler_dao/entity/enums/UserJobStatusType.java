@@ -19,16 +19,17 @@ public enum UserJobStatusType {
 
     public static List<String> getUsersAcceptedJobStatus() {
         List<String> list = new ArrayList<String>();
-        list.add(ACCEPTED.toString());
-        list.add(GRANTED.toString());
-        list.add(REJECTED.toString());
+        list.add(ACCEPTED.name());
+        list.add(GRANTED.name());
+        list.add(REJECTED.name());
+        list.add(COMPLETED.name());
         return list;
     }
     
     public static List<String> getAcceptedAndGrantedJobStatus() {
         List<String> list = new ArrayList<String>();
-        list.add(ACCEPTED.toString());
-        list.add(GRANTED.toString());
+        list.add(ACCEPTED.name());
+        list.add(GRANTED.name());
         return list;
     }
 }

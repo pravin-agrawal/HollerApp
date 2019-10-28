@@ -4,7 +4,11 @@ public class SQLQueryIds {
 	public static final String AUTHENTICATE_USER = "AUTHENTICATE_USER";
 	public static final String AUTHENTICATE_USER_WITH_EMAIL = "AUTHENTICATE_USER_WITH_EMAIL";
 	public static final String GET_USER_JOBS = "GET_USER_JOBS";
+	public static final String GET_ALL_CONVERSATION_FOR_USER = "GET_ALL_CONVERSATION_FOR_USER";
+	public static final String GET_CONVERSATION_FOR_USER = "GET_CONVERSATION_FOR_USER";
 	public static final String GET_JOBS_BY_TAG = "GET_JOBS_BY_TAG";
+	public static final String GET_JOBS_BY_TAG_AND_MEDIUM = "GET_JOBS_BY_TAG_AND_MEDIUM";
+	public static final String GET_JOBS_FOR_USER = "GET_JOBS_FOR_USER";
 	public static final String GET_ACCEPTED_USERS_BY_JOB_ID = "GET_ACCEPTED_USERS_BY_JOB_ID";
 	public static final String GET_JOBS_BY_TAG_IDS = "GET_JOBS_BY_TAG_IDS";
 	public static final String ACCEPT_JOB = "ACCEPT_JOB";
@@ -16,8 +20,12 @@ public class SQLQueryIds {
 	public static final String GET_MY_POSTED_AND_PINGED_JOB_IDS = "GET_MY_POSTED_AND_PINGED_JOB_IDS";
 	public static final String GET_USERS_IDS_BY_TAG_IDS = "GET_USERS_IDS_BY_TAG_IDS";
 	public static final String GET_USERS_UNREAD_NOTIFICATION_COUNT = "GET_USERS_UNREAD_NOTIFICATION_COUNT";
+	public static final String GET_USERS_UNSEEN_NOTIFICATION_AND_MESSAGES_COUNT = "GET_USERS_UNSEEN_NOTIFICATION_AND_MESSAGES_COUNT";
 	public static final String GET_NOTIFICATION_TEMPLATE = "GET_NOTIFICATION_TEMPLATE";
-	public static final String MARK_ALL_NOTIFICATION_AS_READ = "MARK_ALL_NOTIFICATION_AS_READ";
+	public static final String MARK_ALL_NOTIFICATION_AS_SEEN = "MARK_ALL_NOTIFICATION_AS_SEEN";
+	public static final String MARK_ALL_MESSAGES_AS_SEEN = "MARK_ALL_MESSAGES_AS_SEEN";
+	public static final String MARK_NOTIFICATION_AS_READ = "MARK_NOTIFICATION_AS_READ";
+	public static final String MARK_ALL_MESSAGES_AS_READ = "MARK_ALL_MESSAGES_AS_READ";
 	public static final String GET_USER_JOB_STATUS = "GET_USER_JOB_STATUS";
 	public static final String GET_USER_FOR_RATING_SCREEN = "GET_USER_FOR_RATING_SCREEN";
 	public static final String GET_USER_RATING_DATA = "GET_USER_RATING_DATA";
@@ -29,4 +37,8 @@ public class SQLQueryIds {
 	public static final String SET_CHILD_TAG_IMAGE_URL = "SET_CHILD_TAG_IMAGE_URL";
 	public static final String GET_PARTICULAR_NOTIFICATIONS_FOR_USER = "GET_PARTICULAR_NOTIFICATIONS_FOR_USER";
 	public static final String GET_ACCEPTED_USERS_IDS_BY_JOB_ID = "GET_ACCEPTED_USERS_IDS_BY_JOB_ID";
+
+	//schedulers
+	public static final String GET_USERS_WITHOUT_PROFILE_TAGS = "GET_USERS_WITHOUT_PROFILE_TAGS";
+
 }

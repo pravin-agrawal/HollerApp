@@ -45,4 +45,9 @@ public class HollerController {
 	public @ResponseBody  Map<String, Object> saveEmailIds(@RequestParam("emailId") String emailId){
 		return hollerService.saveEmailIds(emailId);
 	}
+
+	@RequestMapping(value="/getLatestVersion", method=RequestMethod.GET)
+	public @ResponseBody  Map<String, Object> getLatestVersion(){
+		return hollerService.getLatestVersion();
+	}
 }

@@ -1,5 +1,6 @@
 package com.holler.holler_service;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,22 +10,14 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.holler.bean.*;
 import com.holler.holler_dao.entity.UserDetails;
+import com.holler.twilioSms.SmsSender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.holler.bean.LoginDTO;
-import com.holler.bean.LoginWithSocialPlatformDTO;
-import com.holler.bean.SignUpDTO;
-import com.holler.bean.SignUpResponseDTO;
-import com.holler.bean.TagDTO;
-import com.holler.bean.UserDTO;
-import com.holler.bean.UserDeviceInfoDTO;
-import com.holler.bean.UserJobDTO;
-import com.holler.bean.UserLocationDTO;
-import com.holler.bean.UserSettingDTO;
 import com.holler.holler_dao.TagDao;
 import com.holler.holler_dao.UserDao;
 import com.holler.holler_dao.common.HollerConstants;
@@ -46,6 +39,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	TokenService tokenService;
+
+	@Autowired
+	SmsSender smsSender;
 	
 	public boolean authenticateUser(String email, String password){
 		log.info("authenticateUser :: called");
@@ -127,6 +123,7 @@ public class UserServiceImpl implements UserService{
 				
 				result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
 				result.put(HollerConstants.RESULT, signUpResponseDTO);
+				smsSender.sendWelcomeMsgSMS(signUpDTO.getPhoneNumber(), name);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -172,7 +169,7 @@ public class UserServiceImpl implements UserService{
 		if(tokenService.isValidToken(request)){
 			//if(Boolean.TRUE){
 			log.info("getUserProfile :: valid token");
-			log.info("getUserProfile :: fetch profile ofr user {}", request.getHeader("userId"));
+			log.info("getUserProfile :: fetch profile for user {}", request.getHeader("userId"));
 			User user = userDao.findByIdWithTags(Integer.valueOf(request.getHeader("userId")));
 			UserDTO userDTO = UserDTO.getDtoForUserProfile(user);
 			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
@@ -351,4 +348,28 @@ public class UserServiceImpl implements UserService{
 		}
 		return result;
 	}
+
+    public Map<String, Object> fetchUserHeader(HttpServletRequest request) {
+		log.info("fetchUserHeader :: called");
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(tokenService.isValidToken(request)) {
+			//if(Boolean.TRUE){
+			log.info("fetchUserHeader :: valid token");
+			log.info("fetchUserHeader :: fetch notification and message count for user {}", request.getHeader("userId"));
+			User user = userDao.findById(Integer.valueOf(request.getHeader("userId")));
+			Object[] countResult = userDao.fetchNotificationAndMessageCount(user.getId());
+			UserHeaderDTO userHeaderDTO = null;
+			if(CommonUtil.isNotNull(countResult)){
+				userHeaderDTO = new UserHeaderDTO();
+				userHeaderDTO.setUnSeenNotificationCount(((BigInteger) countResult[0]).intValue());
+				userHeaderDTO.setUnSeenMessageCount(((BigInteger) countResult[1]).intValue());
+			}
+			result.put(HollerConstants.STATUS, HollerConstants.SUCCESS);
+			result.put(HollerConstants.RESULT, userHeaderDTO);
+		}else {
+			result.put(HollerConstants.STATUS, HollerConstants.FAILURE);
+			result.put(HollerConstants.MESSAGE, HollerConstants.TOKEN_VALIDATION_FAILED);
+		}
+		return result;
+    }
 }
